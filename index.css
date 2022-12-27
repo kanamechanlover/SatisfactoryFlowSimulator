@@ -1,0 +1,226 @@
+* {
+    box-sizing: border-box;
+}
+html,body {
+    width: 100%;
+    height: 100%;
+}
+body {
+    margin: 0px;
+    padding: 0px;
+    user-select: none;
+    position: relative;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+}
+header {
+    display: flex;
+    align-items: center;
+    background-color: orange;
+    font-size: 2em;
+    padding: 0px 8px;
+    font-weight: bold;
+    color: maroon;
+    overflow-y: hidden;
+}
+main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+/* ---- 製作フローツリー ---- */
+.tree-box {
+    flex: 1;
+    border-right: 1px solid gray;
+    background-color: whitesmoke;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 8px;
+}
+.tree-box .product-item-box {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+.tree-box .product-item-label {
+    font-weight: bold;
+}
+.tree-box .product-item-select {
+    flex: 1;
+    border: none;
+    border-bottom: 1px solid gray;
+    height: 1.5em;
+}
+.tree-box .product-item-select option.category {
+    background-color: bisque;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.tree-box ul {
+    flex: 1;
+    list-style: none;
+    position: relative;
+    z-index: 1;
+    margin-left: 1em;
+}
+.tree-box ul.tree {
+    margin-left: 0px;
+    padding-left: 0px;
+}
+.tree-box ul:not(.tree)::before {
+    content: '';
+    width: 4px;
+    height: 100%;
+    position: absolute;
+    left: 0.4em;
+    background-color: lightgray;
+    z-index: 0;
+}
+.tree-box li {
+}
+.tree-box .item-box {
+    display: flex;
+    margin-bottom: 4px;
+    width: 100%;
+    border-radius: 8px;
+    position: relative;
+}
+.tree-box .item-box img {
+    width: 3.5em;
+    height: 3.5em;
+}
+/* ---- 製作フローツリー　アイテム情報段 ---- */
+.tree-box .item-info-box {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border: 1px solid gray;
+    margin-left: 4px;
+    width: 100%;
+    border-radius: 8px;
+    padding: 4px;
+}
+.tree-box .item-needs-box {
+    display: flex;
+    align-items: center;
+}
+.tree-box .item-needs-box .item-name {
+    padding: 2px 8px;
+    font-weight: bold;
+}
+.tree-box .item-needs-box input.item-needs {
+    margin-left: 8px;
+    border: none;
+    border-bottom: 1px solid black;
+    width: 5em;
+    height: 1.5em;
+    text-align: center;
+    background-color: transparent;
+}
+.tree-box .item-needs-box .item-needs-unit {
+    margin-left: 8px;
+}
+
+/* ---- 製作フローツリー　レシピ段 ---- */
+.tree-box .item-recipe-box {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0px 8px;
+    line-height: 1em;
+    color: gray;
+    font-size: 0.8em;
+}
+.tree-box .item-recipe-box select {
+    flex: 1;
+    border: none;
+    border-radius: 4px;
+    background-color: whitesmoke;
+    color: black;
+    width: 100%;
+    padding: 0px 2px;
+}
+
+/* ---- 製作フローツリー　副産物段 ---- */
+.tree-box .item-byproduct-box {
+    font-size: 0.8em;
+    margin-left: 4px;
+    width: 100%;
+    padding: 4px;
+    font-size: 0.8em;
+    color: gray;
+}
+.tree-box .item-byproduct-box .item-byproduct-name {
+    padding: 2px 8px;
+    font-weight: bold;
+    color: black;
+}
+.tree-box .item-byproduct-box .item-byproduct-needs {
+    margin-left: 8px;
+}
+.tree-box .item-byproduct-box .item-byproduct-needs-unit {
+    margin-left: 8px;
+}
+.tree-box ul .hide-button {
+    position: absolute;
+    left: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 1px solid gray;
+    background-color: white;
+    border-radius: 50%;
+    padding: 0px 0.3em;
+    font-weight: bold;
+    color: gray;
+}
+
+/* ---- 素材テーブル ---- */
+
+.material-table-box {
+    background-color: bisque;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 8px;
+}
+
+.material-table,
+.byproduct-table {
+    width: 100%;
+    border: 1px solid black;
+    padding: 4px;
+    border-radius: 8px;
+    border-spacing: 4px;
+}
+.material-table tr,
+.byproduct-table tr {
+    margin: 4px, 0px;
+}
+.material-table th,
+.material-table td,
+.byproduct-table th,
+.byproduct-table td {
+    padding: 2px 8px;
+    border-radius: 8px;
+}
+.material-table th,
+.byproduct-table th {
+    text-align: left;
+    background-color: orange;
+    color: white
+}
+.material-table td:nth-child(1),
+.byproduct-table td:nth-child(1) {
+    font-weight: bold;
+    background-color:burlywood;
+}
+.material-table td:nth-child(1).category,
+.byproduct-table td:nth-child(1).category {
+    background-color:transparent;
+}
+.material-table td:nth-child(2),
+.byproduct-table td:nth-child(2) {
+    background-color: floralwhite;
+}

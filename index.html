@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satisfatory Flow Simulator</title>
+    <!-- jquery準備 -->
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <!-- このページの設定 -->
+    <link rel="stylesheet" href="/index.css" />
+    <script src="/common.js"></script>
+    <script src="/config.js"></script>
+    <script src="/flow.js"></script>
+    <script src="/flow_view.js"></script>
+    <script src="/material_table.js"></script>
+    <script src="/byproduct_table.js"></script>
+    <script src="/index.js"></script>
+</head>
+<body>
+    <header>Satisfatory Flow Simulator</header>
+    <main>
+        <div class="tree-box">
+            <div class="product-item-box">
+                <span class="product-item-label">製品名：</span>
+                <select class="product-item-select"></select>
+            </div>
+            <ul class="tree">
+                <li>
+                    <!-- ここは js で書き込み -->
+                </li>
+            </ul>
+        </div>
+        <div class="material-table-box">
+            <div class="material-table-caption">
+                必要な素材一覧
+            </div>
+            <table class="material-table">
+                <tr class="th">
+                    <th>素材名</th>
+                    <th>必要数(/分)</th>
+                </tr>
+                <!-- ここは js で書き込み -->
+            </table>
+            <div class="byproduct-table-caption">
+                副産物一覧
+            </div>
+            <table class="byproduct-table">
+                <tr class="th">
+                    <th>素材名</th>
+                    <th>必要数(/分)</th>
+                </tr>
+                <!-- ここは js で書き込み -->
+            </table>
+        </div>
+    </main>
+</body>
+</html>
