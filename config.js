@@ -3,7 +3,7 @@
 config = new class Config {
     /// 読み込む json ファイルパス
     static get ConfigFilePath() {
-        return '/assets/config/config.json'
+        return './assets/config/config.json'
     };
     /// 読込済みフラグ
     #loaded;
