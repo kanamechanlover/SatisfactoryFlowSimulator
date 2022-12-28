@@ -154,7 +154,7 @@ config = new class Config {
     /// @return <boolean> true: ある
     hasItemInOutput(_itemId) {
         return this.#data.Recipes.some((_recipe) => {
-            Object.keys(_recipe.Output).includes(_itemId);
+            return Object.keys(_recipe.Output).includes(_itemId);
         });
     }
 
@@ -162,7 +162,7 @@ config = new class Config {
     /// @param [in] _itemId アイテムID
     /// @return <boolean> true: ある
     hasInputForItem(_itemId) {
-        return recipes.some((_recipe) => {
+        return this.#data.Recipes.some((_recipe) => {
             const hasRecipe = Object.keys(_recipe.Output).includes(_itemId);
             const hasInput = !!Object.keys(_recipe.Input).length;
             return hasRecipe && hasInput;

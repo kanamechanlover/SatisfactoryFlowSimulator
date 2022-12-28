@@ -4594,10 +4594,10 @@
         {
             "Name": "原子力発電所 (ウラン燃料棒)",
             "Input": {
-                "NuclearFuelRod": 1
+                "UraniumFuelRod": 1
             },
             "Output": {
-                "NuclearWaste": 50
+                "UraniumWaste": 50
             },
             "ProductTime": 300,
             "Machine": [
