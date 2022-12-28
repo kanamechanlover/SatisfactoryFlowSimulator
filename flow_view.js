@@ -19,7 +19,7 @@ function updateFlowView() {
             machineName = '手';
         }
         const $imgMachine = $(createElement('img'));
-        $imgMachine.attr('src', '/assets/icon/' + machineId + '.svg');
+        $imgMachine.attr('src', './assets/icon/' + machineId + '.svg');
         $imgMachine.attr('title', machineName);
         $spanBox.append($imgMachine);
         // アイテム情報枠
