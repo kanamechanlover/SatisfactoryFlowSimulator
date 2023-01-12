@@ -1,0 +1,7 @@
+input, select, button, div {
+    color-scheme: dark;
+}
+
+* {
+    --dark-bg-color: rgb(59,59,59);
+}
