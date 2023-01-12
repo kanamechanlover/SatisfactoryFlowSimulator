@@ -6,7 +6,7 @@
  * @return ファイルパス
  */
 export const machineIconPath = function(iconName: string): string {
-    return '/assets/icons/' + iconName + '.svg';
+    return import.meta.env.BASE_URL + './assets/icons/' + iconName + '.svg';
 }
 
 /**
@@ -15,5 +15,5 @@ export const machineIconPath = function(iconName: string): string {
  * @return ファイルパス
  */
 export const materialImgPath = function(materialId: string): string {
-    return '/assets/materials/' + materialId + '.png';
+    return import.meta.env.BASE_URL + './assets/materials/' + materialId + '.png';
 }
