@@ -1,7 +1,10 @@
 <template>
     <div id="frame">
         <header>
-            <span class="title">Satisfactory 制作フロー シミュレーター</span>
+            <span class="title">
+                Satisfactory 制作フロー シミュレーター
+                <span class="version">( {{ version }} )</span>
+            </span>
             <a href="https://store.steampowered.com/app/526870/Satisfactory/" class="link-icon" title="Steamストア - Satisfactory" target="_blank">
                 <fa :icon="{ prefix: 'fab', iconName: 'steam' }" />
             </a>
@@ -24,8 +27,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, toRefs, reactive } from 'vue'
+import { defineComponent, ref, Ref, toRefs, reactive, computed } from 'vue'
 import { MaterialTable } from './defines/types/material_table';
+import { useConfigStore } from './stores/config_store';
 
 /** プロパティを定義 */
 const Props = {
@@ -44,12 +48,17 @@ export default defineComponent({
     props: Props,
     setup(props) {
         const state = reactive<Data>({});
+        const configStore = useConfigStore();
         const refs: Refs = {
             frame: ref(null),
         };
         // computed
         // this の代わりに state
-        const computes = {};
+        const computes = {
+            version: computed((): string => {
+                return configStore.version;
+            })
+        };
         // methods
         // this の代わりに state
         const methods = {};
@@ -91,6 +100,10 @@ header .title {
     flex: 1;
     font-size: 1.2em;
     text-align: left;
+}
+header .version {
+    font-size: 0.8em;
+    color: var(--dark-bg-color);
 }
 #main {
     flex: 1;

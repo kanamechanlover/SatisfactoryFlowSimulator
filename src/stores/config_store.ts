@@ -21,6 +21,10 @@ export const useConfigStore = defineStore('config', {
         rowConfig(state): Config {
             return state.config;
         },
+        /** 設定のバージョンを取得 */
+        version(state): string {
+            return state.config.version;
+        },
         /** レシピデータ取得 */
         recipe(state) {
             return (recipeName: string): ConfigRecipe|undefined => {
@@ -303,13 +307,14 @@ export const useConfigStore = defineStore('config', {
          * 入力素材のあるレシピを持つ素材IDリストを取得
          * @return 素材IDリスト
          */
-        productMaterialIds(state) {
+        productMaterialIds(state): Array<string> {
             return Object.keys(state.config.materials).filter((materialId: string) => {
                 // 入力素材のあるレシピを持つか調査
-                const recipes = state.config.recipes.filter((recipe: ConfigRecipe) => {
-                    return Object.keys(recipe.input).length > 0;
+                return state.config.recipes.find((recipe: ConfigRecipe) => {
+                    const inputIds = Object.keys(recipe.input);
+                    const outputIds = Object.keys(recipe.output);
+                    return outputIds.includes(materialId) && inputIds.length > 0;
                 });
-                return recipes.length > 0;
             });
         },
     },

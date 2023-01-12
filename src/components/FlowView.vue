@@ -41,11 +41,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, computed, inject, watchEffect } from 'vue'
+import { defineComponent, ref, Ref, computed } from 'vue'
 import { FlowPath, Flow } from '@/defines/types/flow'
 import { useFlowStore } from '@/stores/flow_store'
 import { useConfigStore } from '@/stores/config_store'
 import { CeilDigit } from '@/logics/primitives'
+import { materialImgPath, machineIconPath } from '@/logics/access_path'
 
 
 /** プロパティを定義 */
@@ -75,15 +76,6 @@ export default defineComponent({
         const refs: Refs = {
             frame: ref(null),
         };
-
-        // 素材画像パス
-        const materialImgPath = (id: string) => {
-            return '/public/assets/materials/' + id + '.png';
-        }
-        // 設備画像パス
-        const machineImgPath = (id: string) => {
-            return '/public/assets/icons/' + id + '.svg';
-        }
 
         // computed
         const computes = {
@@ -126,9 +118,9 @@ export default defineComponent({
             machineSvg: computed((): string => {
                 if (!getFlow.value?.machineId) {
                     // 設備が無い場合は手採取用のアイコンにする
-                    return machineImgPath('hand');
+                    return machineIconPath('Hand');
                 }
-                return machineImgPath(getFlow.value?.machineId);
+                return machineIconPath(getFlow.value?.machineId);
             }),
             /** 設備名 */
             machineName: computed((): string => {

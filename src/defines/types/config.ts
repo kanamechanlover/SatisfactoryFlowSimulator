@@ -195,6 +195,8 @@ export type RecipeList = Array<ConfigRecipe>;
 
 /** ルート */
 export class Config {
+    /** 設定のバージョン */
+    version: string = '';
     /** 設備のカテゴリ名 */
     machineCategoryNames: any = {};
     /** 素材のカテゴリ名 */
@@ -215,6 +217,7 @@ export class Config {
     /** シリアライズ ※今のところ使用する予定無し */
     serialize(): any {
         return {
+            Version: this.version,
             MachineCategories: this.machineCategoryNames,
             MaterialCategories: this.materialCategoryNames,
             Resources: this.resources,
@@ -233,6 +236,7 @@ export class Config {
     };
     /** デシリアライズ */
     deserialize(data: any) {
+        this.version = data.Version;
         this.machineCategoryNames = data.MachineCategories;
         this.materialCategoryNames = data.MaterialCategories;
         this.resources = data.Resources;

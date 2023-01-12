@@ -47,13 +47,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, computed, inject, watchEffect } from 'vue'
+import { defineComponent, ref, Ref, computed } from 'vue'
 import { Flow } from '@/defines/types/flow'
 import { useFlowStore } from '@/stores/flow_store'
 import { useConfigStore } from '@/stores/config_store'
 import { MaterialTable } from '@/defines/types/material_table'
 import { CeilDigit } from '@/logics/primitives'
-import { config } from 'process'
+import { materialImgPath } from '@/logics/access_path'
 
 
 /** プロパティを定義 */
@@ -175,7 +175,7 @@ export default defineComponent({
             /** 素材画像 */
             materialImg: computed(() => (materialId: string) => {
                 if (!materialId) return '';
-                return '/public/assets/materials/' + materialId + '.png';
+                return materialImgPath(materialId);
             }),
         };
 

@@ -1,4 +1,5 @@
 {
+    "Version": "Update 5",
     "Resources": [
         "IronOre",
         "CopperOre",
@@ -680,12 +681,12 @@
             "State": "Solid",
             "Category": "Plants"
         },
-        "AlienCarapace": {
+        "HogRemains": {
             "Name": "異星生物甲殻",
             "State": "Solid",
             "Category": "Plants"
         },
-        "AlienOrgans": {
+        "PlasmaSpitterRemains": {
             "Name": "異星生物器官",
             "State": "Solid",
             "Category": "Plants"
@@ -915,7 +916,7 @@
             "State": "Solid",
             "Category": "Consumed"
         },
-        "SpikedRebar": {
+        "IronRebar": {
             "Name": "有刺鉄筋",
             "State": "Solid",
             "Category": "Consumed"
@@ -3685,7 +3686,7 @@
                 "IronRod": 1
             },
             "Output": {
-                "SpikedRebar": 1
+                "IronRebar": 1
             },
             "ProductTime": 4,
             "Machine": [

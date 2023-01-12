@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, computed} from 'vue'
+import { defineComponent, ref, Ref, computed } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
 import { useFlowStore } from '@/stores/flow_store'
 
