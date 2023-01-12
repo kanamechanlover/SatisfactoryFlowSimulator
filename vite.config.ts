@@ -7,7 +7,7 @@ import svgLoader from 'vite-svg-loader'
 // https://vitejs.dev/config/
 export default defineConfig({
   root: './',
-  base: './',
+  base: process.env.NODE_ENV === "production" ? "/SatisfactoryFlowSimulator/" : "./",
   resolve: {
     extensions: [
       '.ts',
