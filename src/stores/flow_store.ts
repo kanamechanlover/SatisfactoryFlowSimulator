@@ -92,7 +92,7 @@ export const useFlowStore = defineStore('flow', {
                 flow.materialFlows.forEach((materialFlow: Flow, index: number) => {
                     const materialId = materialFlow.materialId;
                     const needs = materials[materialId];
-                    materialFlow.needs = needs * flow.needsRate;
+                    materialFlow.needs = toMinute(needs * flow.needsRate);
                     this.updateFlow(materialFlow, changedRecipe);
                 });
             }
