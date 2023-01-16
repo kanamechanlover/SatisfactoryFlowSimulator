@@ -7,8 +7,20 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    ConfigEditor: typeof import('./src/components/config_editor/ConfigEditor.vue')['default']
+    ConfigEditorMaterialState: typeof import('./src/components/config_editor/ConfigEditorMaterialState.vue')['default']
+    ConfigEditorSection: typeof import('./src/components/config_editor/ConfigEditorSection.vue')['default']
+    ConfigRecipe: typeof import('./src/components/config_editor/ConfigRecipe.vue')['default']
+    copy: typeof import('./src/components/config_editor/MaterialSelect copy.vue')['default']
     FlowTree: typeof import('./src/components/FlowTree.vue')['default']
     FlowView: typeof import('./src/components/FlowView.vue')['default']
+    MachineCategorySelect: typeof import('./src/components/config_editor/MachineCategorySelect.vue')['default']
+    MachineSelect: typeof import('./src/components/config_editor/MachineSelect.vue')['default']
+    MaterialCategorySelect: typeof import('./src/components/config_editor/MaterialCategorySelect.vue')['default']
+    MaterialSelect: typeof import('./src/components/config_editor/MaterialSelect.vue')['default']
+    MaterialState: typeof import('./src/components/config_editor/MaterialState.vue')['default']
+    MaterialStateSelect: typeof import('./src/components/config_editor/MaterialStateSelect.vue')['default']
     MaterialTable: typeof import('./src/components/MaterialTable.vue')['default']
+    Sample: typeof import('./src/components/config_editor/sample.vue')['default']
   }
 }

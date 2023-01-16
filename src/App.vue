@@ -14,6 +14,7 @@
             <a href="https://github.com/kanamechanlover" class="link-icon" title="Github - kanamechanlover" target="_blank">
                 <fa :icon="{ prefix: 'fab', iconName: 'github' }" />
             </a>
+            <button class="config-edit-button" @click="showConfigEditor" v-if="isDebug">Edit</button>
         </header>
         <div id="main">
             <div id="flow-tree-box">
@@ -22,6 +23,9 @@
             <div id="total-data-box">
                 <MaterialTable></MaterialTable>
             </div>
+        </div>
+        <div id="config-editor-box" v-if="isDebug && showingConfigEditor">
+            <ConfigEditor  @close="closeConfigEditor"></ConfigEditor>
         </div>
     </div>
 </template>
@@ -49,6 +53,7 @@ export default defineComponent({
     setup(props) {
         const state = reactive<Data>({});
         const configStore = useConfigStore();
+        const showingConfigEditor = ref(false);
         const refs: Refs = {
             frame: ref(null),
         };
@@ -57,11 +62,26 @@ export default defineComponent({
         const computes = {
             version: computed((): string => {
                 return configStore.version;
-            })
+            }),
+            isDebug: computed((): boolean => {
+                return import.meta.env.DEV;
+            }),
+            showingConfigEditor: computed((): boolean => {
+                return showingConfigEditor.value;
+            }),
         };
         // methods
         // this の代わりに state
-        const methods = {};
+        const methods = {
+            showConfigEditor: () => {
+                console.log('showed ConfigEditor.');
+                showingConfigEditor.value = true;
+            },
+            closeConfigEditor: () => {
+                console.log('closed ConfigEditor.');
+                showingConfigEditor.value = false;
+            }
+        };
         return {
             ...props,
             ...toRefs(state),
@@ -145,5 +165,17 @@ a.link-icon svg.fa-twitter:hover {
 a.link-icon svg.fa-github:hover {
     color: black;
 }
+button.config-edit-button {
+    padding: 4px 4px;
+    font-size: 0.6em;
+}
 
+#config-editor-box {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    width: 800px;
+    height: 90%;
+}
 </style>

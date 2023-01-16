@@ -48,9 +48,16 @@ export const useFlowStore = defineStore('flow', {
          * @note 再帰処理あり
          */
         updateFlow(flow: Flow, changedRecipe: boolean) {
+            // 入出力素材を取得
+            const inputs = this.config.recipeInput(flow.recipeId);
+            const outputs = this.config.recipeOutput(flow.recipeId);
+            if (!inputs || !outputs) {
+                console.warn('[FlowStore.updateFlow] 対象のレシピ無し: ' + flow.recipeId);
+                return;
+            }
             // 必要数が未設定の場合はデフォルトの分間レートを設定
-            const output = this.config.recipeOutput(flow.recipeId);
-            const needsOfRecipe = output[flow.materialId];
+            const needsOfRecipe = outputs.find((v) => v !== undefined && v.id == flow.materialId)?.number;
+            if (needsOfRecipe === undefined) return; // イレギュラー
             const productTime = this.config.productTime(flow.recipeId);
             const toMinute = (v: number) => v * (60 / productTime);
             const makePerMinute = toMinute(needsOfRecipe);
@@ -63,26 +70,30 @@ export const useFlowStore = defineStore('flow', {
             if (changedRecipe) {
                 flow.machineId = this.config.machineIdForRecipe(flow.recipeId);
             }
+
             // 副産物があれば素材IDと生産数
             if (changedRecipe) {
-                const otherOutput = Object.keys(output);
-                const byproductId = otherOutput.find((id) => id != flow.materialId);
+                const byproductId = outputs.find((v) => v !== undefined && v.id != flow.materialId)?.id;
                 flow.byproductId = (byproductId) ? byproductId : '';
             }
-            flow.byproductNeeds = (flow.byproductId) ? toMinute(output[flow.byproductId]) * flow.needsRate : 0;
+            const byproductNeeds = () => {
+                const needs = outputs.find((v) => v !== undefined && v.id == flow.byproductId)?.number;
+                return (needs) ? toMinute(needs) * flow.needsRate : 0;
+            };
+            flow.byproductNeeds = (flow.byproductId) ? byproductNeeds() : 0;
     
             // レシピの素材リスト
-            const materials = this.config.recipeInput(flow.recipeId);
             if (changedRecipe) {
                 // レシピの変更が有れば素材リストの製作フローを作り直す
                 flow.materialFlows = [];
-                Object.keys(materials).forEach((id) => {
-                    const needs = materials[id];
+                inputs.forEach((input) => {
+                    const needs = input.number;
+                    if (needs === undefined) return; // イレギュラー
                     const materialFlow = new Flow(flow);
-                    materialFlow.materialId = id;
-                    materialFlow.recipeId = this.config.defaultRecipeId(id);
+                    materialFlow.materialId = input.id;
+                    materialFlow.recipeId = this.config.defaultRecipeId(input.id);
                     materialFlow.needs = toMinute(needs * flow.needsRate);
-                    materialFlow.path = flow.path.concat([id]);
+                    materialFlow.path = flow.path.concat([input.id]);
                     flow.materialFlows.push(materialFlow);
                     this.updateFlow(materialFlow, changedRecipe);
                 });
@@ -91,7 +102,8 @@ export const useFlowStore = defineStore('flow', {
                 // レシピの変更が無ければ必要数を再帰的に更新
                 flow.materialFlows.forEach((materialFlow: Flow, index: number) => {
                     const materialId = materialFlow.materialId;
-                    const needs = materials[materialId];
+                    const needs = inputs.find((v) => v !== undefined && v.id == materialId)?.number;
+                    if (needs === undefined) return; // イレギュラー
                     materialFlow.needs = toMinute(needs * flow.needsRate);
                     this.updateFlow(materialFlow, changedRecipe);
                 });

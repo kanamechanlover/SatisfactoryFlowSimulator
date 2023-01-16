@@ -1,0 +1,98 @@
+/* 設定エディタ上の共通書式 */
+
+
+button {
+    height: 24px;
+    padding: 0px 8px;
+    font-size: 0.8em;
+    background: white;
+    color: black;
+}
+input {
+    text-align: center;
+    background: var(--dark-main-color);
+    color: white;
+    border: 1px solid var(--dark-accent-color);
+    border-radius: 4px;
+    min-width: 32px;
+    width: calc(100% - 8px);
+}
+button:hover {
+    background: orange;
+}
+
+table {
+    border: none;
+    white-space: nowrap;
+    margin-bottom: 4px;
+    table-layout: fixed;
+}
+
+tr.adjustment {
+    height: 2px;
+    background: var(--dark-main-color)
+}
+
+th {
+    font-size: 0.8em;
+    line-height: 1em;
+    padding: 0px 4px;
+}
+th.index {
+    background: var(--dark-main-color);
+    padding: 0px 4px;
+}
+
+td {
+    font-size: 0.8em;
+    padding: 0px 4px;
+    line-height: 0.5em;
+}
+
+td.index {
+    min-width: 24px;
+    padding: 0px;
+}
+td.delete-box button {
+    height: 8em;
+}
+
+td button {
+    height: 20px;
+    line-height: 0.5em;
+    font-weight: bold;
+    background: pink;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+td button:hover {
+    font-weight: bold;
+    background: tomato;
+}
+
+td select {
+    width: 100%;
+    text-align: center;
+    background: var(--dark-main-color);
+    border-radius: 4px;
+}
+
+td img {
+    width: 20px;
+    height: 20px;
+}
+
+button.additional-button {
+    height: 20px;
+    line-height: 0.5em;
+    font-weight: bold;
+    background: lightgreen;
+    padding: 0px 64px;
+}
+button.additional-button:hover {
+    background: green;
+}
+
+select {
+    background: var(--dark-main-color)
+}

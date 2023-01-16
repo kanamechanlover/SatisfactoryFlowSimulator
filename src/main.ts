@@ -13,8 +13,9 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 // - コンポーネント
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 // - 使用するアイコン
+import { faCube, faDroplet } from '@fortawesome/free-solid-svg-icons'
 import { faTwitter, faGithub, faSteam } from '@fortawesome/free-brands-svg-icons'
-library.add(faTwitter, faGithub, faSteam);
+library.add(faCube, faDroplet, faTwitter, faGithub, faSteam);
 
 
 // アプリケーションの初期化

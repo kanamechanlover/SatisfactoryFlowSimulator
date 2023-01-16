@@ -2,10 +2,11 @@ import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import {
     Config,
+    MachinePortType,
     MaterialState,
-    MaterialStateUnit,
+    RecipeMaterialList,
+    ConfigMaterial,
     ConfigRecipe,
-    MateriStateUnitType,
     RecipeList
 } from '@/defines/types/config';
 
@@ -28,6 +29,7 @@ export const useConfigStore = defineStore('config', {
         /** レシピデータ取得 */
         recipe(state) {
             return (recipeName: string): ConfigRecipe|undefined => {
+                if (!recipeName) return undefined;
                 return state.config.recipes.find((recipe: ConfigRecipe) => {
                     return recipe.name == recipeName;
                 });
@@ -35,19 +37,23 @@ export const useConfigStore = defineStore('config', {
         },
         /** 設備のカテゴリIDリストを取得 */
         machineCategoryIds(state): string[] {
-            return Object.keys(state.config.machineCategoryNames);
+            return state.config.machineCategories.map((category) => category.id);
         },
         /** 設備のカテゴリ名リストを取得 */
         machineCategoryNames(state): string[] {
-            return Object.values(state.config.machineCategoryNames);
+            return state.config.machineCategories.map((category) => category.name);
         },
         /** 素材のカテゴリIDリストを取得 */
         materialCategoryIds(state): string[] {
-            return Object.keys(state.config.materialCategoryNames);
+            return state.config.materialCategories.map((category) => category.id);
         },
         /** 素材のカテゴリ名リストを取得 */
         materialCategoryNames(state): string[] {
-            return Object.values(state.config.materialCategoryNames);
+            return state.config.materialCategories.map((category) => category.name);
+        },
+        /** 素材IDリストを取得 */
+        materialIds(state) {
+            return state.config.materials.map((material) => material.id);
         },
         /**
          * 素材のカテゴリ名を取得
@@ -55,20 +61,16 @@ export const useConfigStore = defineStore('config', {
          */
         materialCategoryName(state) {
             return (categoryId: string): string => {
-                if (!Object.keys(state.config.materialCategoryNames).includes(categoryId)) return '';
-                return state.config.materialCategoryNames[categoryId];
+                const category = state.config.materialCategories.find((category) => category.id === categoryId);
+                return (category) ? category.name : '';
             }
         },
-        /** 資源素材リストを取得 */
-        resources(state): string[] {
-            return state.config.resources;
-        },
         /** 設備IDリストを取得 */
-        machineIdList(state): Array<string> {
-            return Object.keys(state.config.machines);
+        machineIds(state): Array<string> {
+            return state.config.machines.map((machine) => machine.id);
         },
         /** レシピ名リスト取得 */
-        recipeNameList(state): Array<string> {
+        recipeNames(state): Array<string> {
             return state.config.recipes.map((recipe: ConfigRecipe) => recipe.name);
         },
         /**
@@ -79,21 +81,24 @@ export const useConfigStore = defineStore('config', {
         recipeNameForMachine(state) {
             return (machineId: string): Array<string> => {
                 return state.config.recipes.filter((recipe: ConfigRecipe) => {
-                    return machineId in recipe.machineId;
+                    return machineId == recipe.machineId;
                 }).map((recipe: ConfigRecipe) => recipe.name);
             };
         },
         /**
          * 指定設備カテゴリで使用できるレシピ名リストを取得
-         * @param [in] categoryId 設備ID
+         * @param [in] categoryId 設備カテゴリID
          * @returns レシピ名リスト
          */
         recipeNameListForMachineCategory(state) {
             return (categoryId: string): Array<string> => {
                 return (state.config.recipes.map((recipe: ConfigRecipe) => {
                     return [recipe.name, recipe.machineId]; // どのレシピか分かるようにレシピ名も入れる
-                }) as Array<Array<string>>).filter((data) => {
-                    return state.config.machines[data[1]].category == categoryId;
+                })).filter((data) => {
+                    const recipeName = data[0];
+                    const machineId = data[1];
+                    const machine = state.config.machines.find((machine) => machine.category == categoryId);
+                    return machine !== undefined;
                 }).map((data) => data[0]);
             };
         },
@@ -104,8 +109,65 @@ export const useConfigStore = defineStore('config', {
          */
         machineName(state) {
             return (id: string): string =>  {
-                if (!(id in state.config.machines)) return '';
-                return state.config.machines[id].name;
+                const machine = state.config.machines.find((machine) => machine.id == id)
+                if (machine === undefined) return '';
+                return machine.name;
+            };
+        },
+        /**
+         * 設備の入力口数取得
+         * @param [in] id 設備ID
+         * @returns 設備の入力口数
+         */
+        machineInputPortNumber(state) {
+            return (id: string): number =>  {
+                const machine = state.config.machines.find((machine) => machine.id == id)
+                if (machine === undefined) return 0;
+                return machine.inputNumber.conveyor + machine.inputNumber.pipe;
+            };
+        },
+        /**
+         * 設備の出力口数取得
+         * @param [in] id 設備ID
+         * @returns 設備の出力口数
+         */
+        machineOutputPortNumber(state) {
+            return (id: string): number =>  {
+                const machine = state.config.machines.find((machine) => machine.id == id)
+                if (machine === undefined) return 0;
+                return machine.outputNumber.conveyor + machine.outputNumber.pipe;
+            };
+        },
+        /**
+         * 設備の入力口のタイプ取得
+         * @param [in] id 設備ID
+         * @returns 設備の入力口のタイプ（例：'Conveyor'）
+         */
+        machineInputPortType(state) {
+            return (id: string, index: number): string =>  {
+                const machine = state.config.machines.find((machine) => machine.id == id)
+                if (machine === undefined) return '';
+                const conveyorNumber = machine.inputNumber.conveyor;
+                const pipeNumber = machine.inputNumber.pipe;
+                if (index <= conveyorNumber) return MachinePortType.Conveyor;
+                if (index <= conveyorNumber + pipeNumber) return MachinePortType.Pipe;
+                return '';
+            };
+        },
+        /**
+         * 設備の出力口のタイプ取得
+         * @param [in] id 設備ID
+         * @returns 設備の入力口のタイプ（例：'Conveyor'）
+         */
+        machineOutputPortType(state) {
+            return (id: string, index: number): string =>  {
+                const machine = state.config.machines.find((machine) => machine.id == id)
+                if (machine === undefined) return '';
+                const conveyorNumber = machine.outputNumber.conveyor;
+                const pipeNumber = machine.outputNumber.pipe;
+                if (index <= conveyorNumber) return MachinePortType.Conveyor;
+                if (index <= conveyorNumber + pipeNumber) return MachinePortType.Pipe;
+                return '';
             };
         },
         /**
@@ -114,9 +176,9 @@ export const useConfigStore = defineStore('config', {
          * @returns 素材名
          */
         materialName(state) {
-            return (id: string): string => {
-                if (!(id in state.config.materials)) return '';
-                return state.config.materials[id].name;
+            return (id: string): string =>  {
+                const material = state.config.materials.find((material) => material.id == id)
+                return (material) ? material.name : '';
             };
         },
         /**
@@ -125,9 +187,9 @@ export const useConfigStore = defineStore('config', {
          * @returns Solid | Fluid | Gas 無ければ 空文字列
          */
         materialState(state) {
-            return (id: string): MaterialState | string => {
-                if (!(id in state.config.materials)) return '';
-                return state.config.materials[id].state;
+            return (id: string): string =>  {
+                const material = state.config.materials.find((material) => material.id == id)
+                return (material) ? material.state : '';
             };
         },
         /**
@@ -136,9 +198,9 @@ export const useConfigStore = defineStore('config', {
          * @returns true: 固体素材、false それ以外または素材IDが無い
          */
         isSolidMaterial(state) {
-            return (id: string): boolean => {
-                if (!(id in state.config.materials)) return false;
-                return state.config.materials[id].state == 'Solid';
+            return (id: string): boolean =>  {
+                const material = state.config.materials.find((material) => material.id === id)
+                return (material) ? material.state == 'Solid' : false;
             };
         },
         /**
@@ -147,9 +209,9 @@ export const useConfigStore = defineStore('config', {
          * @returns true: 液体素材、false それ以外または素材IDが無い
          */
         isFluidMaterial(state) {
-            return (id: string): boolean => {
-                if (!(id in state.config.materials)) return false;
-                return state.config.materials[id].state == 'Fluid';
+            return (id: string): boolean =>  {
+                const material = state.config.materials.find((material) => material.id === id)
+                return (material) ? material.state == 'Fluid' : false;
             };
         },
         /**
@@ -158,9 +220,9 @@ export const useConfigStore = defineStore('config', {
          * @returns true: 気体素材、false それ以外または素材IDが無い
          */
         isGasMaterial(state) {
-            return (id: string): boolean => {
-                if (!(id in state.config.materials)) return false;
-                return state.config.materials[id].state == 'Gas';
+            return (id: string): boolean =>  {
+                const material = state.config.materials.find((material) => material.id === id)
+                return (material) ? material.state == 'Gas' : false;
             };
         },
         /**
@@ -169,10 +231,10 @@ export const useConfigStore = defineStore('config', {
          * @returns 素材の単位（'個' | '㎥'）、素材IDが無ければ空文字列
          */
         materialUnit(state) {
-            return (id: string): string => {
-                if (!(id in state.config.materials)) return '';
-                const materialState = state.config.materials[id].state as MateriStateUnitType;
-                return MaterialStateUnit[materialState];
+            return (id: string): string =>  {
+                const material = state.config.materials.find((material) => material.id === id)
+                if (!material) return '';
+                return MaterialState[material.state].Unit;
             };
         },
         /**
@@ -181,9 +243,9 @@ export const useConfigStore = defineStore('config', {
          * @return カテゴリID
          */
         materialCategory(state) {
-            return (id: string): string => {
-                if (!(id in state.config.materials)) return '';
-                return state.config.materials[id].category;
+            return (id: string): string =>  {
+                const material = state.config.materials.find((material) => material.id === id)
+                return (material) ? material.category : '';
             };
         },
         /**
@@ -195,30 +257,30 @@ export const useConfigStore = defineStore('config', {
             return (recipeName: string): string => {
                 const recipe = this.recipe(recipeName);
                 if (recipe === undefined) return '';
-                return recipe.machineId[0];
+                return recipe.machineId;
             };
         },
         /**
          * レシピの入力素材リスト取得
          * @param [in] recipeName レシピ名
-         * @returns レシピの入力素材リスト key=素材ID、value=必要数
+         * @returns レシピの入力素材リスト
          */
         recipeInput(state) {
-            return (recipeName: string): any => {
+            return (recipeName: string): RecipeMaterialList => {
                 const recipe = this.recipe(recipeName);
-                if (recipe === undefined) return {};
+                if (recipe === undefined) return [];
                 return recipe.input;
             };
         },
         /**
          * レシピの出力素材リスト取得
          * @param [in] recipeName レシピ名
-         * @returns レシピの出力素材リスト key=素材ID、value=必要数
+         * @returns レシピの出力素材リスト
          */
         recipeOutput(state) {
-            return (recipeName: string): any => {
+            return (recipeName: string): RecipeMaterialList => {
                 const recipe = this.recipe(recipeName);
-                if (recipe === undefined) return {};
+                if (recipe === undefined) return [];
                 return recipe.output;
             };
         },
@@ -242,7 +304,7 @@ export const useConfigStore = defineStore('config', {
         recipeNamesHasOutputMaterialId(state) {
             return (materialId: string): Array<string> => {
                 return state.config.recipes.filter((recipe: ConfigRecipe) => {
-                    return Object.keys(recipe.output).indexOf(materialId) != -1;
+                    return recipe.output.find((v) => v && v.id == materialId) !== undefined;
                 }).map((recipe: ConfigRecipe) => recipe.name);
             };
         },
@@ -274,12 +336,12 @@ export const useConfigStore = defineStore('config', {
                 });
                 // 1. 副産物の無い単体生産レシピがあれば優先
                 const sigleProductRecipeList = nonAlternativeRecipeList.filter((recipeName) => {
-                    return Object.keys(this.recipeOutput(recipeName)).length == 1;
+                    return this.recipeOutput(recipeName).filter((v) => v).length == 1;
                 });
                 if (sigleProductRecipeList.length > 0) return sigleProductRecipeList[0];
                 // 2. 生産対象に指定素材があればそれを選択
                 const byproductRecipeList = nonAlternativeRecipeList.filter((recipeName) => {
-                    return Object.keys(this.recipeOutput(recipeName)).includes(materialId);
+                    return this.recipeOutput(recipeName).find((v) => v && v.id == materialId);
                 });
                 if (byproductRecipeList.length > 0) return byproductRecipeList[0];
                 return '';
@@ -296,26 +358,34 @@ export const useConfigStore = defineStore('config', {
                 const recipe: ConfigRecipe|undefined = this.recipe(recipeId);
                 if (!recipe) return 0; // レシピ無し
                 // １回あたりの生産数
-                const single = recipe.output[materialId];
+                const single = recipe.output.find((v) => v.id == materialId);
                 if (!single) return 0; // 指定素材がレシピに無し
                 // 分間の生産レート
                 const ratePerMinute = 60 / recipe.productTime;
-                return single * ratePerMinute;
+                return single.number * ratePerMinute;
             };
+        },
+        /**
+         * 入力素材を持つレシピリスト取得
+         * @return レシピリスト
+         */
+        recipesWithInput(state): Array<ConfigRecipe> {
+            return state.config.recipes.filter((recipe: ConfigRecipe) => {
+                return recipe.input.some((v) => v);
+            });
         },
         /**
          * 入力素材のあるレシピを持つ素材IDリストを取得
          * @return 素材IDリスト
          */
         productMaterialIds(state): Array<string> {
-            return Object.keys(state.config.materials).filter((materialId: string) => {
-                // 入力素材のあるレシピを持つか調査
-                return state.config.recipes.find((recipe: ConfigRecipe) => {
-                    const inputIds = Object.keys(recipe.input);
-                    const outputIds = Object.keys(recipe.output);
-                    return outputIds.includes(materialId) && inputIds.length > 0;
+            // 入力素材のあるレシピを取得
+            const recipesWithInput = this.recipesWithInput;
+            return state.config.materials.filter((material: ConfigMaterial) => {
+                return recipesWithInput.some((recipe: ConfigRecipe) => {
+                    return recipe.output.some((v) => v && v.id == material.id);
                 });
-            });
+            }).map((v) => v.id);
         },
     },
     actions: {
