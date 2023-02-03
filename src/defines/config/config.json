@@ -1,4 +1,5 @@
 {
+    "Format": "1.0",
     "Version": "Update 5",
     "MachineCategories": [
         {
@@ -22,7 +23,7 @@
             "Name": "運搬ライン"
         },
         {
-            "Id": "Stracture",
+            "Id": "Structure",
             "Name": "建設"
         },
         {
@@ -358,7 +359,7 @@
             "Name": "バイオマス・バーナー(HUB)",
             "Category": "ElectricPower",
             "InputNumber": {
-                "Conveyor": 0,
+                "Conveyor": 1,
                 "Pipe": 0
             },
             "OutputNumber": {
@@ -373,7 +374,7 @@
             "Name": "バイオマス・バーナー",
             "Category": "ElectricPower",
             "InputNumber": {
-                "Conveyor": 0,
+                "Conveyor": 1,
                 "Pipe": 0
             },
             "OutputNumber": {
@@ -404,11 +405,11 @@
             "Category": "ElectricPower",
             "InputNumber": {
                 "Conveyor": 0,
-                "Pipe": 0
+                "Pipe": 1
             },
             "OutputNumber": {
                 "Conveyor": 0,
-                "Pipe": 1
+                "Pipe": 0
             },
             "Power": 150,
             "Tier": 6
@@ -703,73 +704,73 @@
         {
             "Id": "IronOre",
             "Name": "鉄鉱石",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Resources"
         },
         {
             "Id": "CopperOre",
             "Name": "銅鉱石",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Resources"
         },
         {
             "Id": "Limestone",
             "Name": "石灰岩",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Resources"
         },
         {
             "Id": "Coal",
             "Name": "石炭",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Resources"
         },
         {
             "Id": "CateriumOre",
             "Name": "カテリウム鉱石",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Resources"
         },
         {
             "Id": "RawQuartz",
             "Name": "未加工石英",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Resources"
         },
         {
             "Id": "Sulfur",
             "Name": "硫黄",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Resources"
         },
         {
             "Id": "Bauxite",
             "Name": "ボーキサイト",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Resources"
         },
         {
             "Id": "Uranium",
             "Name": "ウラン",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Resources"
         },
         {
             "Id": "SAMOre",
             "Name": "S.A.M.鉱石",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Resources"
         },
         {
             "Id": "CrudeOil",
             "Name": "原油",
-            "State": "Pipe",
+            "State": "Fluid",
             "Category": "Resources"
         },
         {
             "Id": "Water",
             "Name": "水",
-            "State": "Pipe",
+            "State": "Fluid",
             "Category": "Resources"
         },
         {
@@ -781,631 +782,631 @@
         {
             "Id": "Leaves",
             "Name": "葉",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Plants"
         },
         {
             "Id": "Wood",
             "Name": "木",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Plants"
         },
         {
             "Id": "FlowerPetals",
             "Name": "花弁",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Plants"
         },
         {
             "Id": "Mycelia",
             "Name": "菌糸",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Plants"
         },
         {
             "Id": "HogRemains",
             "Name": "異星生物甲殻",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Plants"
         },
         {
             "Id": "PlasmaSpitterRemains",
             "Name": "異星生物器官",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Plants"
         },
         {
             "Id": "GreenPowerSlug",
             "Name": "青のパワー・スラッグ",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Plants"
         },
         {
             "Id": "YellowPowerSlug",
             "Name": "黄のパワー・スラッグ",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Plants"
         },
         {
             "Id": "PurplePowerSlug",
             "Name": "紫のパワー・スラッグ",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Plants"
         },
         {
             "Id": "IronIngot",
             "Name": "鉄のインゴット",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Ingot"
         },
         {
             "Id": "CopperIngot",
             "Name": "銅のインゴット",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Ingot"
         },
         {
             "Id": "SteelIngot",
             "Name": "鋼鉄のインゴット",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Ingot"
         },
         {
             "Id": "CateriumIngot",
             "Name": "カテリウムのインゴット",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Ingot"
         },
         {
             "Id": "AluminumIngot",
             "Name": "アルミのインゴット",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Ingot"
         },
         {
             "Id": "IronPlate",
             "Name": "鉄板",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "StandardParts"
         },
         {
             "Id": "IronRod",
             "Name": "鉄のロッド",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "StandardParts"
         },
         {
             "Id": "Screw",
             "Name": "ネジ",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "StandardParts"
         },
         {
             "Id": "ReinforcedIronPlate",
             "Name": "強化鉄板",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "StandardParts"
         },
         {
             "Id": "ModularFrame",
             "Name": "モジュラー・フレーム",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "StandardParts"
         },
         {
             "Id": "SteelBeam",
             "Name": "鋼梁",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "StandardParts"
         },
         {
             "Id": "SteelPipe",
             "Name": "鋼鉄のパイプ",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "StandardParts"
         },
         {
             "Id": "EncasedIndustrialBeam",
             "Name": "コンクリート被覆型鋼梁",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "StandardParts"
         },
         {
             "Id": "HeavyModularFrame",
             "Name": "ヘビー・モジュラー・フレーム",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "StandardParts"
         },
         {
             "Id": "AlcladAluminumSheet",
             "Name": "アルクラッド・アルミシート",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "StandardParts"
         },
         {
             "Id": "CopperSheet",
             "Name": "銅のシート",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "StandardParts"
         },
         {
             "Id": "Wire",
             "Name": "ワイヤー",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Electronics"
         },
         {
             "Id": "Cable",
             "Name": "ケーブル",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Electronics"
         },
         {
             "Id": "Quickwire",
             "Name": "クイックワイヤー",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Electronics"
         },
         {
             "Id": "CircuitBoard",
             "Name": "回路基板",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Electronics"
         },
         {
             "Id": "AILimiter",
             "Name": "A.I.リミッター",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Electronics"
         },
         {
             "Id": "HighSpeedConnector",
             "Name": "高速コネクター",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Electronics"
         },
         {
             "Id": "Battery",
             "Name": "バッテリー",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "IndustrialParts"
         },
         {
             "Id": "Biomass",
             "Name": "バイオマス",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Biomass"
         },
         {
             "Id": "SolidBiofuel",
             "Name": "固体バイオ燃料",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Biomass"
         },
         {
             "Id": "Fabric",
             "Name": "布地",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Biomass"
         },
         {
             "Id": "Concrete",
             "Name": "コンクリート",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Minerals"
         },
         {
             "Id": "QuartzCrystal",
             "Name": "石英結晶",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Minerals"
         },
         {
             "Id": "Silica",
             "Name": "シリカ",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Minerals"
         },
         {
             "Id": "CompactedCoal",
             "Name": "圧縮石炭",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Minerals"
         },
         {
             "Id": "CopperPowder",
             "Name": "銅粉",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Minerals"
         },
         {
             "Id": "Rotor",
             "Name": "ローター",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "IndustrialParts"
         },
         {
             "Id": "Stator",
             "Name": "固定子",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "IndustrialParts"
         },
         {
             "Id": "Motor",
             "Name": "モーター",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "IndustrialParts"
         },
         {
             "Id": "HeatSink",
             "Name": "ヒートシンク",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "IndustrialParts"
         },
         {
             "Id": "TurboMotor",
             "Name": "ターボ・モーター",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "IndustrialParts"
         },
         {
             "Id": "AluminumCasing",
             "Name": "アルミ筐体",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "StandardParts"
         },
         {
             "Id": "CoolingSystem",
             "Name": "冷却システム",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "IndustrialParts"
         },
         {
             "Id": "FusedModularFrame",
             "Name": "溶融モジュラー・フレーム",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "IndustrialParts"
         },
         {
             "Id": "PressureConversionCube",
             "Name": "圧力変換キューブ",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Containers"
         },
         {
             "Id": "PowerShard",
             "Name": "パワー・シャード",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "PowerShard"
         },
         {
             "Id": "BlackPowder",
             "Name": "黒色火薬",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Consumed"
         },
         {
             "Id": "IronRebar",
             "Name": "有刺鉄筋",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Consumed"
         },
         {
             "Id": "RifleAmmo",
             "Name": "ライフル弾薬",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Consumed"
         },
         {
             "Id": "ColorCartridge",
             "Name": "カラー弾薬",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Consumed"
         },
         {
             "Id": "GasFilter",
             "Name": "ガスフィルター",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Consumed"
         },
         {
             "Id": "IodineInfusedFilter",
             "Name": "ヨウ素注入フィルター",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Consumed"
         },
         {
             "Id": "Nobelisk",
             "Name": "ノーベリスク",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Consumed"
         },
         {
             "Id": "Plastic",
             "Name": "プラスチック",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "OilProducts"
         },
         {
             "Id": "Rubber",
             "Name": "ゴム",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "OilProducts"
         },
         {
             "Id": "PetroleumCoke",
             "Name": "石油コークス",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "OilProducts"
         },
         {
             "Id": "PolymerResin",
             "Name": "合成樹脂",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "OilProducts"
         },
         {
             "Id": "Fuel",
             "Name": "燃料",
-            "State": "Pipe",
+            "State": "Fluid",
             "Category": "Fuel"
         },
         {
             "Id": "Turbofuel",
             "Name": "ターボ燃料",
-            "State": "Pipe",
+            "State": "Fluid",
             "Category": "Fuel"
         },
         {
             "Id": "LiquidBiofuel",
             "Name": "液体バイオ燃料",
-            "State": "Pipe",
+            "State": "Fluid",
             "Category": "Fuel"
         },
         {
             "Id": "PackagedFuel",
             "Name": "容器入り燃料",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Packaging"
         },
         {
             "Id": "PackagedTurbofuel",
             "Name": "容器入りターボ燃料",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Fuel"
         },
         {
             "Id": "PackagedLiquidBiofuel",
             "Name": "容器入り液体バイオ燃料",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Packaging"
         },
         {
             "Id": "PackagedHeavyOilResidue",
             "Name": "容器入り廃重油",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Packaging"
         },
         {
             "Id": "PackagedOil",
             "Name": "容器入り原油",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Packaging"
         },
         {
             "Id": "PackagedWater",
             "Name": "容器入り水",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Packaging"
         },
         {
             "Id": "PackagedAluminaSolution",
             "Name": "容器入りアルミナ溶液",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Packaging"
         },
         {
             "Id": "PackagedNitrogenGas",
             "Name": "容器入り窒素ガス",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Packaging"
         },
         {
             "Id": "PackagedSulfuricAcid",
             "Name": "容器入り硫酸",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Packaging"
         },
         {
             "Id": "PackagedNitricAcid",
             "Name": "容器入り硝酸",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Packaging"
         },
         {
             "Id": "AluminumScrap",
             "Name": "アルミのスクラップ",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "AdvancedRefinement"
         },
         {
             "Id": "AluminaSolution",
             "Name": "アルミナ溶液",
-            "State": "Pipe",
+            "State": "Fluid",
             "Category": "AdvancedRefinement"
         },
         {
             "Id": "SulfuricAcid",
             "Name": "硫酸",
-            "State": "Pipe",
+            "State": "Fluid",
             "Category": "AdvancedRefinement"
         },
         {
             "Id": "NitricAcid",
             "Name": "硝酸",
-            "State": "Pipe",
+            "State": "Fluid",
             "Category": "AdvancedRefinement"
         },
         {
             "Id": "EmptyCanister",
             "Name": "空の容器",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Containers"
         },
         {
             "Id": "EmptyFluidTank",
             "Name": "空の液体タンク",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Containers"
         },
         {
             "Id": "HeavyOilResidue",
             "Name": "廃重油",
-            "State": "Pipe",
+            "State": "Fluid",
             "Category": "OilProducts"
         },
         {
             "Id": "SmartPlating",
             "Name": "スマート･プレート",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "SpaceElevator"
         },
         {
             "Id": "VersatileFramework",
             "Name": "多目的フレームワーク",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "SpaceElevator"
         },
         {
             "Id": "AutomatedWiring",
             "Name": "自動ワイヤー",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "SpaceElevator"
         },
         {
             "Id": "ModularEngine",
             "Name": "モジュラーエンジン",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "SpaceElevator"
         },
         {
             "Id": "AdaptiveControlUnit",
             "Name": "自律制御ユニット",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "SpaceElevator"
         },
         {
             "Id": "AssemblyDirectorSystem",
             "Name": "組立指揮システム",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "SpaceElevator"
         },
         {
             "Id": "MagneticFieldGenerator",
             "Name": "磁界発生装置",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "SpaceElevator"
         },
         {
             "Id": "ThermalPropulsionRocket",
             "Name": "熱推進型ロケット",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "SpaceElevator"
         },
         {
             "Id": "NuclearPasta",
             "Name": "核パスタ",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "SpaceElevator"
         },
         {
             "Id": "Beacon",
             "Name": "ビーコン",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Equipments"
         },
         {
             "Id": "PortableMiner",
             "Name": "携帯式採鉱機",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Equipments"
         },
         {
             "Id": "CrystalOscillator",
             "Name": "水晶発振器",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Communications"
         },
         {
             "Id": "Computer",
             "Name": "コンピューター",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Communications"
         },
         {
             "Id": "Supercomputer",
             "Name": "スーパーコンピューター",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Communications"
         },
         {
             "Id": "RadioControlUnit",
             "Name": "無線制御ユニット",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Communications"
         },
         {
             "Id": "ElectromagneticControlRod",
             "Name": "電磁制御棒",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Nuclear"
         },
         {
             "Id": "EncasedUraniumCell",
             "Name": "被覆型ウラン･セル",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Nuclear"
         },
         {
             "Id": "UraniumFuelRod",
             "Name": "ウラン燃料棒",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Nuclear"
         },
         {
             "Id": "UraniumWaste",
             "Name": "ウラン廃棄物",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Nuclear"
         },
         {
             "Id": "NonfissileUranium",
             "Name": "非分裂性ウラン",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Nuclear"
         },
         {
             "Id": "PlutoniumPellet",
             "Name": "プルトニウム・ペレット",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Nuclear"
         },
         {
             "Id": "EncasedPlutoniumCell",
             "Name": "被覆型プルトニウム・セル",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Nuclear"
         },
         {
             "Id": "PlutoniumFuelRod",
             "Name": "プルトニウム燃料棒",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Nuclear"
         },
         {
             "Id": "PlutoniumWaste",
             "Name": "プルトニウム廃棄物",
-            "State": "Conveyor",
+            "State": "Solid",
             "Category": "Nuclear"
         }
     ],
@@ -2990,7 +2991,7 @@
             "Name": "バイオマス(異星生物甲殻)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "HogRemains",
                     "Number": 1
                 }
             ],
@@ -3007,7 +3008,7 @@
             "Name": "バイオマス(異星生物器官)",
             "Input": [
                 {
-                    "Id": "AlienOrgans",
+                    "Id": "PlasmaSpitterRemains",
                     "Number": 1
                 }
             ],
@@ -6107,7 +6108,7 @@
             "Name": "バイオマス・バーナー(HUB) (異星生物甲殻)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "HogRemains",
                     "Number": 1
                 }
             ],
@@ -6119,7 +6120,7 @@
             "Name": "バイオマス・バーナー(HUB) (異星生物器官)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "PlasmaSpitterRemains",
                     "Number": 1
                 }
             ],
@@ -6131,7 +6132,7 @@
             "Name": "バイオマス・バーナー(HUB) (木)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "Wood",
                     "Number": 1
                 }
             ],
@@ -6143,7 +6144,7 @@
             "Name": "バイオマス・バーナー(HUB) (菌糸)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "Mycelia",
                     "Number": 1
                 }
             ],
@@ -6155,7 +6156,7 @@
             "Name": "バイオマス・バーナー(HUB) (草)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "Leaves",
                     "Number": 1
                 }
             ],
@@ -6167,7 +6168,7 @@
             "Name": "バイオマス・バーナー(HUB) (バイオマス)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "Biomass",
                     "Number": 1
                 }
             ],
@@ -6176,10 +6177,10 @@
             "Machine": "BiomassBurnerHUB"
         },
         {
-            "Name": "バイオマス・バーナー(HUB) (固形バイオ燃料)",
+            "Name": "バイオマス・バーナー(HUB) (固体バイオ燃料)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "SolidBiofuel",
                     "Number": 1
                 }
             ],
@@ -6191,7 +6192,7 @@
             "Name": "バイオマス・バーナー(HUB) (容器入り液体バイオ燃料)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "PackagedLiquidBiofuel",
                     "Number": 1
                 }
             ],
@@ -6203,7 +6204,7 @@
             "Name": "バイオマス・バーナー (異星生物甲殻)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "HogRemains",
                     "Number": 1
                 }
             ],
@@ -6215,7 +6216,7 @@
             "Name": "バイオマス・バーナー (異星生物器官)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "PlasmaSpitterRemains",
                     "Number": 1
                 }
             ],
@@ -6227,7 +6228,7 @@
             "Name": "バイオマス・バーナー (木)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "Wood",
                     "Number": 1
                 }
             ],
@@ -6239,7 +6240,7 @@
             "Name": "バイオマス・バーナー (菌糸)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "Mycelia",
                     "Number": 1
                 }
             ],
@@ -6248,10 +6249,10 @@
             "Machine": "BiomassBurner"
         },
         {
-            "Name": "バイオマス・バーナー (草)",
+            "Name": "バイオマス・バーナー (葉)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "Leaves",
                     "Number": 1
                 }
             ],
@@ -6263,7 +6264,7 @@
             "Name": "バイオマス・バーナー (バイオマス)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "Biomass",
                     "Number": 1
                 }
             ],
@@ -6272,10 +6273,10 @@
             "Machine": "BiomassBurner"
         },
         {
-            "Name": "バイオマス・バーナー (固形バイオ燃料)",
+            "Name": "バイオマス・バーナー (固体バイオ燃料)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "SolidBiofuel",
                     "Number": 1
                 }
             ],
@@ -6287,7 +6288,7 @@
             "Name": "バイオマス・バーナー (容器入り液体バイオ燃料)",
             "Input": [
                 {
-                    "Id": "AlienCarapace",
+                    "Id": "PackagedLiquidBiofuel",
                     "Number": 1
                 }
             ],
@@ -6301,6 +6302,10 @@
                 {
                     "Id": "Coal",
                     "Number": 1
+                },
+                {
+                    "Id": "Water",
+                    "Number": 3
                 }
             ],
             "Output": [],
@@ -6313,6 +6318,10 @@
                 {
                     "Id": "CompactedCoal",
                     "Number": 1
+                },
+                {
+                    "Id": "Water",
+                    "Number": 6.3
                 }
             ],
             "Output": [],
@@ -6325,6 +6334,10 @@
                 {
                     "Id": "PetroleumCoke",
                     "Number": 1
+                },
+                {
+                    "Id": "Water",
+                    "Number": 1.8
                 }
             ],
             "Output": [],
@@ -6347,7 +6360,7 @@
             "Name": "燃料式発電機 (ターボ燃料)",
             "Input": [
                 {
-                    "Id": "Fuel",
+                    "Id": "Turbofuel",
                     "Number": 1
                 }
             ],
@@ -6359,7 +6372,7 @@
             "Name": "燃料式発電機 (液体バイオ燃料)",
             "Input": [
                 {
-                    "Id": "Fuel",
+                    "Id": "LiquidBiofuel",
                     "Number": 1
                 }
             ],

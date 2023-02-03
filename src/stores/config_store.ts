@@ -2,25 +2,43 @@ import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import {
     Config,
+    ConfigCategory,
     MachinePortType,
     MaterialState,
     RecipeMaterialList,
+    ConfigRecipeMaterial,
+    ConfigMachine,
     ConfigMaterial,
     ConfigRecipe,
-    RecipeList
+    ConfigRecipeList
 } from '@/defines/types/config';
-
+import Logger from '@/logics/logger'
+import logger from '@/logics/logger';
 
 export const useConfigStore = defineStore('config', {
     state: () => {
         return {
-            config: new Config()
+            /** 設定本体 */
+            config: new Config(),
+            /** ユニークキー */
+            uniqueKey: 0,
+            /** 更新中フラグ */
+            updating: false,
+            /**
+             * 非同期実行中の処理数
+             * - Promise に実行中の処理追加はできないので作成
+             */
+            processingNumber: 0,
         };
     },
     getters: {
         /** 設定をそのまま取得 */
         rowConfig(state): Config {
             return state.config;
+        },
+        /** 更新中フラグ */
+        isUpdating(state): boolean {
+            return state.updating;
         },
         /** 設定のバージョンを取得 */
         version(state): string {
@@ -43,6 +61,13 @@ export const useConfigStore = defineStore('config', {
         machineCategoryNames(state): string[] {
             return state.config.machineCategories.map((category) => category.name);
         },
+        /** 設備のカテゴリ名を取得 */
+        machineCategoryName(state) {
+            return (categoryId: string): string => {
+                const machineCategory = state.config.machineCategories.find((v) => v.id == categoryId);
+                return (machineCategory) ? machineCategory.name : '';
+            };
+        },
         /** 素材のカテゴリIDリストを取得 */
         materialCategoryIds(state): string[] {
             return state.config.materialCategories.map((category) => category.id);
@@ -57,7 +82,7 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * 素材のカテゴリ名を取得
-         * @param [in] categoryId カテゴリID
+         * @param categoryId [in] カテゴリID
          */
         materialCategoryName(state) {
             return (categoryId: string): string => {
@@ -75,7 +100,7 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * 指定設備で使用できるレシピ名リストを取得
-         * @param [in] machineId 設備ID
+         * @param machineId [in] 設備ID
          * @returns レシピ名リスト
          */
         recipeNameForMachine(state) {
@@ -87,7 +112,7 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * 指定設備カテゴリで使用できるレシピ名リストを取得
-         * @param [in] categoryId 設備カテゴリID
+         * @param categoryId [in] 設備カテゴリID
          * @returns レシピ名リスト
          */
         recipeNameListForMachineCategory(state) {
@@ -104,7 +129,7 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * 設備名取得
-         * @param [in] id 設備ID
+         * @param id [in] 設備ID
          * @returns 設備名
          */
         machineName(state) {
@@ -115,9 +140,9 @@ export const useConfigStore = defineStore('config', {
             };
         },
         /**
-         * 設備の入力口数取得
-         * @param [in] id 設備ID
-         * @returns 設備の入力口数
+         * 設備の入力ポート数取得
+         * @param id [in] 設備ID
+         * @returns 設備の入力ポート数
          */
         machineInputPortNumber(state) {
             return (id: string): number =>  {
@@ -127,9 +152,22 @@ export const useConfigStore = defineStore('config', {
             };
         },
         /**
-         * 設備の出力口数取得
-         * @param [in] id 設備ID
-         * @returns 設備の出力口数
+         * 設備の入力ポート数（タイプ指定）取得
+         * @param id [in] 設備ID
+         * @param type [in] 入力ポートタイプ（MachinePortType で指定）
+         * @return 入力ポート数
+         */
+        machineInputPortNumberWithType(state) {
+            return (id: string, type: string): number =>  {
+                const machine = state.config.machines.find((machine) => machine.id == id)
+                if (machine === undefined) return 0;
+                return machine.inputNumber.getWithType(type);
+            };
+        },
+        /**
+         * 設備の出力ポート数取得
+         * @param id [in] 設備ID
+         * @returns 設備の出力ポート数
          */
         machineOutputPortNumber(state) {
             return (id: string): number =>  {
@@ -139,9 +177,22 @@ export const useConfigStore = defineStore('config', {
             };
         },
         /**
-         * 設備の入力口のタイプ取得
-         * @param [in] id 設備ID
-         * @returns 設備の入力口のタイプ（例：'Conveyor'）
+         * 設備の出力ポート数（タイプ指定）取得
+         * @param id [in] 設備ID
+         * @param type [in] 出力ポートタイプ（MachinePortType で指定）
+         * @return 出力ポート数
+         */
+        machineOutputPortNumberWithType(state) {
+            return (id: string, type: string): number =>  {
+                const machine = state.config.machines.find((machine) => machine.id == id)
+                if (machine === undefined) return 0;
+                return machine.outputNumber.getWithType(type);
+            };
+        },
+        /**
+         * 設備の入力ポートのタイプ取得
+         * @param id [in] 設備ID
+         * @returns 設備の入力ポートのタイプ（例：'Conveyor'）
          */
         machineInputPortType(state) {
             return (id: string, index: number): string =>  {
@@ -149,15 +200,15 @@ export const useConfigStore = defineStore('config', {
                 if (machine === undefined) return '';
                 const conveyorNumber = machine.inputNumber.conveyor;
                 const pipeNumber = machine.inputNumber.pipe;
-                if (index <= conveyorNumber) return MachinePortType.Conveyor;
-                if (index <= conveyorNumber + pipeNumber) return MachinePortType.Pipe;
+                if (index < conveyorNumber) return MachinePortType.Conveyor;
+                if (index < conveyorNumber + pipeNumber) return MachinePortType.Pipe;
                 return '';
             };
         },
         /**
-         * 設備の出力口のタイプ取得
-         * @param [in] id 設備ID
-         * @returns 設備の入力口のタイプ（例：'Conveyor'）
+         * 設備の出力ポートのタイプ取得
+         * @param id [in] 設備ID
+         * @returns 設備の入力ポートのタイプ（例：'Conveyor'）
          */
         machineOutputPortType(state) {
             return (id: string, index: number): string =>  {
@@ -165,14 +216,14 @@ export const useConfigStore = defineStore('config', {
                 if (machine === undefined) return '';
                 const conveyorNumber = machine.outputNumber.conveyor;
                 const pipeNumber = machine.outputNumber.pipe;
-                if (index <= conveyorNumber) return MachinePortType.Conveyor;
-                if (index <= conveyorNumber + pipeNumber) return MachinePortType.Pipe;
+                if (index < conveyorNumber) return MachinePortType.Conveyor;
+                if (index < conveyorNumber + pipeNumber) return MachinePortType.Pipe;
                 return '';
             };
         },
         /**
          * 素材名取得
-         * @param [in] id 素材ID
+         * @param id [in] 素材ID
          * @returns 素材名
          */
         materialName(state) {
@@ -183,7 +234,7 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * 素材の状態を取得
-         * @param [in] id 素材ID
+         * @param id [in] 素材ID
          * @returns Solid | Fluid | Gas 無ければ 空文字列
          */
         materialState(state) {
@@ -194,7 +245,7 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * 固体素材か
-         * @param [in] id 素材ID
+         * @param id [in] 素材ID
          * @returns true: 固体素材、false それ以外または素材IDが無い
          */
         isSolidMaterial(state) {
@@ -205,7 +256,7 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * 液体素材か
-         * @param [in] id 素材ID
+         * @param id [in] 素材ID
          * @returns true: 液体素材、false それ以外または素材IDが無い
          */
         isFluidMaterial(state) {
@@ -216,7 +267,7 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * 気体素材か
-         * @param [in] id 素材ID
+         * @param id [in] 素材ID
          * @returns true: 気体素材、false それ以外または素材IDが無い
          */
         isGasMaterial(state) {
@@ -227,7 +278,7 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * 素材の単位を取得
-         * @param [in] id 素材ID
+         * @param id [in] 素材ID
          * @returns 素材の単位（'個' | '㎥'）、素材IDが無ければ空文字列
          */
         materialUnit(state) {
@@ -250,7 +301,7 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * レシピを使用可能な設備IDを取得
-         * @param [in] recipeName レシピ名
+         * @param recipeName [in] レシピ名
          * @returns レシピを使用可能な設備ID
          */
         machineIdForRecipe(state) {
@@ -262,7 +313,7 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * レシピの入力素材リスト取得
-         * @param [in] recipeName レシピ名
+         * @param recipeName [in] レシピ名
          * @returns レシピの入力素材リスト
          */
         recipeInput(state) {
@@ -274,7 +325,7 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * レシピの出力素材リスト取得
-         * @param [in] recipeName レシピ名
+         * @param recipeName [in] レシピ名
          * @returns レシピの出力素材リスト
          */
         recipeOutput(state) {
@@ -286,7 +337,7 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * レシピの制作時間取得
-         * @param [in] recipeName レシピ名
+         * @param recipeName [in] レシピ名
          * @returns レシピの制作時間
          */
         productTime(state) {
@@ -298,7 +349,7 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * 出力に指定の素材IDを持つレシピ名を取得
-         * @param [in] materialId 素材ID
+         * @param materialId [in] 素材ID
          * @returns レシピ名リスト
          */
         recipeNamesHasOutputMaterialId(state) {
@@ -310,7 +361,7 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * デフォルトのレシピ名を取得
-         * @param [in] materialId 素材ID
+         * @param materialId [in] 素材ID
          * @returns レシピ名（見つからなければ空文字列）
          * @note デフォルトレシピ判定方法
          *       1. 素材名と同名レシピがあれば最優先、
@@ -322,7 +373,7 @@ export const useConfigStore = defineStore('config', {
             return (materialId:string): string => {
                 // レシピ名が素材名と同じものを探す
                 const materialName = this.materialName(materialId);
-                const foundRecipes:RecipeList = state.config.recipes.filter((recipe: ConfigRecipe) => {
+                const foundRecipes:ConfigRecipeList = state.config.recipes.filter((recipe: ConfigRecipe) => {
                     return recipe.name === materialName
                 });
                 if (foundRecipes.length) return foundRecipes[0].name;
@@ -349,8 +400,8 @@ export const useConfigStore = defineStore('config', {
         },
         /**
          * レシピのデフォルトの生産数を取得
-         * @param [in] recipeId レシピID
-         * @param [in] materialId 素材ID
+         * @param recipeId [in] レシピID
+         * @param materialId [in] 素材ID
          * @return 指定素材の生産数（/分）
          */
         defaultProductNumber(state) {
@@ -389,8 +440,319 @@ export const useConfigStore = defineStore('config', {
         },
     },
     actions: {
+        /** 更新開始 */
+        beginUpdate() {
+            // １つ目のプロセス開始時は更新中フラグを立てる
+            if (this.processingNumber == 0) this.updating = true;
+            // 実行中のプロセスに１つ追加
+            this.processingNumber++;
+        },
+        /** 更新終了 */
+        endUpdate() {
+            if (this.processingNumber == 0) {
+                // 更新開始と終了の数が合わないイレギュラー
+                Logger.error('更新開始より終了の数が多い.', 'ConfigStore.endUpdate');
+                return;
+            }
+            // 実行中のプロセスの１つ完了
+            this.processingNumber--;
+            // 最後のプロセスなら更新中フラグを落とす
+            if (this.processingNumber == 0) this.updating = false;
+        },
+        /** 全設定処理 */
         setup(data: any) {
-            this.rowConfig.deserialize(data);
-        }
+            this.beginUpdate();
+            // 設定ファイルを元に設定構築
+            this.config.deserialize(data);
+            // レシピの入出力素材は、素材の状態（固体、液体、気体）でソートしておく
+            const order = Object.keys(MaterialState);
+            const wrap = (material: ConfigRecipeMaterial) => {
+                const state = this.materialState(material.id);
+                const value = order.indexOf(state);
+                return { material: material, value: (value != -1) ? value: 0};
+            };
+            const unwrap = (v: any) => v.material;
+            const compare = (a: any,b: any) => {
+                if (a.value > b.value) return 1;
+                if (a.value < b.value) return -1;
+                return 0;
+            };
+            this.config.recipes.forEach((recipe: ConfigRecipe, index: number, array: ConfigRecipeList) => {
+                if (recipe.input.length > 1) { // 2つ以上ある場合は順番をソート
+                    array[index].input = recipe.input.map(wrap).sort(compare).map(unwrap);
+                }
+                if (recipe.output.length > 1) { // 2つ以上ある場合は順番をソート
+                    array[index].output = recipe.output.map(wrap).sort(compare).map(unwrap);
+                }
+            });
+            this.uniqueKey = this.config.setUniqueKey(this.uniqueKey);
+            this.endUpdate();
+        },
+
+        // 以降設定エディタ用関数 ----------------------------------
+        
+        /**
+         * 設定値更新を非同期で処理
+         * @param func [in] 非同期で処理する関数（引数：reject）
+         * @param onError [in] 処理に失敗した時に処理する関数（引数：data）
+         * @note Promise を使用する為、引数 reject, data の意味はそちらを参照。
+         * @note ここでは１つ処理をしたら終わりにしているので、resolve は func で使わない
+         */
+        process(func: Function, onError: Function|null = null) {
+            this.beginUpdate();
+            const promise = new Promise((resolve, reject) => {
+                resolve(func(reject));
+            }).finally(() => {
+                this.endUpdate();
+            });
+            if (onError) {
+                // 第2引数の指定があれば処理失敗時に呼び出す
+                promise.catch((data) => onError(data));
+            }
+            else {
+                // 指定が無ければデフォルトの処理を設定
+                promise.catch((data) => {
+                    Logger.error('設定変更に失敗');
+                    Logger.error(data);
+                });
+            }
+        },
+
+        /**
+         * バージョン変更
+         * @param value [in] バージョン名
+         */
+        changeVersion(value: string) {
+            this.process(() => {
+                this.config.version = value;
+                Logger.log('Changed version.', 'changeVersion');
+            });
+        },
+
+        /** 設備カテゴリ追加 */ 
+        addMachineCategory() {
+            this.process(() => {
+                let item = new ConfigCategory()
+                item.uniqueKey = this.uniqueKey++;
+                this.config.machineCategories.push(item);
+                Logger.log('Added machine category.', 'addMachineCategory');
+            });
+        },
+        /** 設備カテゴリ更新 */
+        setMachineCategory(index: number, value: ConfigCategory) {
+            if (index < 0 || index >= this.config.machineCategories.length) return; // イレギュラー
+            this.process(() => {
+                const oldValue = this.config.machineCategories[index].clone();
+                this.config.machineCategories[index].assign(value);
+                Logger.log(`Changed machine category at.${index} id.${oldValue.id}`, 'setMachineCategory');
+                // 影響
+                const newValue = this.config.machineCategories[index];
+                this.effectMachineCategory(oldValue, newValue);
+            });
+        },
+        /** 設備カテゴリ削除 */
+        deleteMachineCategory(index: number) {
+            if (index < 0 || index >= this.config.machineCategories.length) return; // イレギュラー
+            this.process(() => {
+                const oldValue = this.config.machineCategories.splice(index, 1)[0];
+                Logger.log(`Deleted machine category at.${index} id.${oldValue.id}`, 'deleteMachineCategory');
+                // 影響
+                const newValue = new ConfigCategory();
+                this.effectMachineCategory(oldValue, newValue);
+            });
+        },
+        /**
+         * 設備カテゴリ変更による影響（内部用）
+         * @param oldValue [in] 変更前の値
+         * @param newValue [in] 変更後の値
+         */
+        effectMachineCategory(oldValue: ConfigCategory, newValue: ConfigCategory) {
+            // 素材への影響
+            this.config.machines.map((v, i) => ({i, v})).filter((machine) => {
+                return machine.v.category == oldValue.id;
+            }).forEach((machine) => {
+                machine.v.category = newValue.id;
+                Logger.log(`Effected to machine at.${machine.i} id.${machine.v.id}`);
+            });
+        },
+
+        /** 素材カテゴリ追加 */
+        addMaterialCategory() {
+            this.beginUpdate();
+            let item = new ConfigCategory()
+            item.uniqueKey = this.uniqueKey++;
+            this.config.materialCategories.push(item);
+            Logger.log('Added material category.', 'addMaterialCategory');
+            this.endUpdate();
+        },
+        /** 素材カテゴリ更新 */
+        setMaterialCategory(index: number, value: ConfigCategory) {
+            if (index < 0 || index >= this.config.materialCategories.length) return; // イレギュラー
+            this.process(() => {
+                const oldValue = this.config.materialCategories[index].clone();
+                this.config.materialCategories[index].assign(value);
+                Logger.log(`Changed material category at.${index} id.${oldValue.id}`, 'setMaterialCategory');
+                // 影響
+                const newValue = this.config.materialCategories[index];
+                this.effectMaterialCategory(oldValue, newValue);
+            });
+        },
+        /** 素材カテゴリ削除 */
+        deleteMaterialCategory(index: number) {
+            if (index < 0 || index >= this.config.materialCategories.length) return; // イレギュラー
+            this.process(() => {
+                const oldValue = this.config.materialCategories.splice(index, 1)[0];
+                Logger.log(`Deleted material category at.${index} id.${oldValue.id}`, 'deleteMaterialCategory');
+                // 影響
+                const newValue = new ConfigCategory();
+                this.effectMaterialCategory(oldValue, newValue);
+            });
+        },
+        /** 
+         * 素材カテゴリ変更による影響（内部用）
+         * @param oldValue [in] 変更前の値
+         * @param newValue [in] 変更後の値
+          */
+        effectMaterialCategory(oldValue: ConfigCategory, newValue: ConfigCategory) {
+            // 素材への影響
+            this.config.materials.map((v, i) => ({i, v})).filter((material) => {
+                return material.v.category == oldValue.id;
+            }).forEach((material) => {
+                material.v.category = newValue.id;
+                Logger.log(`Effected to material at.${material.i} id.${material.v.id}`);
+            });
+        },
+
+        /** 設備追加 */
+        addMachine() {
+            this.process(() => {
+                let item = new ConfigMachine()
+                item.uniqueKey = this.uniqueKey++;
+                this.config.machines.push(item);
+                Logger.log('Added machine.', 'addMachine');
+            });
+        },
+        /** 設備更新 */
+        setMachine(index: number, value: ConfigMachine) {
+            if (index < 0 || index >= this.config.machines.length) return;
+            this.process(() => {
+                const oldValue = this.config.machines[index].clone();
+                this.config.machines[index].assign(value);
+                Logger.log(`Changed machine at.${index} id.${oldValue.id}`, 'setMachine');
+                // 影響
+                const newValue = this.config.machines[index];
+                this.effectMachine(oldValue, newValue);
+            });
+        },
+        /** 設備削除 */
+        deleteMachine(index: number) {
+            if (index < 0 || index >= this.config.machines.length) return; // イレギュラー
+            this.process(() => {
+                const oldValue = this.config.machines.splice(index, 1)[0];
+                Logger.log(`Deleted machine at.${index} id.${oldValue.id}`, 'deleteMachine');
+                // 影響
+                const newValue = new ConfigMachine();
+                this.effectMachine(oldValue, newValue);
+            });
+        },
+        /**
+         * 設備変更による影響（内部用）
+         * @param oldValue [in] 変更前の値
+         * @param newValue [in] 変更後の値
+          */
+        effectMachine(oldValue: ConfigMachine, newValue: ConfigMachine) {
+            // レシピへの影響
+            this.config.recipes.map((v, i) => ({i, v})).filter((recipe) => {
+                return recipe.v.machineId == oldValue.id;
+            }).forEach((recipe) => {
+                recipe.v.machineId = newValue.id;
+                Logger.log(`Effected to recipe at.${recipe.i} name.${recipe.v.name}`);
+            });
+        },
+
+        /** 素材追加 */
+        addMaterial() {
+            this.process(() => {
+                let item = new ConfigMaterial();
+                item.uniqueKey = this.uniqueKey++;
+                this.config.materials.push(item);
+                Logger.log('Added material.', 'addMaterial');
+            });
+        },
+        /** 素材更新 */
+        setMaterial(index: number, value: ConfigMaterial) {
+            if (index < 0 || index >= this.config.materials.length) return;
+            this.process(() => {
+                const oldValue = this.config.materials[index].clone();
+                this.config.materials[index].assign(value);
+                Logger.log(`Changed material at.${index} id.${oldValue.id}`, 'setMaterial');
+                // 影響
+                const newValue = this.config.materials[index];
+                this.effectMaterial(oldValue, newValue);
+            });
+        },
+        /** 素材削除 */
+        deleteMaterial(index: number) {
+            if (index < 0 || index >= this.config.materials.length) return;
+            this.process(() => {
+                const oldValue = this.config.materials.splice(index, 1)[0];
+                Logger.log(`Deleted material at.${index} id.${oldValue.id}`, 'deleteMaterial');
+                // 影響
+                const newValue = new ConfigMaterial();
+                this.effectMaterial(oldValue, newValue);
+            });
+        },
+        /**
+         * 設備変更による影響（内部用）
+         * @param oldValue [in] 変更前の値
+         * @param newValue [in] 変更後の値
+          */
+        effectMaterial(oldValue: ConfigMaterial, newValue: ConfigMaterial) {
+            // レシピへの影響
+            this.config.recipes.map((v, i) => ({i, v})).filter((recipe) => {
+                return (recipe.v.input.some((v) => v.id == oldValue.id)
+                    ||  recipe.v.output.some((v) => v.id == oldValue.id));
+            }).forEach((recipe) => {
+                recipe.v.input.forEach((v) => {
+                    if (v.id == oldValue.id) {
+                        v.id = newValue.id;
+                        Logger.log(`Effected to input of recipe at.${recipe.i} name.${recipe.v.name}`);
+                    }
+                });
+                recipe.v.output.forEach((v) => {
+                    if (v.id == oldValue.id) {
+                        v.id = newValue.id;
+                        Logger.log(`Effected to output of recipe at.${recipe.i} name.${recipe.v.name}`);
+                    }
+                });
+            });
+        },
+
+        /** レシピ追加 */
+        addRecipe() {
+            this.process(() => {
+                let item = new ConfigRecipe()
+                item.uniqueKey = this.uniqueKey++;
+                this.config.recipes.push(item);
+                Logger.log('Added recipe.', 'addRecipe');
+            });
+        },
+        /** 素材更新 */
+        setRecipe(index: number, value: ConfigRecipe) {
+            this.process(() => {
+                if (index < 0 || index >= this.config.recipes.length) return;
+                const oldValue = this.config.recipes[index].clone();
+                this.config.recipes[index].assign(value);
+                Logger.log(`Changed recipe at.${index} name.${oldValue.name}`, 'setRecipe');
+            });
+        },
+        /** 素材削除 */
+        deleteRecipe(index: number) {
+            if (index < 0 || index >= this.config.recipes.length) return;
+            this.process(() => {
+                const oldValue = this.config.recipes.splice(index, 1)[0];
+                Logger.log(`Deleted recipe at.${index} name.${oldValue.name}`, 'deleteRecipe');
+            });
+        },
     }
 });

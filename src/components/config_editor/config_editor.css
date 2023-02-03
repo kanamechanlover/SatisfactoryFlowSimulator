@@ -1,5 +1,23 @@
 /* 設定エディタ上の共通書式 */
 
+* {
+    box-sizing: border-box;
+}
+
+p {
+    font-size: 0.8em;
+    line-height: 1.4em;
+    margin: 2px 2px 8px 2px;
+}
+
+/* p 要素内で協調したい部分に付与 */
+p .accent {
+    border-radius: 4px;
+    padding: 2px 4px;
+    background: var(--dark-main-color);
+    font-weight: bold;
+    font-size: 0.9em;
+}
 
 button {
     height: 24px;
@@ -15,7 +33,7 @@ input {
     border: 1px solid var(--dark-accent-color);
     border-radius: 4px;
     min-width: 32px;
-    width: calc(100% - 8px);
+    width: 100%;
 }
 button:hover {
     background: orange;
@@ -28,19 +46,19 @@ table {
     table-layout: fixed;
 }
 
-tr.adjustment {
-    height: 2px;
-    background: var(--dark-main-color)
-}
-
 th {
     font-size: 0.8em;
     line-height: 1em;
     padding: 0px 4px;
 }
-th.index {
-    background: var(--dark-main-color);
-    padding: 0px 4px;
+th.no {
+    width: 2em;
+}
+th.reference {
+    width: 4em;
+}
+th.delete {
+    width: 30px;
 }
 
 td {
@@ -49,10 +67,6 @@ td {
     line-height: 0.5em;
 }
 
-td.index {
-    min-width: 24px;
-    padding: 0px;
-}
 td.delete-box button {
     height: 8em;
 }
@@ -76,6 +90,19 @@ td select {
     background: var(--dark-main-color);
     border-radius: 4px;
 }
+select.with-bg-img {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-attachment: local;
+    padding-left: 20px;
+}
+select.with-bg-img option {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-attachment: local;
+}
 
 td img {
     width: 20px;
@@ -95,4 +122,18 @@ button.additional-button:hover {
 
 select {
     background: var(--dark-main-color)
+}
+
+div.section-frame {
+    flex: 1;
+}
+
+/* 非表示にしたい要素に適用 */
+.hide {
+    visibility: hidden;
+}
+
+/** エラー要素に適用 */
+.error {
+    background: red !important;
 }

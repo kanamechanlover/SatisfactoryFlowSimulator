@@ -2,8 +2,9 @@
     <section>
         <h1 @click="toggle">
             <span class="toggle" :class="{collapse: isCollapsed}">▼</span>
-            <span>{{ sectionName }}</span>
-            <span v-if="itemCount > 0">{{ ' (' + itemCount + ')' }}</span>
+            <span>{{ props.sectionName }}</span>
+            <span v-if="props.itemCount > 0">{{ ' (' + props.itemCount + ')' }}</span>
+            <span v-if="props.hasError" class="section-error">エラー有り</span>
         </h1>
         <div class="section-body" v-show="isOpened">
             <slot></slot>
@@ -11,12 +12,18 @@
     </section>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, Ref, computed } from 'vue'
+<script setup lang="ts">
+import { ref, computed } from 'vue'
 
+// 子コンポーネント ---------------------------------------------
+
+
+// 基本定義 -----------------------------------------------------
 
 /** プロパティを定義 */
-const Props = {
+
+/** プロパティを定義 */
+const props = defineProps({
     /** ヘッダ部に表示する文字列 */
     sectionName: {
         type: String,
@@ -27,42 +34,42 @@ const Props = {
     itemCount: {
         type: Number,
         default: -1,
-    }
-};
-
-export default defineComponent({
-    name: 'config-editor-section',
-    props: Props,
-    setup(props) {
-        const collapsed = ref(true);
-
-        // computed
-        const computes = {
-            /** 格納状態か */
-            isCollapsed: computed((): boolean => {
-                return collapsed.value;
-            }),
-            /** 展開状態か */
-            isOpened: computed((): boolean => {
-                return !collapsed.value;
-            }),
-        };
-
-        // methods
-        const methods = {
-            /** 展開・格納状況をトグル */
-            toggle: () => {
-                collapsed.value = !collapsed.value;
-            }
-        };
-
-        return {
-            ...props,
-            ...computes,
-            ...methods,
-        };
+    },
+    /** エラー有無 */
+    hasError: {
+        type: Boolean,
+        default: false,
     },
 });
+
+// 内部変数 -----------------------------------------------------
+
+const collapsed = ref(true);
+
+// 内部関数 -----------------------------------------------------
+
+
+// Getters -----------------------------------------------------
+
+/** 格納状態か */
+const isCollapsed = computed((): boolean => {
+    return collapsed.value;
+});
+/** 展開状態か */
+const isOpened = computed((): boolean => {
+    return !collapsed.value;
+});
+
+// Actions -----------------------------------------------------
+
+/** 展開・格納状況をトグル */
+const toggle = () => {
+    collapsed.value = !collapsed.value;
+}
+
+// サイクル -----------------------------------------------------
+
+
 </script>
 
 <style src="@/to_dark_theme.css" scoped />
@@ -94,7 +101,6 @@ section h1 span.toggle.collapse {
 }
 section h1:hover {
     cursor: pointer;
-    border-radius: 4px;
     background: orange;
 }
 .section-body {
@@ -102,6 +108,13 @@ section h1:hover {
     flex-direction: column;
     padding: 0px 8px;
     padding-bottom: 16px;
+}
+
+.section-error {
+    color: red;
+    font-size: 0.6em;
+    margin-left: 8px;
+    line-height: 1em;
 }
 
 </style>

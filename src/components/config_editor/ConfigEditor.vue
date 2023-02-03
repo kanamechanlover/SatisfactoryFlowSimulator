@@ -1,337 +1,254 @@
 <template>
-    <div class="frame">
+    <div class="config-editor-frame" ref="frame">
+        <div class="updating" v-show="isConfigUpdating">設定更新中</div>
         <div class="header">
             <span class="title">設定エディタ</span>
             <button class="close-button" @click="closeWindow">x</button>
         </div>
         <div class="main">
-            <section class="io-box">
-                <button>インポート</button>
-                <button>エクスポート</button>
-            </section>
-            <hr />
-            <ConfigEditorSection section-name="バージョン">
-                <input type="text" v-model="config.version" />
-            </ConfigEditorSection>
-            <ConfigEditorSection section-name="設備カテゴリ" :item-count="config.machineCategories.length">
-                <table>
-                    <tr>
-                        <th>No</th>
-                        <th width="*">設備カテゴリID</th>
-                        <th width="*">設備カテゴリ名</th>
-                        <th>参照数</th>
-                        <th></th>
-                    </tr>
-                    <tr v-for="(category, index) in config.machineCategories" :key="index">
-                        <td>{{ index + 1 }}</td>
-                        <td>
-                            <input type="text" v-model="category.id" />
-                        </td>
-                        <td>
-                            <input type="text" v-model="category.name" />
-                        </td>
-                        <td>{{ referenceMachineCategory(category.id) }}</td>
-                        <td><button @click="deleteMachineCategory(index)" title="削除">-</button></td>
-                    </tr>
-                </table>
-                <div class="additional-box">
-                    <button class="additional-button" @click="addMachineCategory" title="追加">＋</button>
-                </div>
-            </ConfigEditorSection>
-            <ConfigEditorSection section-name="素材カテゴリ" :item-count="config.materialCategories.length">
-                <table>
-                    <tr>
-                        <th>No</th>
-                        <th width="*">素材カテゴリID</th>
-                        <th width="*">素材カテゴリ名</th>
-                        <th>参照数</th>
-                        <th></th>
-                    </tr>
-                    <tr v-for="(category, index) in config.materialCategories" :key="index">
-                        <td>{{ index + 1 }}</td>
-                        <td>
-                            <input type="text" v-model="category.id" />
-                        </td>
-                        <td>
-                            <input type="text" v-model="category.name" />
-                        </td>
-                        <td>{{ referenceMaterialCategory(category.id) }}</td>
-                        <td><button @click="deleteMaterialCategory(index)" title="削除">-</button></td>
-                    </tr>
-                </table>
-                <div class="additional-box">
-                    <button class="additional-button" @click="addMaterialCategory" title="追加">＋</button>
-                </div>
-            </ConfigEditorSection>
-            <ConfigEditorSection section-name="設備" :item-count="config.machines.length">
-                <table v-for="(machine, index) in config.machines" :key="index">
-                    <tr class="adjustment">
-                        <td class="index" rowspan="5">{{ index + 1 }}</td>
-                        <td></td>
-                        <td width="35%"></td>
-                        <td></td>
-                        <td width="1*"></td>
-                        <td width="1*"></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>設備ID</th>
-                        <td>
-                            <input type="text" v-model="machine.id" />
-                        </td>
-                        <th>設備名</th>
-                        <td colspan="2">
-                            <input type="text" v-model="machine.name" />
-                        </td>
-                        <th>参照数</th>
-                        <td class="delete-box" rowspan="4"><button @click="deleteMachine(index)" title="削除">-</button></td>
-                    </tr>
-                    <tr>
-                        <th>ティア</th>
-                        <td>
-                            <input type="number" v-model="machine.tier" />
-                        </td>
-                        <td><img :src="machineIconPath(machine.id)" :title="machineIconPath(machine.id)" /></td>
-                        <th>コンベア</th>
-                        <th>パイプ</th>
-                        <td rowspan="3">{{ referenceMachine(machine.id) }}</td>
-                    </tr>
-                    <tr>
-                        <th>カテゴリ</th>
-                        <td>
-                            <MachineCategorySelect v-model="machine.category"></MachineCategorySelect>
-                        </td>
-                        <th>入力口数</th>
-                        <td>
-                            <input type="number" v-model="machine.inputNumber.conveyor" />
-                        </td>
-                        <td>
-                            <input type="number" v-model="machine.inputNumber.pipe" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>電力</th>
-                        <td>
-                            <input type="number" v-model="machine.power" />
-                        </td>
-                        <th>出力口数</th>
-                        <td>
-                            <input type="number" v-model="machine.outputNumber.conveyor" />
-                        </td>
-                        <td>
-                            <input type="number" v-model="machine.outputNumber.pipe" />
-                        </td>
-                    </tr>
-                </table>
-                <div class="additional-box">
-                    <button class="additional-button" @click="addMachine" title="追加">＋</button>
-                </div>
-            </ConfigEditorSection>
-            <ConfigEditorSection section-name="素材" :item-count="config.materials.length">
-                <table>
-                    <tr>
-                        <th>No</th>
-                        <th width="*">素材ID</th>
-                        <th width="*">素材名</th>
-                        <th></th>
-                        <th width="*">状態</th>
-                        <th width="*">カテゴリID</th>
-                        <th>参照数</th>
-                        <th></th>
-                    </tr>
-                    <tr v-for="(material, index) in config.materials" :key="index">
-                        <td>{{ index + 1 }}</td>
-                        <td>
-                            <input type="text" v-model="material.id" />
-                            </td>
-                        <td>
-                            <input type="text" v-model="material.name" />
-                        </td>
-                        <td>
-                            <img :src="materialImgPath(material.id)" :title="materialImgPath(material.id)" />
-                        </td>
-                        <td>
-                            <MaterialStateSelect v-model="material.state"></MaterialStateSelect>
-                        </td>
-                        <td>
-                            <MaterialCategorySelect v-model="material.category"></MaterialCategorySelect>
-                        </td>
-                        <td>{{ referenceMaterial(material.id) }}</td>
-                        <td><button @click="deleteMaterial(index)" title="削除">-</button></td>
-                    </tr>
-                </table>
-                <div class="additional-box">
-                    <button class="additional-button" @click="addMaterial" title="追加">＋</button>
-                </div>
-            </ConfigEditorSection>
-            <ConfigEditorSection section-name="レシピ" :item-count="config.machines.length">
-                <ConfigRecipe v-for="(recipe, index) in config.recipes" :key="recipe.name" :index="index"></ConfigRecipe>
-                <div class="additional-box">
-                    <button class="additional-button" @click="addMachine" title="追加">＋</button>
-                </div>
-            </ConfigEditorSection>
+            <suspense>
+                <template #fallback>
+                    <div class="loading-box">設定読み込み中...</div>
+                </template>
+                <template #default>
+                    <div class="sections">
+                        <p>
+                            この画面では本ツールの内部設定を確認・変更できます。<br />
+                            <span class="accent">エクスポート</span> ボタンでローカルの設定ファイルを書き出し、
+                            <span class="accent">インポート</span> ボタンでローカルの設定ファイルを読み込めます。<br />
+                            セクション毎に展開・格納を切り替えられます。
+                        </p>
+                        <section class="io-box">
+                            <!-- ファイル選択ダイアログ表示用ボタン -->
+                            <button @click="onClickImportFile" title="ローカルの設定ファイルを選択します">インポート</button>
+                            <button @click="onClickExportFile" title="ローカルに設定ファイルを書き出します">エクスポート</button>
+                        </section>
+                        <hr />
+                        <ConfigEditorSection section-name="画像データ"
+                            :item-count="sectionNumbers.image">
+                            <ImageSection></ImageSection>
+                        </ConfigEditorSection>
+                        <ConfigEditorSection section-name="バージョン" :has-error="versionError">
+                            <p>任意のバージョン名を付けることができます。バージョン名はページ上部のツール名の隣に表示されます。</p>
+                            <input type="text" :value="config.version" @change="changeVersion" :class="{ error: versionError }" />
+                        </ConfigEditorSection>
+                        <ConfigEditorSection section-name="設備カテゴリ"
+                            :item-count="sectionNumbers.machineCategories"
+                            :has-error="machineCategoriesError">
+                            <MachineCategorySection></MachineCategorySection>
+                        </ConfigEditorSection>
+                        <ConfigEditorSection section-name="素材カテゴリ"
+                            :item-count="sectionNumbers.materialCategories"
+                            :has-error="materialCategoriesError">
+                            <MaterialCategorySection></MaterialCategorySection>
+                        </ConfigEditorSection>
+                        <ConfigEditorSection section-name="設備"
+                            :item-count="sectionNumbers.machines"
+                            :has-error="machinesError">
+                            <ConfigMachineSection></ConfigMachineSection>
+                        </ConfigEditorSection>
+                        <ConfigEditorSection section-name="素材"
+                            :item-count="sectionNumbers.materials"
+                            :has-error="materialsError">
+                            <MaterialSection></MaterialSection>
+                        </ConfigEditorSection>
+                        <ConfigEditorSection section-name="レシピ"
+                            :item-count="sectionNumbers.recipes"
+                            :has-error="recipesError">
+                            <ConfigRecipeSection></ConfigRecipeSection>
+                        </ConfigEditorSection>
+                        <!-- 設定ファイル読み込み時のファイル選択ダイアログ表示用フォーム -->
+                        <input class="hide" ref="importFilePicker" type="file" accept=".json" @change="onSelectedImportFile" />
+                    </div>
+                </template>
+            </suspense>
         </div>
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, Ref, computed } from 'vue'
+<script setup lang="ts">
+import { computed, ref, onMounted } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
-import { Config, ConfigCategory, ConfigMachine, MaterialState, ConfigMaterial } from '@/defines/types/config'
-import { machineIconPath, materialImgPath } from '@/logics/access_path'
-import ConfigEditorMaterialState from './MaterialStateSelect.vue';
+import { useImageStore } from '@/stores/image_store'
+import { Config } from '@/defines/types/config'
+import Axios from 'axios'
+import Logger from '@/logics/logger'
 
+// 子コンポーネント ---------------------------------------------
+
+import ImageSection from '@/components/config_editor/ImageSection.vue'
+import ConfigEditorSection from '@/components/config_editor/ConfigEditorSection.vue'
+import MachineCategorySection from '@/components/config_editor/MachineCategorySection.vue'
+import MaterialCategorySection from '@/components/config_editor/MaterialCategorySection.vue'
+import ConfigMachineSection from '@/components/config_editor/ConfigMachineSection.vue'
+import MaterialSection from '@/components/config_editor/MaterialSection.vue'
+import ConfigRecipeSection from '@/components/config_editor/ConfigRecipeSection.vue'
+
+// 基本定義 -----------------------------------------------------
 
 /** プロパティを定義 */
-const Props = {
+
+// エミット
+const emits = defineEmits<{
+    (e: 'close'): void
+}>();
+
+/** 各セクションの要素数セット */
+interface SectionNumbers {
+    /** 画像データ */
+    image: number;
+    /** 設備カテゴリ */
+    machineCategories: number;
+    /** 素材カテゴリ */
+    materialCategories: number;
+    /** 設備 */
+    machines: number;
+    /** 素材 */
+    materials: number;
+    /** レシピ */
+    recipes: number;
 };
 
-/** テンプレート参照する定義 */
-interface Refs {
-    frame: Ref<HTMLElement|null>,
+// 内部変数 -----------------------------------------------------
+
+/** 設定ストア */
+const configStore = useConfigStore();
+
+/** 画像ストア */
+const imageStore = useImageStore();
+
+/** ファイル選択ダイアログ表示用参照要素 */
+const frame = ref(null);
+const importFilePicker = ref<InstanceType<typeof HTMLInputElement> | null>(null);
+
+// 内部関数 -----------------------------------------------------
+
+// Getters -----------------------------------------------------
+
+/** 設定取得 */
+const config = computed((): Config => configStore.config);
+
+/** 各セクションの要素数を取得 */
+const sectionNumbers = computed((): SectionNumbers => {
+    return {
+        image: imageStore.imageNumber,
+        machineCategories: configStore.config.machineCategories.length,
+        materialCategories: configStore.config.materialCategories.length,
+        machines: configStore.config.machines.length,
+        materials: configStore.config.materials.length,
+        recipes: configStore.config.recipes.length,
+    };
+});
+
+/** 設定ストア更新中 */
+const isConfigUpdating = computed((): boolean => {
+    return configStore.isUpdating;
+});
+
+/** 設定バージョンエラー */
+const versionError = computed((): boolean => {
+    return configStore.config.versionError();
+});
+/** 設備カテゴリエラー */
+const machineCategoriesError = computed((): boolean => {
+    return configStore.config.machineCategoriesError();
+});
+/** 素材カテゴリエラー */
+const materialCategoriesError = computed((): boolean => {
+    return configStore.config.materialCategoriesError();
+});
+/** 設備エラー */
+const machinesError = computed((): boolean => {
+    return configStore.config.machinesError();
+});
+/** 素材エラー */
+const materialsError = computed((): boolean => {
+    return configStore.config.materialsError();
+});
+/** レシピエラー */
+const recipesError = computed((): boolean => {
+    return configStore.config.recipesError();
+});
+
+// Actions -----------------------------------------------------
+
+/** インポートボタンクリック時 */
+const onClickImportFile = () => {
+    // ファイル選択ダイアログ表示
+    importFilePicker.value?.click();
+}
+/** エクスポートボタンクリック時 */
+const onClickExportFile = () => {
+    // シリアライズ
+    Logger.log('config data serializing...');
+    const data = configStore.config.serialize();
+    const text = JSON.stringify(data, null, 4);
+    // 書き出し
+    if (!frame.value) return; // イレギュラー
+    const frameElement = (frame.value as HTMLDivElement);
+    Logger.log('config file exporting...');
+    const blob = new Blob([text], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'sfsconfig.json';
+    frameElement.appendChild(link);
+    link.click();
+    frameElement.removeChild(link);
+    URL.revokeObjectURL(link.href);
 }
 
-export default defineComponent({
-    name: "config-editor",
-    props: Props,
-    setup(props, context) {
-        const configStore = useConfigStore();
-        const refs: Refs = {
-            frame: ref(null),
-        };
+/** 設定ファイルをインポート */
+const onSelectedImportFile = () => {
+    if (!importFilePicker.value || !importFilePicker.value.files) return; // イレギュラー
+    const selectedFilePath = importFilePicker.value.files[0];
+    if (selectedFilePath === undefined) return; // イレギュラー
+    // ファイル読み込み
+    const blob = URL.createObjectURL(selectedFilePath);
+    console.log(selectedFilePath);
+    Axios.get(blob).then((responce: any) => {
+        Logger.log(responce.data);
+        if (!responce.data) {
+            alert('Error: ファイルの中身がありません。');
+            return;
+        }
+        // 設定ストアに反映
+        configStore.setup(responce.data);
+        // 通知
+        alert('Succeeded: 設定に反映しました。');
+    }).catch(Logger.error);
+    // 後処理
+    importFilePicker.value.value = '';
+}
 
-        const getMaterial = (materialId: string): ConfigMaterial|undefined => {
-            return configStore.config.materials.find((material) => material.id == materialId);
-        };
+/** 設定エディタを閉じる */
+const closeWindow = () => {
+    if (configStore.config.existError()) {
+        // 設定のエラーが出ている場合は本当に閉じてよいか確認し、キャンセルされたら閉じない
+        const confirmText = [
+            '設定にエラーがまだ残っています。',
+            'このまま閉じる場合、本ツールの動作は保障されません。',
+        ].join('\n');
+        if (!confirm(confirmText)) return;
+    }
+    emits("close");
+};
 
-        // computed
-        const computes = {
-            config: computed((): Config => {
-                return configStore.config;
-            }),
-            /** 設備カテゴリ参照数 */
-            referenceMachineCategory: computed(() => {
-                return (id: string): number => {
-                    const machines = configStore.config.machines.filter((machine) => machine.category == id);
-                    return machines.length;
-                };
-            }),
-            /** 素材カテゴリ参照数 */
-            referenceMaterialCategory: computed(() => {
-                return (id: string): number => {
-                    const material = configStore.config.materials.filter((material) => material.category == id);
-                    return material.length;
-                };
-            }),
-            /** 設備アイコンパス */
-            machineIconPath: computed(() => {
-                return (id: string): string => {
-                    return machineIconPath(id);
-                };
-            }),
-            /** 素材画像パス */
-            materialImgPath: computed(() => {
-                return (id: string): string => {
-                    return materialImgPath(id);
-                };
-            }),
-            /** 設備の参照数 */
-            referenceMachine: computed(() => {
-                return (machineId: string): number => {
-                    const recipes = configStore.config.recipes.filter((recipe) => {
-                        return recipe.machineId == machineId;
-                    });
-                    return recipes.length;
-                };
-            }),
-            /** 素材の状態 */
-            materialState: computed((): any => {
-                return MaterialState;
-            }),
-            /** 素材参照数 */
-            referenceMaterial: computed(() => {
-                return (materialId: string): number => {
-                    const recipes = configStore.config.recipes.filter((recipe) => {
-                        const includeInput = Object.keys(recipe.input).includes(materialId);
-                        const includeOutput = Object.keys(recipe.output).includes(materialId);
-                        return includeInput || includeOutput;
-                    });
-                    return recipes.length;
-                }
-            }),
-        };
-        // methods
-        const methods = {
-            /** 設定エディタを閉じる */
-            closeWindow: () => {
-                context.emit("close");
-            },
-            /** バージョン更新 */
-            changeVersion: (value: string) => {
-                configStore.config.version = value;
-            },
-            /** 設備カテゴリID更新 */
-            changeMachineCategory: (index: number, id: string, name: string) => {
-                const category = configStore.config.machineCategories[index];
-                if (!category)
-                    return; // インデックスオーバーしている場合は何もしない（できない）
-                if (category.id != id && id !== undefined) {
-                    configStore.config.machineCategories[index].id = id;
-                }
-                if (category.name != name && name !== undefined) {
-                    configStore.config.machineCategories[index].name = name;
-                }
-            },
-            /** 設備カテゴリ削除 */
-            deleteMachineCategory: (index: number) => {
-                configStore.config.machineCategories.splice(index, 1);
-            },
-            /** 設備カテゴリ追加 */
-            addMachineCategory: () => {
-                configStore.config.machineCategories.push(new ConfigCategory);
-            },
-            /** 素材カテゴリ削除 */
-            deleteMaterialCategory: (index: number) => {
-                configStore.config.materialCategories.splice(index, 1);
-            },
-            /** 素材カテゴリ追加 */
-            addMaterialCategory: () => {
-                configStore.config.materialCategories.push(new ConfigCategory);
-            },
-            /** 設備削除 */
-            deleteMachine: (index: number) => {
-                configStore.config.machines.splice(index, 1);
-            },
-            /** 設備追加 */
-            addMachine: () => {
-                configStore.config.machines.push(new ConfigMachine());
-            },
-            /** 素材追加 */
-            addMaterial: () => {
-                configStore.config.materials.push(new ConfigMaterial());
-            },
-            /** 素材削除 */
-            deleteMaterial: (index: number) => {
-                configStore.config.materials.splice(index, 1);
-            },
-        };
-        return {
-            ...props,
-            ...refs,
-            ...computes,
-            ...methods,
-        };
-    },
-    components: { ConfigEditorMaterialState }
-});
+/**
+ * バージョン変更
+ */
+const changeVersion = (event: Event) => {
+    if (!event?.target) return; // イレギュラー
+    const value = (event.target as HTMLInputElement).value;
+    configStore.changeVersion(value);
+};
+
 </script>
 
 <style src="@/to_dark_theme.css" scoped />
 <style src="@/components/config_editor/config_editor.css" scoped />
 
 <style scoped>
-.frame {
+.config-editor-frame {
     width: 100%;
     height: 100%;
     background: var(--dark-bg-color);
@@ -341,12 +258,29 @@ export default defineComponent({
     border: 1px solid black;
     border-radius: 8px;
 }
+.updating {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background: var(--dark-bg-color);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.8;
+    z-index: 1;
+    font-size: 5em;
+    color: var(--dark-accent-color);
+}
 .header {
     position: relative;
     height: 24px;
     font-weight: bold;
     color: white;
     background: black;
+    border-radius: 8px 8px 0px 0px;
 }
 .header .close-button {
     height: 20px;
@@ -369,14 +303,23 @@ export default defineComponent({
     overflow-x: hidden;
     overflow-y: scroll;
 }
+.sections {
+    width: 100%;
+}
+.loading-box {
+    width: 100%;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3em;
+    font-weight: bold;
+}
 .main section.io-box {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
-}
-.main section .additional-box {
-    text-align: center;
 }
 
 .main hr {

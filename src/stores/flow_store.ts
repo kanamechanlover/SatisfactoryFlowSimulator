@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { useConfigStore } from '@/stores/config_store'
 import { Flow, FlowPath } from '@/defines/types/flow'
+import Logger from '@/logics/logger'
 
 export const useFlowStore = defineStore('flow', {
     state: () => {
@@ -21,7 +22,7 @@ export const useFlowStore = defineStore('flow', {
         },
         /**
          * 指定パスにある製作フロー取得
-         * @param [in] path フローパス
+         * @param path [in] フローパス
          * @return 製作フロー（指定パスが見つからなかったら null）
          */
         flowOnPath(state) {
@@ -43,8 +44,8 @@ export const useFlowStore = defineStore('flow', {
     actions: {
         /**
          * 現在の設定でフロー更新
-         * @param [in] flow 製作フロー
-         * @param [in] changedRecipe レシピ変更の有無
+         * @param flow [in] 製作フロー
+         * @param changedRecipe [in] レシピ変更の有無
          * @note 再帰処理あり
          */
         updateFlow(flow: Flow, changedRecipe: boolean) {
@@ -52,7 +53,7 @@ export const useFlowStore = defineStore('flow', {
             const inputs = this.config.recipeInput(flow.recipeId);
             const outputs = this.config.recipeOutput(flow.recipeId);
             if (!inputs || !outputs) {
-                console.warn('[FlowStore.updateFlow] 対象のレシピ無し: ' + flow.recipeId);
+                Logger.warn('対象のレシピ無し: ' + flow.recipeId, 'FlowStore.updateFlow');
                 return;
             }
             // 必要数が未設定の場合はデフォルトの分間レートを設定
@@ -111,15 +112,15 @@ export const useFlowStore = defineStore('flow', {
         },
         /**
          * 素材を変更（レシピ、必要数も併せてデフォルトに更新）
-         * @param [in] path 変更する製作フローパス
-         * @param [in] materialId 変更後の素材ID
+         * @param path [in] 変更する製作フローパス
+         * @param materialId [in] 変更後の素材ID
          */
         setMaterialId(path: FlowPath, materialId: string) {
             // 対象の製作フロー取得
             const flow = this.flowOnPath(path);
             // 指定パスにフローが無ければログを出して何もしない
             if (!flow) {
-                console.warn('[FlowStore.setMaterialId] 指定パスが存在しませんでした。' + path);
+                Logger.warn('指定パスが存在しませんでした。' + path, 'FlowStore.setMaterialId');
                 return;
             }
             // 対象の製作フローの素材を変更
@@ -133,15 +134,15 @@ export const useFlowStore = defineStore('flow', {
         },
         /**
          * レシピを変更
-         * @param [in] path 変更する製作フローパス
-         * @param [in] recipeId 変更後のレシピID
+         * @param path [in] 変更する製作フローパス
+         * @param recipeId [in] 変更後のレシピID
          */
         setRecipeId(path: FlowPath, recipeId: string) {
             // 対象の製作フロー取得
             const flow = this.flowOnPath(path);
             // 指定パスにフローが無ければログを出して何もしない
             if (!flow) {
-                console.warn('[FlowStore.setRecipeId] 指定パスが存在しませんでした。' + path);
+                Logger.warn('指定パスが存在しませんでした。' + path, 'FlowStore.setRecipeId');
                 return;
             }
             // 対象の製作フローのレシピを変更
@@ -151,15 +152,15 @@ export const useFlowStore = defineStore('flow', {
         },
         /**
          * 必要数を変更
-         * @param [in] path 変更する製作フローパス
-         * @param [in] needs 変更後の必要数
+         * @param path [in] 変更する製作フローパス
+         * @param needs [in] 変更後の必要数
          */
         setNeeds(path: FlowPath, needs: number) {
             // 対象の製作フロー取得
             const flow = this.flowOnPath(path);
             // 指定パスにフローが無ければログを出して何もしない
             if (!flow) {
-                console.warn('[FlowStore.setRecipeId] 指定パスが存在しませんでした。' + path);
+                Logger.warn('指定パスが存在しませんでした。' + path, 'FlowStore.setRecipeId');
                 return;
             }
             // 必要数を変更
