@@ -1,5 +1,6 @@
 <template>
     <select @change="changeValue" :class="{ error: props.isError }">
+        <option>-</option>
         <option v-for="[stateId, value] in Object.entries(MaterialState)" :value="stateId"
             :selected="props.modelValue == stateId">
             {{ value.Name }}
@@ -46,6 +47,7 @@ const emits = defineEmits<{
 
 // Actions -----------------------------------------------------
 
+/** 選択されている素材の状態変更通知 */
 const changeValue = (event: Event) => {
     const value = getEventValue(event);
     emits('update:modelValue', (value == '-') ? '' : value); // 選択肢「-」は無しの意味なので空にする

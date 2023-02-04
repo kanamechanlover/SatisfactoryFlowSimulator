@@ -26,7 +26,9 @@
                         @change="changeName(index, $event)" :class="{ error: nameError(index) }" />
                 </td>
                 <td>
-                    <img :src="imageStore.getData(material.id)" :title="imageStore.getData(material.id)" />
+                    <img v-if="imageStore.getData(material.id)"
+                        :src="imageStore.getData(material.id)"
+                        :title="imageStore.getData(material.id)" />
                 </td>
                 <td>
                     <MaterialStateSelect :modelValue="material.state"
@@ -34,9 +36,10 @@
                     </MaterialStateSelect>
                 </td>
                 <td>
-                    <MaterialCategorySelect :value="material.category"
+                    <CategorySelect
+                        :value="material.category" :categories="categories"
                         @update:modelValue="changeCategory(index, $event)" :isError="categoryError(index)">
-                    </MaterialCategorySelect>
+                    </CategorySelect>
                 </td>
                 <td>{{ referenceMaterial(material.id) }}</td>
                 <td><button @click="deleteMaterial(index)" title="削除">-</button></td>
@@ -53,9 +56,11 @@
 import { computed, ref, watch, onMounted } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
 import { useImageStore } from '@/stores/image_store';
-import { ConfigMaterialList } from '@/defines/types/config'
+import { ConfigMaterialList, CategoryList } from '@/defines/types/config'
 
 // 子コンポーネント ---------------------------------------------
+
+import CategorySelect from './CategorySelect.vue';
 
 // 基本定義 -----------------------------------------------------
 
@@ -68,7 +73,10 @@ const configStore = useConfigStore();
 const imageStore = useImageStore();
 
 /** 素材リスト */
-const materials = ref([] as ConfigMaterialList)
+const materials = ref([] as ConfigMaterialList);
+
+/** 素材カテゴリリスト */
+const categories = ref([] as CategoryList);
 
 // 内部関数 -----------------------------------------------------
 
@@ -113,6 +121,7 @@ const categoryError = computed(() => (index: number): boolean => {
 /** ストアから最新の素材リストを取得 */
 const getMaterials = () => {
     materials.value = configStore.config.materials.map((material) => material.clone());
+    categories.value = configStore.config.materialCategories.map((category) => category.clone());
 };
 
 

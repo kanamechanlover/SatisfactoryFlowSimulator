@@ -34,27 +34,32 @@
                         </ConfigEditorSection>
                         <ConfigEditorSection section-name="設備カテゴリ"
                             :item-count="sectionNumbers.machineCategories"
-                            :has-error="machineCategoriesError">
+                            :has-error="hasMachineCategoriesError"
+                            :has-duplicate="hasDuplicateMachineCategoryId">
                             <MachineCategorySection></MachineCategorySection>
                         </ConfigEditorSection>
                         <ConfigEditorSection section-name="素材カテゴリ"
                             :item-count="sectionNumbers.materialCategories"
-                            :has-error="materialCategoriesError">
+                            :has-error="hasMaterialCategoriesError"
+                            :has-duplicate="hasDuplicateMaterialCategoryId">
                             <MaterialCategorySection></MaterialCategorySection>
                         </ConfigEditorSection>
                         <ConfigEditorSection section-name="設備"
                             :item-count="sectionNumbers.machines"
-                            :has-error="machinesError">
+                            :has-error="hsdMachinesError"
+                            :has-duplicate="hasDuplicateMachineId">
                             <ConfigMachineSection></ConfigMachineSection>
                         </ConfigEditorSection>
                         <ConfigEditorSection section-name="素材"
                             :item-count="sectionNumbers.materials"
-                            :has-error="materialsError">
+                            :has-error="hasMaterialsError"
+                            :has-duplicate="hasDuplicateMaterialId">
                             <MaterialSection></MaterialSection>
                         </ConfigEditorSection>
                         <ConfigEditorSection section-name="レシピ"
                             :item-count="sectionNumbers.recipes"
-                            :has-error="recipesError">
+                            :has-error="hasRecipesError"
+                            :has-duplicate="hasDuplicateRecipeName">
                             <ConfigRecipeSection></ConfigRecipeSection>
                         </ConfigEditorSection>
                         <!-- 設定ファイル読み込み時のファイル選択ダイアログ表示用フォーム -->
@@ -150,24 +155,45 @@ const versionError = computed((): boolean => {
     return configStore.config.versionError();
 });
 /** 設備カテゴリエラー */
-const machineCategoriesError = computed((): boolean => {
-    return configStore.config.machineCategoriesError();
+const hasMachineCategoriesError = computed((): boolean => {
+    return configStore.config.hasMachineCategoriesError();
 });
 /** 素材カテゴリエラー */
-const materialCategoriesError = computed((): boolean => {
-    return configStore.config.materialCategoriesError();
+const hasMaterialCategoriesError = computed((): boolean => {
+    return configStore.config.hasMaterialCategoriesError();
 });
 /** 設備エラー */
-const machinesError = computed((): boolean => {
-    return configStore.config.machinesError();
+const hsdMachinesError = computed((): boolean => {
+    return configStore.config.hsdMachinesError();
 });
 /** 素材エラー */
-const materialsError = computed((): boolean => {
-    return configStore.config.materialsError();
+const hasMaterialsError = computed((): boolean => {
+    return configStore.config.hasMaterialsError();
 });
 /** レシピエラー */
-const recipesError = computed((): boolean => {
-    return configStore.config.recipesError();
+const hasRecipesError = computed((): boolean => {
+    return configStore.config.hasRecipesError();
+});
+
+/** ID重複：設備カテゴリ */
+const hasDuplicateMachineCategoryId = computed((): boolean => {
+    return configStore.config.duplicateMachineCategoryIds().length > 0;
+});
+/** ID重複：素材カテゴリ */
+const hasDuplicateMaterialCategoryId = computed((): boolean => {
+    return configStore.config.duplicateMaterialCategoryIds().length > 0;
+});
+/** ID重複：設備 */
+const hasDuplicateMachineId = computed((): boolean => {
+    return configStore.config.duplicateMachineIds().length > 0;
+});
+/** ID重複：素材 */
+const hasDuplicateMaterialId = computed((): boolean => {
+    return configStore.config.duplicateMaterialIds().length > 0;
+});
+/** ID重複：レシピ */
+const hasDuplicateRecipeName = computed((): boolean => {
+    return configStore.config.duplicateRecipeNames().length > 0;
 });
 
 // Actions -----------------------------------------------------

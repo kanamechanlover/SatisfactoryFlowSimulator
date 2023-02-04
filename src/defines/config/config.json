@@ -2693,7 +2693,7 @@
             "Machine": "Refinery"
         },
         {
-            "Name": "容器入りアルミナ溶液",
+            "Name": "アルミナ溶液・容器取り出し",
             "Input": [
                 {
                     "Id": "PackagedAluminaSolution",
@@ -6386,6 +6386,10 @@
                 {
                     "Id": "UraniumFuelRod",
                     "Number": 1
+                },
+                {
+                    "Id": "Water",
+                    "Number": 2400
                 }
             ],
             "Output": [
@@ -6403,6 +6407,10 @@
                 {
                     "Id": "PlutoniumFuelRod",
                     "Number": 1
+                },
+                {
+                    "Id": "Water",
+                    "Number": 1200
                 }
             ],
             "Output": [

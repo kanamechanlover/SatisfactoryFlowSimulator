@@ -13,7 +13,7 @@
                     </div>
                 </div>
                 <div class="title-box">
-                    <div class="recipe-name-box" :class="{ error: nameError }">
+                    <div class="recipe-name-box" :class="{ error: nameError, warning: hasDuplicate }">
                         <span>{{ recipeName }}</span>
                     </div>
                     <div class="machine-name-box" :class="{ error: machineIdError }">
@@ -22,14 +22,22 @@
                     </div>
                 </div>
                 <div class="recipe-detail-box">
-                    <div class="material-box" v-for="(material, inputIndex) in validMaterialInputs" :key="'input' + inputIndex">
-                        <img :src="imageStore.getData(material.id)" :title="materialName(material.id)" :alt="materialName(material.id)" />
-                        <div class="number">{{ material.number }}</div>
+                    <div class="material-box" v-for="(material, inputIndex) in props.recipe.input"
+                        :key="'input' + inputIndex" :class="{
+                            conveyor: machineInputTypeIsConveyor(inputIndex),
+                            pipe: machineInputTypeIsPipe(inputIndex),
+                    }">
+                        <img v-if="material" :src="imageStore.getData(material.id)" :title="materialName(material.id)" :alt="materialName(material.id)" />
+                        <div v-if="material" class="number">{{ material.number }}</div>
                     </div>
                     <div class="arrow">▶</div>
-                    <div class="material-box" v-for="(material, outputIndex) in validMaterialOutputs" :key="'output' + outputIndex">
-                        <img :src="imageStore.getData(material.id)" :title="materialName(material.id)" :alt="materialName(material.id)" />
-                        <div class="number">{{ material.number }}</div>
+                    <div class="material-box" v-for="(material, outputIndex) in props.recipe.output"
+                        :key="'output' + outputIndex" :class="{
+                            conveyor: machineOutputTypeIsConveyor(outputIndex),
+                            pipe: machineOutputTypeIsPipe(outputIndex),
+                    }">
+                        <img v-if="material" :src="imageStore.getData(material.id)" :title="materialName(material.id)" :alt="materialName(material.id)" />
+                        <div v-if="material" class="number">{{ material.number }}</div>
                     </div>
                 </div>
                 <div class="product-time-box">
@@ -49,24 +57,25 @@
                     <div class="label">レシピ名</div>
                     <div class="recipe-name-box">
                         <input type="text" :value="recipeName" :title="recipeName"
-                            @change="changeRecipeName" :class="{ error: nameError }" />
+                            @change="changeRecipeName" :class="{ error: nameError, warning: hasDuplicate }" />
                     </div>
                     <div class="label">設備</div>
                     <div class="machine-id-box">
-                        <MachineSelect :modelValue="machineId"
-                            @update:modelValue="changeMachineId"
-                            :isError="machineIdError">
+                        <MachineSelect
+                            :modelValue="machineId" :machines="machines" :isError="machineIdError"
+                            @update:modelValue="changeMachineId">
                         </MachineSelect>
                     </div>
                     <div class="label input-label">入力素材</div>
                     <div class="input-material-box" :class="'input' + inputIndex"
                         v-for="inputIndex of ConfigRecipe.InputMax" :key="'input' + inputIndex">
                         <MaterialSelect v-if="machineInputPortNumber > inputIndex - 1"
-                            :modelValue="materialInputId(inputIndex - 1)" :type="machineInputType(inputIndex - 1)"
-                            @update:modelValue="changeInputMaterialId(inputIndex - 1, $event)"
-                            :isError="inputError">
+                            :modelValue="materialInputId(inputIndex - 1)"
+                            :type="machineInputType(inputIndex - 1)"
+                            :materials="materials" :isError="inputError"
+                            @update:modelValue="changeInputMaterialId(inputIndex - 1, $event)">
                         </MaterialSelect>
-                        <input v-if="machineInputPortNumber > inputIndex - 1" type="number" min="0"
+                        <input v-if="machineInputPortNumber > inputIndex - 1" type="number" min="0" :title="materialInputNumber(inputIndex - 1).toString()"
                             :value="materialInputNumber(inputIndex - 1)" @change="changeInputMaterialNumber(inputIndex - 1, $event)"
                             :class="{ error: inputNumberError(inputIndex - 1), hide: !materialInputNumberShow(inputIndex - 1) }" />
                     </div>
@@ -74,11 +83,12 @@
                     <div class="output-material-box" :class="'output' + outputIndex"
                         v-for="outputIndex of ConfigRecipe.OutputMax" :key="'output' + outputIndex">
                         <MaterialSelect v-if="machineOutputPortNumber > outputIndex - 1"
-                            :modelValue="materialOutputId(outputIndex - 1)" :type="machineOutputType(outputIndex - 1)"
-                            @update:modelValue="changeOutputMaterialId(outputIndex - 1, $event)"
-                            :isError="outputError">
+                            :modelValue="materialOutputId(outputIndex - 1)"
+                            :type="machineOutputType(outputIndex - 1)"
+                            :materials="materials" :isError="outputError"
+                            @update:modelValue="changeOutputMaterialId(outputIndex - 1, $event)">
                         </MaterialSelect>
-                        <input v-if="machineOutputPortNumber > outputIndex - 1" type="number" min="0"
+                        <input v-if="machineOutputPortNumber > outputIndex - 1" type="number" min="0" :title="materialOutputNumber(outputIndex - 1).toString()"
                             :value="materialOutputNumber(outputIndex - 1)" @change="changeOutputMaterialNumber(outputIndex - 1, $event)"
                             :class="{ error: outputNumberError(outputIndex - 1), hide: !materialOutputNumberShow(outputIndex - 1) }" />
                     </div>
@@ -98,12 +108,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
 import { useImageStore } from '@/stores/image_store';
 import {
-    ConfigRecipe, ConfigRecipeMaterial, MachinePortType, MaterialState
+    ConfigMachine, ConfigMaterial, ConfigRecipe, ConfigRecipeMaterial, MachinePortType, MaterialState
 } from '@/defines/types/config'
+import { machine } from 'os';
 
 // 子コンポーネント ---------------------------------------------
 
@@ -112,16 +123,42 @@ import {
 
 /** プロパティを定義 */
 const props = defineProps({
+    /** レシピインデックス（エミット用） */
     index: {
         type: Number,
         default: 0,
+        required: true,
+    },
+    /** レシピデータ */
+    recipe: {
+        type: ConfigRecipe,
+        default: new ConfigRecipe(),
+        required: true,
+    },
+    /** レシピで現在指定している設備データ */
+    machine: {
+        type: ConfigMachine,
+        default: new ConfigMachine(),
+        required: true,
+    },
+    /** 設備リスト */
+    machines: {
+        type: Array<ConfigMachine>,
+        default: [] as Array<ConfigMachine>,
+        required: true,
+    },
+    /** 素材リスト */
+    materials: {
+        type: Array<ConfigMaterial>,
+        default: [] as Array<ConfigMaterial>,
+        required: true,
+    },
+    /** 重複する要素の有無 */
+    hasDuplicate: {
+        type: Boolean,
+        default: false,
     },
 });
-
-/** エミット定義 */
-const emits = defineEmits<{
-    (e: 'delete', value: number): void // レシピ削除（value は props.index）
-}>();
 
 // 内部変数 -----------------------------------------------------
 
@@ -131,99 +168,51 @@ const configStore = useConfigStore();
 /** 画像ストア */
 const imageStore = useImageStore();
 
-/** レシピデータ（内部用） */
-const recipe = ref(new ConfigRecipe());
-
 /** 編集モードフラグ（展開：編集モード、格納：閲覧モード（コンパクト表示）） */
 const editMode = ref(false);
 
 // 内部関数 -----------------------------------------------------
 
-/** 
- * 設備の入出力口に合わせて配置を変更
- * ※固体はコンベア枠へ、液体気体はパイプ枠へ
+/**
+ * レシピ更新時
+ * @param recipe [in] 更新後のレシピデータ
+ * @return 処理開始の成否（true: 成功）
  */
-const relocateIOMaterial = () => {
-    // 設備の入出力口のタイプに合わせて再配置
-    // 引数 io は参照渡し
-    const relocate = (io: Array<ConfigRecipeMaterial>, portNumber: Array<number>) => {
-        let currentIndex = 0;
-        const validIO: Array<ConfigRecipeMaterial> = io.filter((v) => v);
-        MachinePortType.Types.forEach((type: string, index: number) => {
-            const typePortNumber = portNumber[index];
-            const typeMaterials = validIO.filter((material: ConfigRecipeMaterial) => {
-                const state = configStore.materialState(material.id);
-                if (!state) return false; // 設定エラー
-                return MaterialState[state].Port == type;
-            });
-            for (let i = 0; i < typePortNumber; i++) {
-                if (typeMaterials[i]) {
-                    io[currentIndex + i] = typeMaterials[i];
-                }
-                else if (io[currentIndex + i]) {
-                    // undefined を値として直接設定はできないので値がある場合だけ削除する
-                    delete io[currentIndex + i];
-                }
-            }
-            currentIndex += typePortNumber;
-        });
-    };
-    // 設備のタイプ別入力口数取得
-    const inputTypeNumbers = MachinePortType.Types.map((type: string): number => {
-        return configStore.machineInputPortNumberWithType(recipe.value.machineId, type);
-    });
-    relocate(recipe.value.input, inputTypeNumbers);
-    // 設備のタイプ別出力口数取得
-    const outputTypeNumbers = MachinePortType.Types.map((type: string): number => {
-        return configStore.machineOutputPortNumberWithType(recipe.value.machineId, type);
-    });
-    relocate(recipe.value.output, outputTypeNumbers);
+const applyRecipeData = (recipe: ConfigRecipe): boolean => {
+    // ストア更新
+    return configStore.setRecipe(props.index, recipe);
 };
 
-/** レシピ切り替え */
-const getRecipe = () => {
-    recipe.value.assign(configStore.config.recipes[props.index]);
-    relocateIOMaterial();
+/**
+ * レシピ削除時
+ * @return 処理開始の成否（true: 成功）
+ */
+const deleteRecipe = (): boolean => {
+    return configStore.deleteRecipe(props.index);
 };
-
-/** 内部レシピ更新時 */
-const applyRecipeData = () => {
-    configStore.setRecipe(props.index, recipe.value);
-};
-
 // Getters -----------------------------------------------------
 
 /** レシピ名 */
 const recipeName = computed((): string => {
-    return recipe.value.name;
+    return props.recipe.name;
 });
 /** 設備ID */
 const machineId = computed((): string => {
-    return recipe.value.machineId;
+    return props.recipe.machineId;
 });
 /** 設備名 */
 const machineName = computed((): string => {
-    const name = configStore.machineName(recipe.value.machineId);
+    const name = configStore.machineName(props.recipe.machineId);
     return (name) ? name : '設備無し';
 });
 /** 設備アイコン */
 const machineImage = computed((): string => {
-    const data = imageStore.getData(recipe.value.machineId);
+    const data = imageStore.getData(props.recipe.machineId);
     return (data) ? data : '';
 });
 /** 制作時間 */
 const productTime = computed((): number => {
-    return recipe.value.productTime;
-});
-/** 有効な入力素材リスト */
-const validMaterialInputs = computed((): ConfigRecipeMaterial[] => {
-    if (!recipe.value) return [];
-    return recipe.value.input.filter((v) => v);
-});
-/** 有効な出力素材リスト */
-const validMaterialOutputs = computed((): ConfigRecipeMaterial[] => {
-    if (!recipe.value) return [];
-    return recipe.value.output.filter((v) => v);
+    return props.recipe.productTime;
 });
 /** 素材名 */
 const materialName = computed(() => (materialId: string): string => {
@@ -231,101 +220,103 @@ const materialName = computed(() => (materialId: string): string => {
 });
 /** 入力素材ID */
 const materialInputId = computed(() => (index: number): string => {
-    if (recipe.value?.input[index]?.id === undefined) return '';
-    return recipe.value.input[index].id;
+    if (index < 0 || props.recipe.input[index] === undefined) return ''; // イレギュラー
+    return props.recipe.input[index].id;
 });
 /** 入力素材数枠表示フラグ */
 const materialInputNumberShow = computed(() => (index: number): boolean => {
-    if (recipe.value?.input[index]?.id === undefined) return false;
-    return recipe.value.input[index].id !== '';
+    if (index < 0 || props.recipe.input[index] === undefined) return false; // イレギュラー
+    return props.recipe.input[index].id !== '';
 });
 /** 入力素材数 */
-const materialInputNumber = computed(() => (index: number): number|'' => {
-    if (recipe.value?.input[index]?.number === undefined) return '';
-    return recipe.value.input[index].number;
+const materialInputNumber = computed(() => (index: number): number => {
+    if (index < 0 || props.recipe.input[index] === undefined) return 0; // イレギュラー
+    return props.recipe.input[index].number;
 });
 /** 出力素材ID */
 const materialOutputId = computed(() => (index: number): string => {
-    if (props.index == 44) {
-        console.log(recipe.value);
-        console.log(recipe.value?.output[index]?.id);
-    }
-    if (recipe.value?.output[index]?.id === undefined) return '';
-    return recipe.value.output[index].id;
+    if (index < 0 || props.recipe.output[index] === undefined) return ''; // イレギュラー
+    return props.recipe.output[index].id;
 });
 /** 出力素材数枠表示フラグ */
 const materialOutputNumberShow = computed(() => (index: number): boolean => {
-    if (recipe.value?.output[index]?.id === undefined) return false;
-    return recipe.value.output[index].id !== '';
+    if (index < 0 || props.recipe.output[index] === undefined) return false; // イレギュラー
+    return props.recipe.output[index].id !== '';
 });
 /** 出力素材数 */
-const materialOutputNumber = computed(() => (index: number): number|'' => {
-    if (recipe.value?.output[index]?.number === undefined) return '';
-    return recipe.value.output[index].number;
+const materialOutputNumber = computed(() => (index: number): number => {
+    if (index < 0 || props.recipe.output[index] === undefined) return 0; // イレギュラー
+    return props.recipe.output[index].number;
 });
 
-/** 設備の入力口数 */
+/** 設備の入力ポート数 */
 const machineInputPortNumber = computed((): number => {
-    return configStore.machineInputPortNumber(recipe.value.machineId);
+    return props.machine.inputNumber.totalPortNumber();
 });
-/** 設備の出力口数 */
+/** 設備の出力ポート数 */
 const machineOutputPortNumber = computed((): number => {
-    return configStore.machineOutputPortNumber(recipe.value.machineId);
+    return props.machine.outputNumber.totalPortNumber();
 });
-/** 設備の入力口のタイプ */
+/** 設備の入力ポートタイプ */
 const machineInputType = computed(() => (index: number): string => {
-    const portNumber = configStore.machineInputPortNumber(recipe.value.machineId);
-    if (index >= portNumber) return '';
-    return configStore.machineInputPortType(recipe.value.machineId, index);
+    return props.machine.inputNumber.portType(index);
 });
-/** 設備の出力口のタイプ */
+/** 設備の入力ポートがコンベアか（枠外なら false） */
+const machineInputTypeIsConveyor = computed(() => (index: number): boolean => {
+    return props.machine.inputNumber.portType(index) == MachinePortType.Conveyor;
+});
+/** 設備の入力ポートがパイプか（枠外なら false） */
+const machineInputTypeIsPipe = computed(() => (index: number): boolean => {
+    return props.machine.inputNumber.portType(index) == MachinePortType.Pipe;
+});
+/** 設備の出力ポートタイプ */
 const machineOutputType = computed(() => (index: number): string => {
-    const portNumber = configStore.machineOutputPortNumber(recipe.value.machineId);
-    if (index >= portNumber) return '';
-    return configStore.machineOutputPortType(recipe.value.machineId, index);
+    return props.machine.outputNumber.portType(index);
+});
+/** 設備の出力ポートがコンベアか（枠外なら false） */
+const machineOutputTypeIsConveyor = computed(() => (index: number): boolean => {
+    return props.machine.outputNumber.portType(index) == MachinePortType.Conveyor;
+});
+/** 設備の入力ポートがパイプか（枠外なら false） */
+const machineOutputTypeIsPipe = computed(() => (index: number): boolean => {
+    return props.machine.outputNumber.portType(index) == MachinePortType.Pipe;
 });
 
 /** レシピ名エラー */
 const nameError = computed((): boolean => {
-    return recipe.value.nameError();
+    return props.recipe.nameError();
 });
 /** 入力素材エラー */
 const inputError = computed((): boolean => {
-    const machine = configStore.config.machines.find((m) => m.id == recipe.value.machineId);
-    if (!machine) return true;
-    return recipe.value.inputError(machine, configStore.config.materials);
+    return props.recipe.inputError(props.machine, props.materials);
 });
 /** 入力素材数エラー */
 const inputNumberError = computed(() => (index: number): boolean => {
-    if (index < 0 || index >= recipe.value?.input.length) return true; // イレギュラー
-    if (!recipe.value.input[index]) return false; // 設備の口数以上ならエラー無し
-    return recipe.value.input[index].numberError();
+    if (index < 0 || index >= props.recipe.input.length) return true; // イレギュラー
+    if (props.recipe.input[index] === undefined) return false; // 設備の口数以上ならエラー無し
+    return props.recipe.input[index].numberError();
 });
 /** 出力素材エラー */
 const outputError = computed((): boolean => {
-    const machine = configStore.config.machines.find((m) => m.id == recipe.value.machineId);
-    if (!machine) return true;
-    return recipe.value.outputError(machine, configStore.config.materials);
+    return props.recipe.outputError(props.machine, props.materials);
 });
 /** 出力素材数エラー */
 const outputNumberError = computed(() => (index: number): boolean => {
-    if (index < 0 || index >= recipe.value?.output.length) return true; // イレギュラー
-    if (!recipe.value.output[index]) return false; // 設備の口数以上ならエラー無し
-    return recipe.value.output[index].numberError();
+    if (index < 0 || index >= props.recipe.output.length) return true; // イレギュラー
+    if (props.recipe.output[index] === undefined) return false; // 設備の口数以上ならエラー無し
+    return props.recipe.output[index].numberError();
 });
 /** 製作時間エラー */
 const productTimeError = computed((): boolean => {
-    return recipe.value.productTimeError();
+    return props.recipe.productTimeError();
 });
 /** 対象の設備エラー */
 const machineIdError = computed((): boolean => {
-    return recipe.value.machineIdError();
+    return props.recipe.machineIdError();
 });
 /** 何かしらエラーあり */
 const existError = computed((): boolean => {
-    const machine = configStore.config.machines.find((m) => m.id == recipe.value.machineId);
-    if (!machine) return true;
-    return recipe.value.existError(machine, configStore.config.materials);
+    return props.recipe.existError(props.machine, props.materials);
 });
 
 // Actions -----------------------------------------------------
@@ -338,21 +329,27 @@ const toEditMode = () => {
 const toViewMode = () => {
     editMode.value = false;
 }
-
-/** レシピ削除 */
-const deleteRecipe = () => {
-    emits('delete', props.index);
-};
 /** レシピ名更新 */
 const changeRecipeName = (event: Event) => {
     if (event?.target === undefined) return;
-    recipe.value.name = (event.target as HTMLInputElement).value;
-    applyRecipeData();
+    const target = event.target as HTMLInputElement;
+    const recipe = props.recipe.clone();
+    recipe.name = target.value;
+    // ストア更新
+    const succeeded = applyRecipeData(recipe);
+    if (!succeeded) {
+        // 失敗したらフォームの値を元に戻す
+        target.value = props.recipe.name;
+    }
 };
 /** 設備ID更新 */
 const changeMachineId = (value: string) => {
-    recipe.value.machineId = value;
-    // 入出力口数に変化があれば補正（target は参照渡し）
+    const recipe = props.recipe.clone();
+    recipe.machineId = value;
+    // 入出力ポート数に変化があれば補正
+    // param target [in,out] 補正対象のレシピ素材リスト
+    // param portNumber [in] 設備のポート数
+    // param maxNum [in] 設備のポート数の最大値
     const update = (target: Array<ConfigRecipeMaterial>, portNumber: number, maxNumber: number) => {
         for (let i = 0; i < maxNumber; i++) {
             if (i < portNumber && target[i] === undefined) {
@@ -365,97 +362,104 @@ const changeMachineId = (value: string) => {
             }
         }
     }
-    // 入力口数に変化があれば補正
-    const inputNumber = configStore.machineInputPortNumber(recipe.value.machineId);
-    update(recipe.value.input, inputNumber, ConfigRecipe.InputMax);
-    // 出力口数に変化があれば補正
-    const outputNumber = configStore.machineOutputPortNumber(recipe.value.machineId);
-    update(recipe.value.output, outputNumber, ConfigRecipe.OutputMax);
+    // 入力ポート数に変化があれば補正
+    const inputNumber = props.machine.inputNumber.totalPortNumber();
+    update(recipe.input, inputNumber, ConfigRecipe.InputMax);
+    // 出力ポート数に変化があれば補正
+    const outputNumber = props.machine.outputNumber.totalPortNumber();
+    update(recipe.output, outputNumber, ConfigRecipe.OutputMax);
 
-    // 入出力口のタイプも合わせる
-    relocateIOMaterial();
+    // 入出力ポートのタイプも合わせる
+    recipe.relocateIOMaterial(props.machine, props.materials);
 
-    applyRecipeData();
+    // ストア更新(失敗時の補正不要)
+    applyRecipeData(recipe);
 };
 /** 製作時間更新 */
 const changeProductTime = (event: Event) => {
     if (event?.target === undefined) return;
-    recipe.value.productTime = Number((event.target as HTMLInputElement).value);
-    applyRecipeData();
+    const target = event.target as HTMLInputElement;
+    const recipe = props.recipe.clone();
+    recipe.productTime = Number(target.value);
+    // ストア更新
+    const succeeded = applyRecipeData(recipe);
+    if (!succeeded) {
+        // 失敗したらフォームの値を元に戻す
+        target.value = props.recipe.productTime.toString();
+    }
 };
 /** 入力素材ID更新 */
 const changeInputMaterialId = (index: number, value: string) => {
-    if (index < 0 || index >= recipe.value.input.length) return;
-    if (!recipe.value.input[index]) {
+    if (index < 0 || index >= props.recipe.input.length) return; // イレギュラー
+    const recipe = props.recipe.clone();
+    if (!recipe.input[index]) {
         // 入力素材の枠がデータ上確保されていない場合は作成する
-        recipe.value.input[index] = new ConfigRecipeMaterial();
+        recipe.input[index] = new ConfigRecipeMaterial();
     }
-    recipe.value.input[index].id = value;
+    recipe.input[index].id = value;
     if (!value) {
         // 素材IDが無い場合は必要数もリセット
-        recipe.value.input[index].number = 0;
+        recipe.input[index].number = 0;
     }
-    applyRecipeData();
+    // ストア更新
+    applyRecipeData(recipe);
 };
 /** 入力素材数更新 */
 const changeInputMaterialNumber = (index: number, event: Event) => {
     if (event?.target === undefined) return;
-    if (index < 0 || index >= recipe.value.input.length) return;
-    if (!recipe.value.input[index]) {
+    if (index < 0 || index >= props.recipe.input.length) return; // イレギュラー
+    const target = event.target as HTMLInputElement;
+    const recipe = props.recipe.clone();
+    if (!recipe.input[index]) {
         // 入力素材の枠がデータ上確保されていない場合は作成する
-        recipe.value.input[index] = new ConfigRecipeMaterial();
+        recipe.input[index] = new ConfigRecipeMaterial();
     }
-    recipe.value.input[index].number = Number((event.target as HTMLInputElement).value);
-    applyRecipeData();
+    recipe.input[index].number = Number(target.value);
+    // ストア更新
+    const succeeded = applyRecipeData(recipe);
+    if (!succeeded) {
+        // 失敗したらフォームの値を元に戻す
+        target.value = props.recipe.input[index].number.toString();
+    }
 };
 /** 出力素材ID更新 */
 const changeOutputMaterialId = (index: number, value: string) => {
-    if (index < 0 || index >= recipe.value.output.length) return;
-    if (!recipe.value.output[index]) {
+    if (index < 0 || index >= props.recipe.output.length) return; // イレギュラー
+    const recipe = props.recipe.clone();
+    if (!recipe.output[index]) {
         // 出力素材の枠がデータ上確保されていない場合は作成する
-        recipe.value.output[index] = new ConfigRecipeMaterial();
+        recipe.output[index] = new ConfigRecipeMaterial();
     }
-    recipe.value.output[index].id = value;
+    recipe.output[index].id = value;
     if (!value) {
         // 素材IDが無い場合は必要数もリセット
-        recipe.value.input[index].number = 0;
+        recipe.input[index].number = 0;
     }
-    applyRecipeData();
+    // ストア更新
+    applyRecipeData(recipe);
 };
 /** 出力素材数更新 */
 const changeOutputMaterialNumber = (index: number, event: Event) => {
     if (event?.target === undefined) return;
-    if (index < 0 || index >= recipe.value.output.length) return;
-    if (!recipe.value.output[index]) {
+    if (index < 0 || index >= props.recipe.output.length) return;
+    const target = event.target as HTMLInputElement;
+    const recipe = props.recipe.clone();
+    if (!recipe.output[index]) {
         // 出力素材の枠がデータ上確保されていない場合は作成する
-        recipe.value.output[index] = new ConfigRecipeMaterial();
+        recipe.output[index] = new ConfigRecipeMaterial();
     }
-    recipe.value.output[index].number = Number((event.target as HTMLInputElement).value);
-    applyRecipeData();
+    recipe.output[index].number = Number(target.value);
+    // ストア更新
+    const succeeded = applyRecipeData(recipe);
+    if (!succeeded) {
+        // 失敗したらフォームの値を元に戻す
+        target.value = props.recipe.output[index].number.toString();
+    }
 };
 
 // サイクル -----------------------------------------------------
 
-onMounted(() => {
-    getRecipe();
-});
-
 // 監視 --------------------------------------------------------
-
-// レシピインデックスの変更を検出
-watch(() => props.index, () => {
-    // ストアの値で内部情報を更新
-    getRecipe();
-});
-
-// ストアの更新後を検知
-configStore.$subscribe(() => {
-    // 更新が終わったらタイミングでストアの値で内部情報を更新
-    if(configStore.isUpdating) return;
-    getRecipe();
-});
-
-
 
 </script>
 
@@ -518,7 +522,7 @@ configStore.$subscribe(() => {
     flex: 1;
     display: flex;
     padding: 2px 8px 2px 0px;
-    gap: 8px;
+    gap: 6px;
 }
 .view-mode-box .title-box {
     flex: 1;
@@ -535,12 +539,15 @@ configStore.$subscribe(() => {
     line-height: 1.2em;
     font-weight: bold;
     user-select: text;
+    border-radius: 4px;
+    padding: 0px 2px;
 }
 .view-mode-box .title-box .machine-name-box {
     text-align: left;
     display: flex;
     align-items: center;
     gap: 4px;
+    padding: 0px 2px;
 }
 .view-mode-box .title-box .machine-name-box.error {
     border-radius: 4px;
@@ -559,16 +566,24 @@ configStore.$subscribe(() => {
     gap: 8px;
 }
 .view-mode-box .recipe-detail-box .material-box {
-    border: 1px solid var(--dark-main-color);
-    border-radius: 4px;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
+    aspect-ratio: 1;
+    height: calc(2.5em + 2px);
+}
+.view-mode-box .recipe-detail-box .material-box.conveyor {
+    border: 1px solid var(--dark-main-color);
+    border-radius: 4px;
+}
+.view-mode-box .recipe-detail-box .material-box.pipe {
+    border: 1px solid var(--dark-main-color);
+    border-radius: 50%;
 }
 .view-mode-box .recipe-detail-box .material-box img {
     aspect-ratio: 1;
-    height: 2.5em;
+    height: 100%;
 }
 .view-mode-box .recipe-detail-box .material-box .number {
     position: absolute;
@@ -682,7 +697,7 @@ configStore.$subscribe(() => {
     min-width: 0;
 }
 .edit-mode-box .grid .input-material-box > *:nth-child(2) {
-    width: 3em;
+    width: 4em;
 }
 .edit-mode-box .grid .output-label {
     grid-area: output-label;
@@ -702,7 +717,7 @@ configStore.$subscribe(() => {
     min-width: 0;
 }
 .edit-mode-box .grid .output-material-box > *:nth-child(2) {
-    width: 3em;
+    width: 4em;
 }
 .edit-mode-box .grid .product-time-label {
     grid-area: product-time-label;

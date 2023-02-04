@@ -2,6 +2,8 @@
  * ツールの設定を受け取る型定義
  */
 
+import { getDuplicates } from '@/logics/primitives'
+
 /** 現在のフォーマットバージョン */
 const CurrentFormat = '1.0';
 
@@ -116,7 +118,7 @@ export const MachineTier = class {
 };
 
 /**
- * 設備の素材搬入出ポート
+ * 設備の素材搬入出力ポート
  */
 export class ConfigMachinePort {
     /** 固形ポート数 */
@@ -139,6 +141,17 @@ export class ConfigMachinePort {
         if (!target) return;
         this.conveyor = target.conveyor;
         this.pipe = target.pipe;
+    };
+    /**
+     * 指定位置のポートのタイプ取得
+     * @param id [in] 設備ID
+     * @returns 設備の入力ポートのタイプ（例：'Conveyor'）
+     */
+    portType(index: number): string {
+        if (index < 0) return '';
+        if (index < this.conveyor) return MachinePortType.Conveyor;
+        if (index < this.conveyor + this.pipe) return MachinePortType.Pipe;
+        return '';
     };
     /** 全形状のポート数合計 */
     totalPortNumber(): number {
@@ -469,21 +482,25 @@ export class ConfigRecipe {
     uniqueKey: number = 0;
 
     /** コンストラクタ */
-    constructor(data: any | null = null) {
-        if (data) this.deserialize(data);
+    constructor(data: any | null = null, 
+                machines: Array<ConfigMachine> | null = null,
+                materials: Array<ConfigMaterial> | null = null) {
+        if (data) this.deserialize(data, machines, materials);
     };
     /** 代入 */
     assign(target: ConfigRecipe) {
         if (!target) return;
         this.name = target.name;
         this.input = new Array<ConfigRecipeMaterial>(ConfigRecipe.InputMax);
-        target.input.filter((v) => v).forEach((v: any, i: number) => {
-            if (this.input[i] === undefined) this.input[i] = new ConfigRecipeMaterial();
+        target.input.forEach((v: any, i: number) => {
+            if (v === undefined) return;
+            this.input[i] = new ConfigRecipeMaterial();
             this.input[i].assign(v);
         });
         this.output = new Array<ConfigRecipeMaterial>(ConfigRecipe.OutputMax);
-        target.output.filter((v) => v).forEach((v: any, i: number) => {
-            if (this.output[i] === undefined) this.output[i] = new ConfigRecipeMaterial();
+        target.output.forEach((v: any, i: number) => {
+            if (v === undefined) return;
+            this.output[i] = new ConfigRecipeMaterial();
             this.output[i].assign(v);
         });
         this.productTime = target.productTime;
@@ -523,8 +540,8 @@ export class ConfigRecipe {
     };
     /**
      * 出力素材エラー（設備の出力ポートがあり素材指定が無い場合エラー）
-     * @param conveyorPortNum [in] 設備の出力側のコンベアポート数
-     * @param pipePortNum [in] 設備の出力側のパイプポート数
+     * @param machine [in] 設備データ
+     * @param materials [in] 素材リスト
      */
     outputError(machine: ConfigMachine, materials: Array<ConfigMaterial>): boolean {
         // 有効な入力素材を取得
@@ -579,8 +596,12 @@ export class ConfigRecipe {
         };
     };
     /** デシリアライズ */
-    deserialize(data: any) {
+    deserialize(data: any | null = null, 
+                machines: Array<ConfigMachine> | null = null,
+                materials: Array<ConfigMaterial> | null = null) {
         this.name = data.Name;
+        this.productTime = data.ProductTime;
+        this.machineId = data.Machine;
         this.input = new Array<ConfigRecipeMaterial>(ConfigRecipe.InputMax);
         data.Input.forEach((v: any, i: number) => {
             this.input[i] = new ConfigRecipeMaterial(v);
@@ -589,14 +610,61 @@ export class ConfigRecipe {
         data.Output.forEach((v: any, i: number) => {
             this.output[i] = new ConfigRecipeMaterial(v);
         });
-        this.productTime = data.ProductTime;
-        this.machineId = data.Machine;
+        
+        // 入出力素材は設備のポートタイプに併せて位置調整が必要な為特殊処理する
+        // ただし、素材リストが無いまたは設備データ取得に失敗した（存在しない設備IDが指定されている）場合はそのまま入れる）
+        const machine = machines?.find((v) => v.id == this.machineId);
+        if (machine === undefined || materials === null) return;
+        this.relocateIOMaterial(machine, materials);
     };
     /** 複製 */
     clone(): ConfigRecipe {
         const value = new ConfigRecipe();
         value.assign(this);
         return value;
+    };
+    
+    /** 
+     * 設備の入出力ポートに合わせて配置を変更
+     * ※固体はコンベア枠の位置へ、液体気体はパイプ枠の位置へ
+     */
+    relocateIOMaterial(machine: ConfigMachine, materials: Array<ConfigMaterial>) {
+        // 設備の入出力ポートのタイプに合わせて再配置
+        // param io [in,out] レシピの素材リスト
+        // param portNumber [in] 設備のタイプ別ポート数（MachinePortType.Types の順）
+        const relocate = (io: Array<ConfigRecipeMaterial>, portNumber: Array<number>) => {
+            let currentIndex = 0;
+            const validIO: Array<ConfigRecipeMaterial> = io.filter((v) => v);
+            MachinePortType.Types.forEach((type: string, index: number) => {
+                const typePortNumber = portNumber[index];
+                const typeMaterials = validIO.filter((recipeMaterial: ConfigRecipeMaterial) => {
+                    
+                    const state = materials.find((v) => v.id == recipeMaterial.id)?.state;
+                    if (!state) return false; // 設定エラー
+                    return MaterialState[state].Port == type;
+                });
+                for (let i = 0; i < typePortNumber; i++) {
+                    if (typeMaterials[i]) {
+                        io[currentIndex + i] = typeMaterials[i];
+                    }
+                    else if (io[currentIndex + i]) {
+                        // undefined を値として直接設定はできないので値がある場合だけ削除する
+                        delete io[currentIndex + i];
+                    }
+                }
+                currentIndex += typePortNumber;
+            });
+        };
+        // 設備のタイプ別ポート数取得（MachinePortType.Types の順）
+        const portNumberByType = (machinePort: ConfigMachinePort): Array<number> => {
+            return MachinePortType.Types.map((type: string): number => {
+                return machinePort.getWithType(type);
+            });
+        }
+        // 入力素材再配置
+        relocate(this.input, portNumberByType(machine.inputNumber));
+        // 出力素材再配置
+        relocate(this.output, portNumberByType(machine.outputNumber));
     };
 };
 /** レシピリスト */
@@ -625,34 +693,29 @@ export class Config {
     assign(target: Config) {
         if (!target) return;
         this.version = target.version;
-        this.machineCategories = [] as CategoryList;
-        target.machineCategories.filter((v) => v).forEach((v: any, i: number) => {
-            if (this.machineCategories[i] === undefined)
-                this.machineCategories[i] = new ConfigCategory();
+        this.machineCategories = new Array<ConfigCategory>(target.machineCategories.length);
+        target.machineCategories.forEach((v: any, i: number) => {
+            this.machineCategories[i] = new ConfigCategory();
             this.machineCategories[i].assign(v);
         });
-        this.materialCategories = [] as CategoryList;
+        this.materialCategories = new Array<ConfigCategory>(target.materialCategories.length);
         target.materialCategories.filter((v) => v).forEach((v: any, i: number) => {
-            if (this.materialCategories[i] === undefined)
-                this.materialCategories[i] = new ConfigCategory();
+            this.materialCategories[i] = new ConfigCategory();
             this.materialCategories[i].assign(v);
         });
-        this.machines = [] as ConfigMachineList;
+        this.machines = new Array<ConfigMachine>(target.machines.length);
         target.machines.filter((v) => v).forEach((v: any, i: number) => {
-            if (this.machines[i] === undefined)
-                this.machines[i] = new ConfigMachine();
+            this.machines[i] = new ConfigMachine();
             this.machines[i].assign(v);
         });
-        this.materials = [] as ConfigMaterialList;
+        this.materials = new Array<ConfigMaterial>(target.materials.length);
         target.materials.filter((v) => v).forEach((v: any, i: number) => {
-            if (this.materials[i] === undefined)
-                this.materials[i] = new ConfigMaterial();
+            this.materials[i] = new ConfigMaterial();
             this.materials[i].assign(v);
         });
-        this.recipes = [] as ConfigRecipeList;
+        this.recipes = new Array<ConfigRecipe>(target.recipes.length);
         target.recipes.filter((v) => v).forEach((v: any, i: number) => {
-            if (this.recipes[i] === undefined)
-                this.recipes[i] = new ConfigRecipe();
+            this.recipes[i] = new ConfigRecipe();
             this.recipes[i].assign(v);
         });
     };
@@ -661,37 +724,62 @@ export class Config {
         return !this.version;
     };
     /** 設備カテゴリエラー */
-    machineCategoriesError(): boolean {
+    hasMachineCategoriesError(): boolean {
         return this.machineCategories.some((v) => v.existError());
     };
     /** 素材カテゴリエラー */
-    materialCategoriesError(): boolean {
+    hasMaterialCategoriesError(): boolean {
         return this.materialCategories.some((v) => v.existError());
     };
     /** 設備エラー */
-    machinesError(): boolean {
+    hsdMachinesError(): boolean {
         return this.machines.some((v) => v.existError());
     };
     /** 素材エラー */
-    materialsError(): boolean {
+    hasMaterialsError(): boolean {
         return this.materials.some((v) => v.existError());
     };
     /** レシピエラー */
-    recipesError(): boolean {
+    hasRecipesError(): boolean {
         return this.recipes.some((v) => {
             const machine = this.machines.find((m) => m.id == v.machineId);
             if (!machine) return true;
             return v.existError(machine, this.materials);
         });
     };
+    /** 設備カテゴリID重複 */
+    duplicateMachineCategoryIds(): Array<string> {
+        const ids = this.machineCategories.map((v) => v.id);
+        return getDuplicates(ids);
+    };
+    /** 素材カテゴリID重複 */
+    duplicateMaterialCategoryIds(): Array<string> {
+        const ids = this.materialCategories.map((v) => v.id);
+        return getDuplicates(ids);
+    };
+    /** 設備ID重複 */
+    duplicateMachineIds(): Array<string> {
+        const ids = this.machines.map((v) => v.id);
+        return getDuplicates(ids);
+    };
+    /** 素材ID重複 */
+    duplicateMaterialIds(): Array<string> {
+        const ids = this.materials.map((v) => v.id);
+        return getDuplicates(ids);
+    };
+    /** レシピ名重複 */
+    duplicateRecipeNames(): Array<string> {
+        const names = this.recipes.map((v) => v.name);
+        return getDuplicates(names);
+    };
     /** エラーチェック */
     existError(): boolean {
         return (this.versionError()
-            || this.machineCategoriesError()
-            || this.materialCategoriesError()
-            || this.machinesError()
-            || this.materialsError()
-            || this.recipesError());
+            || this.hasMachineCategoriesError()
+            || this.hasMaterialCategoriesError()
+            || this.hsdMachinesError()
+            || this.hasMaterialsError()
+            || this.hasRecipesError());
     };
     /** シリアライズ */
     serialize(): any {
@@ -726,7 +814,7 @@ export class Config {
         });
         this.recipes = [];
         data.Recipes.forEach((v: any) => {
-            this.recipes.push(new ConfigRecipe(v));
+            this.recipes.push(new ConfigRecipe(v, this.machines, this.materials));
         });
     };
     /** 複製 */

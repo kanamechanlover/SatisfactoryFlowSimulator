@@ -8,12 +8,12 @@
             <div class="view-mode-box" v-if="!editMode">
                 <!-- トグルボタン -->
                 <div class="toggle-box">
-                    <div class="toggle-button" @click="toEditMode()" title="編集モードに切り替え">
+                    <div class="toggle-button" @click="toEditMode()" title="編集モードに切り替え" :class="{ error: existError }">
                         <fa :icon="['fas', 'pen-to-square']" />
                     </div>
                 </div>
                 <div class="title-box">
-                    <div class="machine-id-box" :class="{ error: idError }">
+                    <div class="machine-id-box" :class="{ error: idError, 'warning-section': props.hasDuplicate }">
                         <span>{{ machine.id }}</span>
                     </div>
                     <div class="machine-name-box" :class="{ error: nameError }">
@@ -36,7 +36,7 @@
                         </span>
                     </div>
                     <div class="detail">
-                        <span class="label">入力ポート数</span>
+                        <span class="label">入力口数</span>
                         <span class="value">
                             <img :src="imageStore.getData(MachinePortType.Conveyor)" />
                             <span>{{ machine.inputNumber.conveyor }}</span>
@@ -45,7 +45,7 @@
                         </span>
                     </div>
                     <div class="detail">
-                        <span class="label">出力ポート数</span>
+                        <span class="label">出力口数</span>
                         <span class="value">
                             <img :src="imageStore.getData(MachinePortType.Conveyor)" />
                             <span>{{ machine.outputNumber.conveyor }}</span>
@@ -76,7 +76,7 @@
                 <div class="grid">
                     <div class="label machine-id-label right">設備ID</div>
                     <div class="machine-id-box">
-                        <input type="text" :class="{ error: idError }"
+                        <input type="text" :class="{ error: idError, 'warning': props.hasDuplicate }"
                             :value="machine.id" @change="changeMachineId" />
                     </div>
                     <div class="label machine-name-label right">設備名</div>
@@ -93,10 +93,10 @@
                     </div>
                     <div class="label machine-category-label right">カテゴリ</div>
                     <div class="machine-category-box">
-                        <MachineCategorySelect :modelValue="machine.category"
-                            @update:modelValue="changeMachineCategory"
-                            :isError="categoryError">
-                        </MachineCategorySelect>
+                        <CategorySelect :modelValue="machine.category"
+                            :categories="categories" :isError="categoryError"
+                            @update:modelValue="changeMachineCategory">
+                        </CategorySelect>
                     </div>
                     <div class="label machine-power-label right">電力</div>
                     <div class="machine-power-box">
@@ -110,7 +110,7 @@
                     <div class="label machine-pipe-label right">
                         <img :src="imageStore.getData(MachinePortType.Pipe)" />
                     </div>
-                    <div class="label machine-input-label bottom">入力ポート数</div>
+                    <div class="label machine-input-label bottom">入力口数</div>
                     <div class="input-number machine-input-conveyor">
                         <input type="number" :value="machine.inputNumber.conveyor"
                             @change="changeMachineInputConveyorNumber" min="0" />
@@ -119,7 +119,7 @@
                         <input type="number" :value="machine.inputNumber.pipe"
                             @change="changeMachineInputPipeNumber" min="0" />
                     </div>
-                    <div class="label machine-output-label bottom">出力ポート数</div>
+                    <div class="label machine-output-label bottom">出力口数</div>
                     <div class="input-number machine-output-conveyor">
                         <input type="number" :value="machine.outputNumber.conveyor"
                             @change="changeMachineOutputConveyorNumber" min="0" />
@@ -146,29 +146,45 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
 import { useImageStore } from '@/stores/image_store';
-import { ConfigMachine, MachinePortType, MachineTier } from '@/defines/types/config'
+import {
+    ConfigMachine, MachinePortType, MachineTier, ConfigCategory
+} from '@/defines/types/config'
 
 // 子コンポーネント ---------------------------------------------
 
+import CategorySelect from '@/components/config_editor/CategorySelect.vue'
 
 // 基本定義 -----------------------------------------------------
 
 /** プロパティを定義 */
 const props = defineProps({
+    /** 設備インデックス */
     index: {
         type: Number,
         default: 0,
         required: true,
     },
+    /** 設備データ */
+    machine: {
+        type: ConfigMachine,
+        default: new ConfigMachine(),
+        required: true,
+    },
+    /** 設備カテゴリリスト */
+    categories: {
+        type: Array<ConfigCategory>,
+        default: new ConfigMachine(),
+        required: true,
+    },
+    /** 重複する要素の有無 */
+    hasDuplicate: {
+        type: Boolean,
+        default: false,
+    },
 });
-
-/** エミット定義 */
-const emits = defineEmits<{
-    (e: 'delete', value: number): void // レシピ削除（value は props.index）
-}>();
 
 // 内部変数 -----------------------------------------------------
 
@@ -178,23 +194,27 @@ const configStore = useConfigStore();
 /** 画像ストア */
 const imageStore = useImageStore();
 
-/** 設備データ（内部用） */
-const machine = ref(new ConfigMachine());
-
 /** 編集モードフラグ（展開：編集モード、格納：閲覧モード（コンパクト表示）） */
 const editMode = ref(false);
 
 // 内部関数 -----------------------------------------------------
 
-/** 内部データ更新 */
-const getMachine = function() {
-    if (props.index === undefined || props.index < 0) return; // イレギュラー
-    machine.value?.assign(configStore.config.machines[props.index]);
+/**
+ * レシピ更新時
+ * @param machine [in] 更新後の設備データ
+ * @return 処理開始の成否（true: 成功）
+ */
+const applyMachineData = (machine: ConfigMachine): boolean => {
+    // ストア更新
+    return configStore.setMachine(props.index, machine);
 };
 
-/** 内部レシピ更新時 */
-const applyMachineData = function() {
-    configStore.setMachine(props.index, machine.value);
+/**
+ * 設備削除
+ * @return 処理開始の成否（true: 成功）
+ */
+const deleteMachine = (): boolean => {
+    return configStore.deleteMachine(props.index);
 };
 
 // Getters -----------------------------------------------------
@@ -211,48 +231,48 @@ const referenceMachine = computed(() => {
 
 /** ティアのマイナス値変換 */
 const tierName = computed((): string => {
-    if (!machine.value) return ''; // イレギュラー
-    return MachineTier.getTierName(machine.value.tier);
+    return MachineTier.getTierName(props.machine.tier);
 });
 
 /** カテゴリ名 */
 const categoryName = computed((): string => {
-    if (!machine.value) return ''; // イレギュラー
-    return configStore.machineCategoryName(machine.value.category);
+    return configStore.machineCategoryName(props.machine.category);
 });
 
 /** 設備アイコンデータ */
 const machineIconData = computed((): string => {
-    if (!machine.value?.id) return ''; // イレギュラー
-    return imageStore.getData(machine.value.id);
+    return imageStore.getData(props.machine.id);
 });
 
 /** 設備アイコンURL */
 const machineIconUrl = computed((): string => {
-    if (!machine.value) return ''; // イレギュラー
-    return imageStore.getUrl(machine.value.id);
+    return imageStore.getUrl(props.machine.id);
 });
 
 /** 設備IDエラー */
 const idError = computed((): boolean => {
-    return machine.value.idError();
+    return props.machine.idError();
 });
 /** 設備名エラー */
 const nameError = computed((): boolean => {
-    return machine.value.nameError();
+    return props.machine.nameError();
 });
 /** カテゴリIDエラー */
 const categoryError = computed((): boolean => {
-    return machine.value.categoryError();
+    return props.machine.categoryError();
 });
 /** 開放されるティア数エラー */
 const tierError = computed((): boolean => {
-    return machine.value.tierError();
+    return props.machine.tierError();
 });
 /** 設備アイコンエラー */
 const iconError = computed((): boolean => {
-    return !imageStore.hasImage(machine.value.id);
+    return !imageStore.hasImage(props.machine.id);
 })
+/** 何かしらエラーあり */
+const existError = computed((): boolean => {
+    return props.machine.existError();
+});
 
 // Actions -----------------------------------------------------
 
@@ -268,83 +288,119 @@ const toViewMode = () => {
 /** 設備ID変更 */
 const changeMachineId = (event: Event) => {
     if (!event?.target) return;
-    machine.value.id = (event.target as HTMLInputElement).value;
-    applyMachineData();
+    const target = event.target as HTMLInputElement;
+    const machine = props.machine.clone();
+    machine.id = target.value;
+    // ストア更新
+    const succeeded = applyMachineData(machine);
+    if (!succeeded) {
+        // 失敗したらフォームの値を元に戻す
+        target.value = props.machine.id;
+    }
 };
 
 /** 設備名変更 */
 const changeMachineName = (event: Event) => {
     if (!event?.target) return;
-    machine.value.name = (event.target as HTMLInputElement).value;
-    applyMachineData();
+    const target = event.target as HTMLInputElement;
+    const machine = props.machine.clone();
+    machine.name = target.value;
+    // ストア更新
+    const succeeded = applyMachineData(machine);
+    if (!succeeded) {
+        // 失敗したらフォームの値を元に戻す
+        target.value = props.machine.name;
+    }
 };
 /** 設備のティア変更 */
 const changeMachineTier = (event: Event) => {
     if (!event?.target) return;
-    machine.value.tier = Number((event.target as HTMLInputElement).value);
-    applyMachineData();
+    const target = event.target as HTMLInputElement;
+    const machine = props.machine.clone();
+    machine.tier = Number(target.value);
+    // ストア更新
+    const succeeded = applyMachineData(machine);
+    if (!succeeded) {
+        // 失敗したらフォームの値を元に戻す
+        target.value = props.machine.tier.toString();
+    }
 };
 /** 設備カテゴリ変更 */
 const changeMachineCategory = (categoryName: string) => {
-    machine.value.category = categoryName;
-    applyMachineData();
+    const machine = props.machine.clone();
+    machine.category = categoryName;
+    // ストア更新
+    applyMachineData(machine);
 };
 /** 設備の入力コンベア数変更 */
 const changeMachineInputConveyorNumber = (event: Event) => {
     if (!event?.target) return;
-    machine.value.inputNumber.conveyor = Number((event.target as HTMLInputElement).value);
-    applyMachineData();
+    const target = event.target as HTMLInputElement;
+    const machine = props.machine.clone();
+    machine.inputNumber.conveyor = Number(target.value);
+    // ストア更新
+    const succeeded = applyMachineData(machine);
+    if (!succeeded) {
+        // 失敗したらフォームの値を元に戻す
+        target.value = props.machine.inputNumber.conveyor.toString();
+    }
 };
-/** 設備の入力コンベア数変更 */
+/** 設備の入力パイプ数変更 */
 const changeMachineInputPipeNumber = (event: Event) => {
     if (!event?.target) return;
-    machine.value.inputNumber.pipe = Number((event.target as HTMLInputElement).value);
-    applyMachineData();
+    const target = event.target as HTMLInputElement;
+    const machine = props.machine.clone();
+    machine.inputNumber.pipe = Number(target.value);
+    // ストア更新
+    const succeeded = applyMachineData(machine);
+    if (!succeeded) {
+        // 失敗したらフォームの値を元に戻す
+        target.value = props.machine.inputNumber.pipe.toString();
+    }
 };
 /** 設備の出力コンベア数変更 */
 const changeMachineOutputConveyorNumber = (event: Event) => {
     if (!event?.target) return;
-    machine.value.outputNumber.conveyor = Number((event.target as HTMLInputElement).value);
-    applyMachineData();
+    const target = event.target as HTMLInputElement;
+    const machine = props.machine.clone();
+    machine.outputNumber.conveyor = Number(target.value);
+    // ストア更新
+    const succeeded = applyMachineData(machine);
+    if (!succeeded) {
+        // 失敗したらフォームの値を元に戻す
+        target.value = props.machine.outputNumber.conveyor.toString();
+    }
 };
-/** 設備の出力コンベア数変更 */
+/** 設備の出力パイプ数変更 */
 const changeMachineOutputPipeNumber = (event: Event) => {
     if (!event?.target) return;
-    machine.value.outputNumber.pipe = Number((event.target as HTMLInputElement).value);
-    applyMachineData();
+    const target = event.target as HTMLInputElement;
+    const machine = props.machine.clone();
+    machine.outputNumber.pipe = Number(target.value);
+    // ストア更新
+    const succeeded = applyMachineData(machine);
+    if (!succeeded) {
+        // 失敗したらフォームの値を元に戻す
+        target.value = props.machine.outputNumber.pipe.toString();
+    }
 };
 /** 設備の電力変更 */
 const changeMachinePower = (event: Event) => {
     if (!event?.target) return;
-    machine.value.power = Number((event.target as HTMLInputElement).value);
-    applyMachineData();
-};
-
-/** 設備削除 */
-const deleteMachine = () => {
-    emits('delete', props.index);
+    const target = event.target as HTMLInputElement;
+    const machine = props.machine.clone();
+    machine.power = Number(target.value);
+    // ストア更新
+    const succeeded = applyMachineData(machine);
+    if (!succeeded) {
+        // 失敗したらフォームの値を元に戻す
+        target.value = props.machine.power.toString();
+    }
 };
 
 // サイクル -----------------------------------------------------
 
-onMounted(() => {
-    getMachine();
-});
-
 // 監視 --------------------------------------------------------
-
-// 設備インデックスの変更を検出
-watch(() => props.index, () => {
-    // ストアの値で内部情報を更新
-    getMachine();
-});
-
-// 設定ストアの更新を検出
-configStore.$subscribe(() => {
-    // 更新が終わったらタイミングでストアの値で内部情報を更新
-    if(configStore.isUpdating) return;
-    getMachine();
-});
 
 
 </script>
@@ -445,6 +501,8 @@ configStore.$subscribe(() => {
     user-select: text;
     display: flex;
     align-items: center;
+    margin-right: 4px;
+    border-radius: 4px;
 }
 .view-mode-box .title-box .machine-name-box {
     text-align: left;
@@ -622,7 +680,7 @@ configStore.$subscribe(() => {
 .edit-mode-box .grid .machine-category-box input {
     flex: 1;
 }
-/* 入力ポート数 */
+/* 入力口数 */
 .edit-mode-box .grid .machine-input-label {
     grid-area: label6;
 }
@@ -632,7 +690,7 @@ configStore.$subscribe(() => {
 .edit-mode-box .grid .machine-input-pipe {
     grid-area: input-pipe;
 }
-/* 出力ポート数 */
+/* 出力口数 */
 .edit-mode-box .grid .machine-output-label {
     grid-area: label7;
 }

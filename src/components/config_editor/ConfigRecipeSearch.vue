@@ -10,7 +10,7 @@
             </td>
             <th>設備</th>
             <td width="40%">
-                <MachineSelect v-model="searchCondition.machineId"></MachineSelect>
+                <MachineSelect v-model="searchCondition.machineId" :machines="props.machines"></MachineSelect>
             </td>
             <td class="apply-box" rowspan="2" @click="applyRecipeSearch" width="10%">検索</td>
             <td class="reset-box" rowspan="2" @click="resetRecipeSearch">リセット</td>
@@ -18,11 +18,11 @@
         <tr>
             <th>入力素材</th>
             <td>
-                <MaterialSelect v-model="searchCondition.inputMaterialId"></MaterialSelect>
+                <MaterialSelect v-model="searchCondition.inputMaterialId" :materials="props.materials"></MaterialSelect>
             </td>
             <th>出力素材</th>
             <td>
-                <MaterialSelect v-model="searchCondition.outputMaterialId"></MaterialSelect>
+                <MaterialSelect v-model="searchCondition.outputMaterialId" :materials="props.materials"></MaterialSelect>
             </td>
         </tr>
     </table>
@@ -31,12 +31,29 @@
 <script setup lang="ts">
 
 import { ref } from 'vue'
+import { ConfigMachine, ConfigMaterial } from '@/defines/types/config'
 
 
 // 子コンポーネント ---------------------------------------------
 
 
 // 基本定義 -----------------------------------------------------
+
+/** プロパティを定義 */
+const props = defineProps({
+    /** 設備リスト */
+    machines: {
+        type: Array<ConfigMachine>,
+        default: [] as Array<ConfigMachine>,
+        require: true,
+    },
+    /** 素材リスト */
+    materials: {
+        type: Array<ConfigMaterial>,
+        default: [] as Array<ConfigMaterial>,
+        require: true,
+    },
+});
 
 // エミット
 const emits = defineEmits<{

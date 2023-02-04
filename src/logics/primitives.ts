@@ -50,3 +50,20 @@ export const sortCaseInsensitive = (array: any[], func: Function | null = null):
     // 文字列以外なら通常の昇順ソート
     return array.sort();
 }
+
+/**
+ * 重複する値の有無チェック
+ * @param list [in] 対象の配列
+ * @return 重複の有無（true: 重複あり）
+ */
+export const existDuplicate = (list: Array<any>): boolean => {
+    return list.length != (new Set(list)).size;
+};
+/**
+ * 重複する値の有無チェック
+ * @param list [in] 対象の配列
+ * @return 重複の有無（true: 重複あり）
+ */
+export const getDuplicates = (list: Array<any>): Array<any> => {
+    return list.filter((v,i,s) => s.indexOf(v) === i && s.lastIndexOf(v) !== i);
+};

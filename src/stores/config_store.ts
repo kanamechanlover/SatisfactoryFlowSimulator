@@ -1,9 +1,7 @@
-import { ref, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import {
     Config,
     ConfigCategory,
-    MachinePortType,
     MaterialState,
     RecipeMaterialList,
     ConfigRecipeMaterial,
@@ -13,8 +11,14 @@ import {
     ConfigRecipeList
 } from '@/defines/types/config';
 import Logger from '@/logics/logger'
-import logger from '@/logics/logger';
 
+/**
+ * 設定ストア
+ * - 設定データを管理する
+ * - 設定値変更中は updating フラグを true にしておく（変更した設定の反映タイミング制御の為）
+ * - 更新処理自体は非同期で行うが、Promise は途中で処理追加ができない為、
+ *   実行中の処理の数をカウントして 0 になったタイミングで updating フラグを false にする。
+ */
 export const useConfigStore = defineStore('config', {
     state: () => {
         return {
@@ -198,11 +202,7 @@ export const useConfigStore = defineStore('config', {
             return (id: string, index: number): string =>  {
                 const machine = state.config.machines.find((machine) => machine.id == id)
                 if (machine === undefined) return '';
-                const conveyorNumber = machine.inputNumber.conveyor;
-                const pipeNumber = machine.inputNumber.pipe;
-                if (index < conveyorNumber) return MachinePortType.Conveyor;
-                if (index < conveyorNumber + pipeNumber) return MachinePortType.Pipe;
-                return '';
+                return machine.inputNumber.portType(index);
             };
         },
         /**
@@ -214,11 +214,7 @@ export const useConfigStore = defineStore('config', {
             return (id: string, index: number): string =>  {
                 const machine = state.config.machines.find((machine) => machine.id == id)
                 if (machine === undefined) return '';
-                const conveyorNumber = machine.outputNumber.conveyor;
-                const pipeNumber = machine.outputNumber.pipe;
-                if (index < conveyorNumber) return MachinePortType.Conveyor;
-                if (index < conveyorNumber + pipeNumber) return MachinePortType.Pipe;
-                return '';
+                return machine.outputNumber.portType(index);
             };
         },
         /**
@@ -464,27 +460,6 @@ export const useConfigStore = defineStore('config', {
             this.beginUpdate();
             // 設定ファイルを元に設定構築
             this.config.deserialize(data);
-            // レシピの入出力素材は、素材の状態（固体、液体、気体）でソートしておく
-            const order = Object.keys(MaterialState);
-            const wrap = (material: ConfigRecipeMaterial) => {
-                const state = this.materialState(material.id);
-                const value = order.indexOf(state);
-                return { material: material, value: (value != -1) ? value: 0};
-            };
-            const unwrap = (v: any) => v.material;
-            const compare = (a: any,b: any) => {
-                if (a.value > b.value) return 1;
-                if (a.value < b.value) return -1;
-                return 0;
-            };
-            this.config.recipes.forEach((recipe: ConfigRecipe, index: number, array: ConfigRecipeList) => {
-                if (recipe.input.length > 1) { // 2つ以上ある場合は順番をソート
-                    array[index].input = recipe.input.map(wrap).sort(compare).map(unwrap);
-                }
-                if (recipe.output.length > 1) { // 2つ以上ある場合は順番をソート
-                    array[index].output = recipe.output.map(wrap).sort(compare).map(unwrap);
-                }
-            });
             this.uniqueKey = this.config.setUniqueKey(this.uniqueKey);
             this.endUpdate();
         },
@@ -538,9 +513,25 @@ export const useConfigStore = defineStore('config', {
                 Logger.log('Added machine category.', 'addMachineCategory');
             });
         },
-        /** 設備カテゴリ更新 */
-        setMachineCategory(index: number, value: ConfigCategory) {
-            if (index < 0 || index >= this.config.machineCategories.length) return; // イレギュラー
+        /** 
+         * 設備カテゴリ更新
+         * @param index [in] インデックス
+         * @param value [in] 変更後の値
+         * @return 処理開始の成否（true: 成功）
+         */
+        setMachineCategory(index: number, value: ConfigCategory): boolean {
+            if (index < 0 || index >= this.config.machineCategories.length) return false; // イレギュラー
+            // ID重複チェック
+            const oldId = this.config.machineCategories[index].id;
+            const newId = value.id;
+            if (oldId != newId) {
+                // ID の変更がある場合だけ重複チェック
+                if (this.config.machineCategories.some((v, i) => i !== index && v.id == newId)) {
+                    // 重複がある場合は変更を拒否
+                    return false;
+                }
+            }
+            // 処理開始
             this.process(() => {
                 const oldValue = this.config.machineCategories[index].clone();
                 this.config.machineCategories[index].assign(value);
@@ -549,10 +540,16 @@ export const useConfigStore = defineStore('config', {
                 const newValue = this.config.machineCategories[index];
                 this.effectMachineCategory(oldValue, newValue);
             });
+            // 処理開始成功
+            return true;
         },
-        /** 設備カテゴリ削除 */
-        deleteMachineCategory(index: number) {
-            if (index < 0 || index >= this.config.machineCategories.length) return; // イレギュラー
+        /**
+         * 設備カテゴリ削除
+         * @param index [in] インデックス
+         * @return 処理開始の成否（true: 成功）
+         */
+        deleteMachineCategory(index: number): boolean {
+            if (index < 0 || index >= this.config.machineCategories.length) return false; // イレギュラー
             this.process(() => {
                 const oldValue = this.config.machineCategories.splice(index, 1)[0];
                 Logger.log(`Deleted machine category at.${index} id.${oldValue.id}`, 'deleteMachineCategory');
@@ -560,6 +557,7 @@ export const useConfigStore = defineStore('config', {
                 const newValue = new ConfigCategory();
                 this.effectMachineCategory(oldValue, newValue);
             });
+            return true;
         },
         /**
          * 設備カテゴリ変更による影響（内部用）
@@ -585,9 +583,25 @@ export const useConfigStore = defineStore('config', {
             Logger.log('Added material category.', 'addMaterialCategory');
             this.endUpdate();
         },
-        /** 素材カテゴリ更新 */
-        setMaterialCategory(index: number, value: ConfigCategory) {
-            if (index < 0 || index >= this.config.materialCategories.length) return; // イレギュラー
+        /**
+         * 素材カテゴリ更新
+         * @param index [in] インデックス
+         * @param value [in] 変更後の値
+         * @return 処理開始の成否（true: 成功）
+         */
+        setMaterialCategory(index: number, value: ConfigCategory): boolean {
+            if (index < 0 || index >= this.config.materialCategories.length) return false; // イレギュラー
+            // ID重複チェック
+            const oldId = this.config.materialCategories[index].id;
+            const newId = value.id;
+            if (oldId != newId) {
+                // ID の変更がある場合だけ重複チェック
+                if (this.config.materialCategories.some((v, i) => i !== index && v.id == newId)) {
+                    // 重複がある場合は変更を拒否
+                    return false;
+                }
+            }
+            // 処理開始
             this.process(() => {
                 const oldValue = this.config.materialCategories[index].clone();
                 this.config.materialCategories[index].assign(value);
@@ -596,10 +610,16 @@ export const useConfigStore = defineStore('config', {
                 const newValue = this.config.materialCategories[index];
                 this.effectMaterialCategory(oldValue, newValue);
             });
+            // 処理開始成功
+            return true;
         },
-        /** 素材カテゴリ削除 */
-        deleteMaterialCategory(index: number) {
-            if (index < 0 || index >= this.config.materialCategories.length) return; // イレギュラー
+        /**
+         * 素材カテゴリ削除
+         * @param index [in] インデックス
+         * @return 処理開始の成否（true: 成功）
+         */
+        deleteMaterialCategory(index: number): boolean {
+            if (index < 0 || index >= this.config.materialCategories.length) return false; // イレギュラー
             this.process(() => {
                 const oldValue = this.config.materialCategories.splice(index, 1)[0];
                 Logger.log(`Deleted material category at.${index} id.${oldValue.id}`, 'deleteMaterialCategory');
@@ -607,6 +627,7 @@ export const useConfigStore = defineStore('config', {
                 const newValue = new ConfigCategory();
                 this.effectMaterialCategory(oldValue, newValue);
             });
+            return true;
         },
         /** 
          * 素材カテゴリ変更による影響（内部用）
@@ -632,9 +653,25 @@ export const useConfigStore = defineStore('config', {
                 Logger.log('Added machine.', 'addMachine');
             });
         },
-        /** 設備更新 */
-        setMachine(index: number, value: ConfigMachine) {
-            if (index < 0 || index >= this.config.machines.length) return;
+        /**
+         * 設備更新
+         * @param index [in] インデックス
+         * @param value [in] 変更後の値
+         * @return 処理開始の成否（true: 成功）
+         */
+        setMachine(index: number, value: ConfigMachine): boolean {
+            if (index < 0 || index >= this.config.machines.length) return false;
+            // ID重複チェック
+            const oldId = this.config.machines[index].id;
+            const newId = value.id;
+            if (oldId != newId) {
+                // ID の変更がある場合だけ重複チェック
+                if (this.config.machines.some((v, i) => i !== index && v.id == newId)) {
+                    // 重複がある場合は変更を拒否
+                    return false;
+                }
+            }
+            // 処理開始
             this.process(() => {
                 const oldValue = this.config.machines[index].clone();
                 this.config.machines[index].assign(value);
@@ -643,10 +680,16 @@ export const useConfigStore = defineStore('config', {
                 const newValue = this.config.machines[index];
                 this.effectMachine(oldValue, newValue);
             });
+            // 処理開始成功
+            return true;
         },
-        /** 設備削除 */
-        deleteMachine(index: number) {
-            if (index < 0 || index >= this.config.machines.length) return; // イレギュラー
+        /**
+         * 設備削除
+         * @param index [in] インデックス
+         * @return 処理開始の成否（true: 成功）
+         */
+        deleteMachine(index: number): boolean {
+            if (index < 0 || index >= this.config.machines.length) return false; // イレギュラー
             this.process(() => {
                 const oldValue = this.config.machines.splice(index, 1)[0];
                 Logger.log(`Deleted machine at.${index} id.${oldValue.id}`, 'deleteMachine');
@@ -654,6 +697,7 @@ export const useConfigStore = defineStore('config', {
                 const newValue = new ConfigMachine();
                 this.effectMachine(oldValue, newValue);
             });
+            return true;
         },
         /**
          * 設備変更による影響（内部用）
@@ -679,9 +723,25 @@ export const useConfigStore = defineStore('config', {
                 Logger.log('Added material.', 'addMaterial');
             });
         },
-        /** 素材更新 */
-        setMaterial(index: number, value: ConfigMaterial) {
-            if (index < 0 || index >= this.config.materials.length) return;
+        /**
+         * 素材更新
+         * @param index [in] インデックス
+         * @param value [in] 変更後の値
+         * @return 処理開始の成否（true: 成功）
+         */
+        setMaterial(index: number, value: ConfigMaterial): boolean {
+            if (index < 0 || index >= this.config.materials.length) return false;
+            // ID重複チェック
+            const oldId = this.config.materials[index].id;
+            const newId = value.id;
+            if (oldId != newId) {
+                // ID の変更がある場合だけ重複チェック
+                if (this.config.materials.some((v, i) => i !== index && v.id == newId)) {
+                    // 重複がある場合は変更を拒否
+                    return false;
+                }
+            }
+            // 処理開始
             this.process(() => {
                 const oldValue = this.config.materials[index].clone();
                 this.config.materials[index].assign(value);
@@ -690,10 +750,16 @@ export const useConfigStore = defineStore('config', {
                 const newValue = this.config.materials[index];
                 this.effectMaterial(oldValue, newValue);
             });
+            // 処理開始成功
+            return true;
         },
-        /** 素材削除 */
-        deleteMaterial(index: number) {
-            if (index < 0 || index >= this.config.materials.length) return;
+        /**
+         * 素材削除
+         * @param index [in] インデックス
+         * @return 処理開始の成否（true: 成功）
+         */
+        deleteMaterial(index: number): boolean {
+            if (index < 0 || index >= this.config.materials.length) return false;
             this.process(() => {
                 const oldValue = this.config.materials.splice(index, 1)[0];
                 Logger.log(`Deleted material at.${index} id.${oldValue.id}`, 'deleteMaterial');
@@ -701,6 +767,7 @@ export const useConfigStore = defineStore('config', {
                 const newValue = new ConfigMaterial();
                 this.effectMaterial(oldValue, newValue);
             });
+            return true;
         },
         /**
          * 設備変更による影響（内部用）
@@ -737,22 +804,46 @@ export const useConfigStore = defineStore('config', {
                 Logger.log('Added recipe.', 'addRecipe');
             });
         },
-        /** 素材更新 */
-        setRecipe(index: number, value: ConfigRecipe) {
+        /**
+         * 素材更新
+         * @param index [in] インデックス
+         * @param value [in] 変更後の値
+         * @return 処理開始の成否（true: 成功）
+         */
+        setRecipe(index: number, value: ConfigRecipe): boolean {
+            if (index < 0 || index >= this.config.recipes.length) return false;
+            // レシピ名重複チェック
+            const oldName = this.config.recipes[index].name;
+            const newName = value.name;
+            if (oldName != newName) {
+                // レシピ名の変更がある場合だけ重複チェック
+                if (this.config.recipes.some((v, i) => i !== index && v.name == newName)) {
+                    // 重複がある場合は変更を拒否
+                    return false;
+                }
+            }
+            // 処理開始
             this.process(() => {
                 if (index < 0 || index >= this.config.recipes.length) return;
                 const oldValue = this.config.recipes[index].clone();
                 this.config.recipes[index].assign(value);
                 Logger.log(`Changed recipe at.${index} name.${oldValue.name}`, 'setRecipe');
             });
+            // 処理開始成功
+            return true;
         },
-        /** 素材削除 */
-        deleteRecipe(index: number) {
-            if (index < 0 || index >= this.config.recipes.length) return;
+        /** 
+         * 素材削除
+         * @param index [in] インデックス
+         * @return 処理開始の成否（true: 成功）
+         */
+        deleteRecipe(index: number): boolean {
+            if (index < 0 || index >= this.config.recipes.length) return false;
             this.process(() => {
                 const oldValue = this.config.recipes.splice(index, 1)[0];
                 Logger.log(`Deleted recipe at.${index} name.${oldValue.name}`, 'deleteRecipe');
             });
+            return true;
         },
     }
 });

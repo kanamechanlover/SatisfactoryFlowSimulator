@@ -15,7 +15,8 @@
             <tr v-for="(category, index) in categories" :key="index">
                 <td>{{ index + 1 }}</td>
                 <td>
-                    <input type="text" :value="category.id" :class="{ error: idError(index) }"
+                    <input type="text" :value="category.id"
+                        :class="{ error: idError(index), warning: hasDuplicateId(index) }"
                         @change="changeCategoryId(index, $event)" />
                 </td>
                 <td>
@@ -37,6 +38,7 @@
 import { computed, ref, onMounted } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
 import { CategoryList } from '@/defines/types/config'
+import { getDuplicates } from '@/logics/primitives'
 
 // 子コンポーネント ---------------------------------------------
 
@@ -51,22 +53,35 @@ const configStore = useConfigStore();
 /** 素材カテゴリIDリスト */
 const categories = ref([] as CategoryList);
 
+/** 重複IDを持つ要素のインデックスリスト */
+const duplicatedIndexes = ref([] as Array<number>);
+
 // 内部関数 -----------------------------------------------------
 
 /**
  * 内部レシピ更新時
  * @param index [in] インデックス
+ * @return 処理開始の成否（true: 成功）
  */
-const applyCategoryData = function(index: number) {
-    configStore.setMaterialCategory(index, categories.value[index]);
+const applyCategoryData = function(index: number): boolean {
+    // 設定ストアに変更を通知
+    return configStore.setMaterialCategory(index, categories.value[index]);
+};
+
+/** 重複IDを持つ要素のインデックスリストを取得 */
+const getDuplicateIndexes = () => {
+    const categoryIds = categories.value.map((v) => v.id);
+    const duplicatedIds = getDuplicates(categoryIds);
+    let indexes = [] as Array<number>;
+    duplicatedIds.forEach((id) => {
+        indexes.concat(
+            categories.value.filter((v) => v.id == id).map((_, i) => i)
+        );
+    });
+    duplicatedIndexes.value = indexes.sort();
 };
 
 // Getters -----------------------------------------------------
-
-/** ストアから最新の設備カテゴリIDリストを取得 */
-const getCategories = () => {
-    categories.value = configStore.config.materialCategories.map((category) => category.clone());
-};
 
 /** 素材カテゴリ参照数 */
 const referenceMaterialCategory = computed(() => {
@@ -87,7 +102,21 @@ const nameError = computed(() => (index: number): boolean => {
     return categories.value[index].nameError();
 });
 
+/** ID重複チェック */
+const hasDuplicateId = computed(() => (index: number): boolean => {
+    if (index === undefined || !categories.value[index]) return false; // イレギュラー
+    return duplicatedIndexes.value.indexOf(index) !== -1;
+});
+
 // Actions -----------------------------------------------------
+
+/** ストアから最新の設備カテゴリIDリストを取得 */
+const getCategories = () => {
+    // 素材カテゴリリスト取得
+    categories.value = configStore.config.materialCategories.map((category) => category.clone());
+    // 重複IDを持つインデックスを取得
+    getDuplicateIndexes();
+};
 
 /** 素材カテゴリ追加 */
 const addMaterialCategory = () => {
@@ -107,8 +136,14 @@ const deleteMaterialCategory = (index: number) => {
  */
 const changeCategoryId = (index: number, event: Event) => {
     if (!event?.target) return;
-    categories.value[index].id = (event.target as HTMLInputElement).value;
-    applyCategoryData(index);
+    const target = event.target as HTMLInputElement;
+    const oldId = categories.value[index].id;
+    categories.value[index].id = target.value;
+    const succeeded = applyCategoryData(index);
+    if (!succeeded) {
+        // 更新に失敗したら元に戻す
+        categories.value[index].id = oldId;
+    }
 }
 
 /** 
@@ -118,8 +153,14 @@ const changeCategoryId = (index: number, event: Event) => {
  */
 const changeCategoryName = (index: number, event: Event) => {
     if (!event?.target) return;
-    categories.value[index].name = (event.target as HTMLInputElement).value;
-    applyCategoryData(index);
+    const target = event.target as HTMLInputElement;
+    const oldName = categories.value[index].name;
+    categories.value[index].name = target.value;
+    const succeeded = applyCategoryData(index);
+    if (!succeeded) {
+        // 更新に失敗したら元に戻す
+        categories.value[index].name = oldName;
+    }
 }
 
 // サイクル -----------------------------------------------------

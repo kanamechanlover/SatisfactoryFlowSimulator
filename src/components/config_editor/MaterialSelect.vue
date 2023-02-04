@@ -4,7 +4,7 @@
         <select :title="materialName" :selectedIndex="selectedIndex"
             @change="changeValue" :class="{ error: props.isError }">
             <option>-</option>
-            <option v-for="(material, index) in materials" :key="index" :value="material.id">
+            <option v-for="(material, index) in filteredMaterials" :key="index" :value="material.id">
                 {{ material.name }}
             </option>
         </select>
@@ -27,9 +27,22 @@ import { MaterialState, ConfigMaterial, MachinePortType, ConfigMaterialList } fr
 /** プロパティを定義 */
 const props = defineProps({
     /** 現在の値(v-model用) */
-    modelValue: String,
+    modelValue: {
+        type: String,
+        default: '',
+    },
     /** 選択肢として表示する素材の状態 */
-    type: String,
+    type: {
+        type: String,
+        default: '',
+        require: true,
+    },
+    /** 素材リスト */
+    materials: {
+        type: Array<ConfigMaterial>,
+        default: [] as Array<ConfigMaterial>,
+        require: true,
+    },
     /** エラー表示フラグ */
     isError: {
         type: Boolean,
@@ -47,14 +60,8 @@ const IndexNone = -1;
 
 // 内部変数 -----------------------------------------------------
 
-/** 設定ストア */
-const configStore = useConfigStore();
-
 /** 画像ストア */
 const imageStore = useImageStore();
-
-/** 素材IDリスト */
-const materials = ref([] as ConfigMaterialList);
 
 /** 最後に選択していた項目のインデックス */
 const latestSelectedIndex = ref(IndexNone);
@@ -66,25 +73,28 @@ const latestSelectedIndex = ref(IndexNone);
 
 /** 選択中のインデックス */
 const selectedIndex = computed((): number => {
-    if (props.modelValue === undefined) return 0; // イレギュラー
-    if (materials.value === undefined) return 0; // イレギュラー
     return latestSelectedIndex.value; 
 });
 
+/** 指定の素材の状態のリスト */
+const filteredMaterials = computed((): Array<ConfigMaterial> => {
+    return props.materials.filter((material: ConfigMaterial) => {
+        if (!(material.state in MaterialState)) return true;
+        return MaterialState[material.state].Port === props.type;
+    });
+})
+
 /** 設備入出力ポートタイプの画像へのパスを取得 */
 const machinePortPath = computed(() => {
-    if (props.type === undefined) return '';
     return imageStore.getData(props.type);
 });
 /** 設備入出力ポートタイプの表示名を取得 */
 const machinePortName = computed(() => {
-    if (props.type === undefined) return '';
     return MachinePortType.getName(props.type);
 });
 /** 素材名 */
 const materialName = computed((): string => {
-    if (props.modelValue === undefined) return '';
-    const material = materials.value.find((material) => material.id == props.modelValue);
+    const material = props.materials.find((material) => material.id == props.modelValue);
     return (material) ? material.name : '';
 });
 
@@ -92,7 +102,7 @@ const materialName = computed((): string => {
 
 /** props の値が更新された際の反映 */
 const applyPropsSelect = () => {
-    const index = materials.value.findIndex((material) => material.id == props.modelValue);
+    const index = filteredMaterials.value.findIndex((material) => material.id == props.modelValue);
     if (index >= 0) {
         // 指定の素材IDがリストにあれば選択
         latestSelectedIndex.value = index + 1; // 0 は選択無し「-」の為 +1 しておく
@@ -104,37 +114,6 @@ const applyPropsSelect = () => {
     }
 };
 
-/**
- * 指定の素材の状態のリストに変換
- * @param list [in] 元のリスト
- */
-const filterByMaterialType = (list: ConfigMaterialList) => {
-    return list.filter((material: ConfigMaterial) => {
-        return MaterialState[material.state].Port === props.type;
-    });
-}
-/**
- * リストを素材の状態でフィルタリング
- * @param list [in] 元のリスト
- */
-const cloneCopyMaterials = (list: ConfigMaterialList) => {
-    // 一旦全てクローンを取得
-    const allMaterials = list.map((material) => material.clone());
-    if (!props.type) {
-        // 指定が無ければ全て
-        return allMaterials;
-    }
-    // 指定があればフィルタリングする
-    return filterByMaterialType(allMaterials);
-};
-
-/** ストアから最新の素材IDリストを取得 */
-const getMaterials = () => {
-    // 最新の素材IDリストを取得
-    materials.value = cloneCopyMaterials(configStore.config.materials);
-    // props の値を反映
-    applyPropsSelect();
-};
 
 /** 選択されている素材ID変更通知 */
 const changeValue = (event: Event) => {
@@ -144,51 +123,11 @@ const changeValue = (event: Event) => {
 
 // サイクル -----------------------------------------------------
 
-// データの結びつけ完了時に情報を最新化
-onMounted(getMaterials);
-
+onMounted(applyPropsSelect);
 
 // 監視 --------------------------------------------------------
 
-// props の値が更新されたら
 watch(() => props.modelValue, applyPropsSelect);
-
-configStore.$subscribe(() => {
-    // 更新が終わったタイミングでストアの値で内部情報を更新
-    if(configStore.isUpdating) return;
-
-    // 新旧のリストを取得
-    const oldList = cloneCopyMaterials(materials.value).map((v, i) => ({i, v}));
-    const newList = cloneCopyMaterials(configStore.config.materials).map((v, i) => ({i, v}));
-    // お互いに存在しない要素を抽出
-    const oldDiff = oldList.filter((v1) => !newList.some((v2) => v1.v.id == v2.v.id));
-    const newDiff = newList.filter((v1) => !oldList.some((v2) => v1.v.id == v2.v.id));
-    // 現在の選択要素に影響があるかチェック
-    const currentIndex = latestSelectedIndex.value; // 現在選択中のインデックス
-    if (oldDiff.length < newDiff.length) {
-        // 追加の場合、現在選択中のインデックスより前ならインデックスをずらす
-        const lowerIndexNumber = newDiff.filter((v) => v.i < currentIndex ).length;
-        latestSelectedIndex.value += lowerIndexNumber;
-    }
-    else if (oldDiff.length > newDiff.length) {
-        // 削除の場合
-        if (oldDiff.some((v) => v.i == currentIndex)) {
-            // 現在選択中の要素が削除されたら選択無しにする
-            latestSelectedIndex.value = 0
-        }
-        else {
-            // 現在選択中のインデックスより前ならインデックスをずらす
-            const lowerIndexNumber = oldDiff.filter((v) => v.i < currentIndex ).length;
-            latestSelectedIndex.value -= lowerIndexNumber;
-        }
-    }
-    else {
-        // 更新の場合、選択中のインデックスは変わらないので変更なし
-    }
-
-    // リストを更新
-    getMaterials();
-});
 
 </script>
 

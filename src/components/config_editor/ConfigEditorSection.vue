@@ -1,10 +1,11 @@
 <template>
     <section>
-        <h1 @click="toggle">
+        <h1 @click="toggle" :class="{ 'error-section': props.hasError, 'warning-section': props.hasDuplicate }">
             <span class="toggle" :class="{collapse: isCollapsed}">▼</span>
             <span>{{ props.sectionName }}</span>
             <span v-if="props.itemCount > 0">{{ ' (' + props.itemCount + ')' }}</span>
-            <span v-if="props.hasError" class="section-error">エラー有り</span>
+            <span v-if="props.hasError" class="error-word">エラー有り</span>
+            <span v-if="props.hasDuplicate" class="warning-word">ID重複有り</span>
         </h1>
         <div class="section-body" v-show="isOpened">
             <slot></slot>
@@ -37,6 +38,11 @@ const props = defineProps({
     },
     /** エラー有無 */
     hasError: {
+        type: Boolean,
+        default: false,
+    },
+    /** 重複する要素の有無 */
+    hasDuplicate: {
         type: Boolean,
         default: false,
     },
@@ -110,8 +116,15 @@ section h1:hover {
     padding-bottom: 16px;
 }
 
-.section-error {
+.error-word {
     color: red;
+    font-size: 0.6em;
+    margin-left: 8px;
+    line-height: 1em;
+}
+
+.warning-word {
+    color: darkgoldenrod;
     font-size: 0.6em;
     margin-left: 8px;
     line-height: 1em;

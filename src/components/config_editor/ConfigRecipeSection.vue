@@ -8,12 +8,17 @@
             右の「-」で設備削除、下部の「＋」で設備追加できます。
         </p>
         <div class="search-box">
-            <ConfigRecipeSearch ref="search" @change="updateRecipeList"></ConfigRecipeSearch>
+            <ConfigRecipeSearch ref="search" @change="updateFilteredRecipeList"
+                :machines="machines" :materials="materials"></ConfigRecipeSearch>
             <div class="result-counter">
                 <span>表示中のレシピ数：{{ recipeIndexList.length }}</span>
             </div>
         </div>
-        <ConfigRecipeView v-for="index in recipeIndexList" :key="uniqueKey(index)" :index="index" @delete="deleteRecipe"></ConfigRecipeView>
+        <ConfigRecipeView v-for="index in recipeIndexList" :key="uniqueKey(index)"
+            :index="index" :recipe="recipe(index)" :machine="machine(index)"
+            :machines="machines" :materials="materials"
+            :has-duplicate="hasDuplicateId(index)">
+        </ConfigRecipeView>
         <div class="additional-box">
             <button class="additional-button" @click="addRecipe" title="追加">＋</button>
         </div>
@@ -22,15 +27,17 @@
 
 <script setup lang="ts">
 
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
-import { ConfigRecipe, ConfigRecipeMaterial, ConfigRecipeList } from '@/defines/types/config'
-import ConfigRecipeSearch, { SearchCondition } from './ConfigRecipeSearch.vue'
-import Logger from '@/logics/logger'
+import {
+    ConfigRecipe, ConfigRecipeMaterial, ConfigRecipeList, ConfigMachineList, ConfigMaterialList, ConfigMachine
+} from '@/defines/types/config'
+import { getDuplicates } from '@/logics/primitives'
 
 
 // 子コンポーネント ---------------------------------------------
 
+import ConfigRecipeSearch, { SearchCondition } from './ConfigRecipeSearch.vue'
 import ConfigRecipeView from '@/components/config_editor/ConfigRecipeView.vue'
 
 // 基本定義 -----------------------------------------------------
@@ -43,52 +50,102 @@ const configStore = useConfigStore();
 /** レシピリスト */
 const recipes = ref([] as ConfigRecipeList);
 
+/** 設備リスト */
+const machines = ref([] as ConfigMachineList);
+
+/** 素材リスト */
+const materials = ref([] as ConfigMaterialList);
+
 /** 検索結果としてのレシピIDリスト */
 const recipeIndexList = ref([] as Array<number>);
 
 /** 検索条件コンポーネントへの参照 */
 const search = ref<InstanceType<typeof ConfigRecipeSearch> | null>(null);
 
+/** 重複IDを持つ要素のインデックスリスト */
+const duplicatedIndexes = ref([] as Array<number>);
+
 // 内部関数 -----------------------------------------------------
+
+
+/** 重複IDを持つ要素のインデックスリストを取得 */
+const getDuplicateIndexes = () => {
+    // 重複IDを持つ要素を取得
+    const recipeNames = recipes.value.map((v) => v.name);
+    const duplicatedNames = getDuplicates(recipeNames);
+    // 重複IDを持つ要素のインデックスを取得
+    let indexes = [] as Array<number>;
+    duplicatedNames.forEach((name) => {
+        indexes = indexes.concat(
+            recipes.value
+                .map((v, i) => { return {i, v}; })
+                .filter((data) => data.v.name == name)
+                .map((data) => data.i)
+        );
+    });
+    duplicatedIndexes.value = indexes.sort();
+};
 
 // Getters -----------------------------------------------------
 
 /** ユニークキー */
 const uniqueKey = computed(() => (index: number): number|undefined => {
-    if (index === undefined || !configStore.config.recipes[index]) return; // イレギュラー
-    return configStore.config.recipes[index].uniqueKey;
+    if (index === undefined || !recipes.value[index]) return; // イレギュラー
+    return recipes.value[index].uniqueKey;
+});
+
+/**
+ * レシピデータ取得
+ * @param index [in] レシピインデックス
+ * @return レシピデータ（見つからない場合は undefined）
+ */
+const recipe = computed(() => (index: number): ConfigRecipe|undefined => {
+    if (index < 0 || index >= recipes.value.length) return undefined;
+    return recipes.value[index];
+});
+
+/**
+ * レシピの持つ設備データ取得
+ * @param index [in] レシピインデックス
+ * @return 設備データ（見つからない場合は undefined）
+ */
+const machine = computed(() => (index: number): ConfigMachine|undefined => {
+    if (index < 0 || index >= recipes.value.length) return undefined;
+    const machineId = recipes.value[index].machineId;
+    const machineData = machines.value.find((v) => v.id == machineId);
+    return (machineData) ? machineData : undefined;
+});
+
+/** ID重複チェック */
+const hasDuplicateId = computed(() => (index: number): boolean => {
+    if (index === undefined || !recipes.value[index]) return false; // イレギュラー
+    return duplicatedIndexes.value.indexOf(index) !== -1;
 });
 
 // Actions -----------------------------------------------------
 
 /** レシピ切り替え */
 const getRecipes = () => {
+    // 各設定の最新値の複製を取得
     recipes.value = configStore.config.recipes.map((recipe) => recipe.clone());
+    machines.value = configStore.config.machines.map((machine) => machine.clone());
+    materials.value = configStore.config.materials.map((material) => material.clone());
+    // フィルタ済みレシピリスト
     const condition = (search.value) ? search.value.searchCondition : null;
-    updateRecipeList(condition);
+    updateFilteredRecipeList(condition);
+    // 重複IDを持つインデックスを取得
+    getDuplicateIndexes();
 };
 
 /** レシピ追加 */
 const addRecipe = () => {
-    Logger.log('adding', 'addRecipe');
     configStore.addRecipe();
     const condition = (search.value) ? search.value.searchCondition : null;
-    updateRecipeList(condition);
-    Logger.log('added', 'addRecipe');
-};
-
-/** レシピ削除 */
-const deleteRecipe = (index: number) => {
-    if (index >= recipes.value.length) return; // イレギュラー
-    Logger.log('deleting', 'deleteRecipe');
-    configStore.deleteRecipe(index);
-    const condition = (search.value) ? search.value.searchCondition : null;
-    updateRecipeList(condition);
-    Logger.log('deleted', 'deleteRecipe');
+    updateFilteredRecipeList(condition);
 };
 
 /** フィルタ済みレシピリスト */
-const updateRecipeList = (condition: SearchCondition|null = null) => {
+const updateFilteredRecipeList = (condition: SearchCondition|null = null) => {
     if (!condition) {
         recipeIndexList.value = recipes.value.map((_, i) => i);
         return;

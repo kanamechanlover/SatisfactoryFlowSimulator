@@ -101,14 +101,15 @@ export const useImageStore = defineStore('image', {
          * @param imageId [in] 画像ID
          * @param path [in] ルートからの相対パス
          * @param objectUrl [in] レスポンスデータ
+         * @param customized [in] ローカルから読み込んだもの（デフォルトのデータではない）か
          */
-        onSuccessful(imageId: string, path: string, objectUrl: string) {
+        onSuccessful(imageId: string, path: string, objectUrl: string, customized: boolean = false) {
             // 格納用データを用意
             const imageData = new ImageData();
             imageData.url = path;
             imageData.objectUrl = objectUrl;
             // 既存のキーであればカスタマイズフラグを立てる
-            if (imageId in this.imageDataList) {
+            if (customized) {
                 imageData.customized = true;
             }
             // 参照できるようにリストへ格納
@@ -143,7 +144,7 @@ export const useImageStore = defineStore('image', {
                 const imageId = path.split('.').slice(0, -1).join('.');
                 const reader = new FileReader();
                 reader.onload = () => {
-                    this.onSuccessful(imageId, path, reader.result as string);
+                    this.onSuccessful(imageId, path, reader.result as string, true);
                 }
                 reader.readAsDataURL(file);
                 this.loadingFileNum++;

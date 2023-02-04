@@ -137,3 +137,17 @@ div.section-frame {
 .error {
     background: red !important;
 }
+.error-section {
+    border-color: red !important;
+    color: red !important;
+}
+
+/** 警告要素に適用 */
+.warning {
+    background: gold !important;
+    color: darkgoldenrod !important;
+}
+.warning-section {
+    border-color: gold !important;
+    color: darkgoldenrod !important;
+}
