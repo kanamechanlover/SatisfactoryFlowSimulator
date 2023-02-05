@@ -1,36 +1,38 @@
 <template>
-    <table class="search-table">
-        <tr>
-            <th  colspan="6">レシピ検索条件</th>
-        </tr>
-        <tr>
-            <th>レシピ名</th>
-            <td width="40%">
-                <input type="text" v-model="searchCondition.recipeName" />
-            </td>
-            <th>設備</th>
-            <td width="40%">
-                <MachineSelect v-model="searchCondition.machineId" :machines="props.machines"></MachineSelect>
-            </td>
-            <td class="apply-box" rowspan="2" @click="applyRecipeSearch" width="10%">検索</td>
-            <td class="reset-box" rowspan="2" @click="resetRecipeSearch">リセット</td>
-        </tr>
-        <tr>
-            <th>入力素材</th>
-            <td>
-                <MaterialSelect v-model="searchCondition.inputMaterialId" :materials="props.materials"></MaterialSelect>
-            </td>
-            <th>出力素材</th>
-            <td>
-                <MaterialSelect v-model="searchCondition.outputMaterialId" :materials="props.materials"></MaterialSelect>
-            </td>
-        </tr>
-    </table>
+    <div class="config-recipe-search-frame">
+        <div class="header">レシピ検索条件</div>
+        <div class="search-box">
+            <div class="item-box recipe-id-box">
+                <span class="label">レシピID</span>
+                <input class="value" type="text" v-model="searchCondition.recipeId" />
+            </div>
+            <div class="item-box input-material-box">
+                <span class="label">入力素材</span>
+                <MachineSelect class="value" v-model="searchCondition.inputMaterialId" :machines="props.materials"></MachineSelect>
+            </div>
+            <div class="item-box recipe-name-box">
+                <span class="label">レシピ名</span>
+                <input class="value" type="text" v-model="searchCondition.recipeName" />
+            </div>
+            <div class="item-box output-material-box">
+                <span class="label">出力素材</span>
+                <MachineSelect class="value" v-model="searchCondition.outputMaterialId" :machines="props.materials"></MachineSelect>
+            </div>
+            <div class="item-box machine-box">
+                <span class="label">設備</span>
+                <MachineSelect class="value" v-model="searchCondition.machineId" :machines="props.machines"></MachineSelect>
+            </div>
+            <div class="item-box button-box">
+                <div class="value apply-button" @click="applyRecipeSearch">検索</div>
+                <div class="value reset-button" @click="resetRecipeSearch">リセット</div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
 
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { ConfigMachine, ConfigMaterial } from '@/defines/types/config'
 
 
@@ -61,12 +63,16 @@ const emits = defineEmits<{
 }>();
 
 
-/** 検索条件 */
+/**
+ * 検索条件
+ * - 各値、空文字列の場合は検索条件から除外
+ */
 const searchCondition = ref({
-    recipeName: '',
-    machineId: '',
-    inputMaterialId: '',
-    outputMaterialId: '',
+    recipeId: '', // レシピID
+    recipeName: '', // レシピ名
+    machineId: '', // 設備ID
+    inputMaterialId: '', // 入力素材ID
+    outputMaterialId: '', // 出力素材ID
 } as SearchCondition);
 defineExpose({searchCondition}); // 公開設定
 
@@ -93,15 +99,53 @@ const applyRecipeSearch = () => {
 
 /** レシピの検索条件をリセット */
 const resetRecipeSearch = () => {
+    // 各条件をリセット
+    searchCondition.value.recipeId = '';
     searchCondition.value.recipeName = '';
     searchCondition.value.machineId = '';
     searchCondition.value.inputMaterialId = '';
     searchCondition.value.outputMaterialId = '';
+    // 変更を親に伝搬
     changeConditions();
+};
+/** レシピの検索条件を更新 */
+const updateSearchConditions = () => {
+    let changed = false;
+    const condition = searchCondition.value;
+    // recipeId はリストを持たないので不要
+    // recipeName はリストを持たないので不要
+    // 設備ID
+    if (condition.machineId && 
+            !props.machines.find((v) => v.id == condition.machineId)) {
+        searchCondition.value.machineId = '';
+        changed = true;
+    }
+    // 入力素材ID
+    if (condition.inputMaterialId &&
+            !props.materials.find((v) => v.id == condition.inputMaterialId)) {
+        searchCondition.value.inputMaterialId = '';
+        changed = true;
+    }
+    // 出力素材ID
+    if (condition.outputMaterialId &&
+            !props.materials.find((v) => v.id == condition.outputMaterialId)) {
+        searchCondition.value.outputMaterialId = '';
+        changed = true;
+    }
+    // 変更があれば親に伝達
+    if (changed) {
+        changeConditions();
+    }
 };
 
 // サイクル -----------------------------------------------------
 
+
+// 監視 --------------------------------------------------------
+
+// props の値が更新されたら値が最新かチェックして更新（ID変更等の影響反映の為）
+watch(() => props.machines, updateSearchConditions);
+watch(() => props.materials, updateSearchConditions);
 
 </script>
 
@@ -109,6 +153,8 @@ const resetRecipeSearch = () => {
 
 /** 検索条件 */
 export interface SearchCondition {
+    /** レシピID */
+    recipeId: string;
     /** レシピ名 */
     recipeName: string;
     /** 設備ID */
@@ -124,34 +170,63 @@ export interface SearchCondition {
 <style src="@/components/config_editor/config_editor.css" scoped />
 
 <style scoped>
-table.search-table {
+.config-recipe-search-frame {
     width: 100%;
-    border-spacing: 4px;
-    table-layout: auto;
+    display: flex;
+    flex-direction: column;
 }
 
-th {
-    padding-bottom: 4px;
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.search-box {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 0.8em;
+    line-height: 1em;
 }
 
-.apply-box {
+.item-box {
+    flex: 50%;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 4px;
+    gap: 4px;
+    align-items: center;
+}
+.item-box .label {
+    width: 4em;
+}
+.item-box .value {
+    flex: 1;
+    font-size: 0.8em;
+    height: 19px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.apply-button {
     background: var(--dark-main-color);
     border: 1px solid var(--dark-accent-color);
     border-radius: 4px;
     user-select: none;
 }
-.apply-box:hover {
+.apply-button:hover {
     background: var(--dark-accent-color);
     cursor: pointer;
 }
 
-.reset-box {
+.reset-button {
     background: var(--dark-main-color);
     border: 1px solid var(--dark-accent-color);
     border-radius: 4px;
     user-select: none;
 }
-.reset-box:hover {
+.reset-button:hover {
     background: var(--dark-accent-color);
     cursor: pointer;
 }

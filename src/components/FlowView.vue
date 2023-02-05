@@ -21,8 +21,9 @@
                 <div class="recipe-box">
                     <span v-if="existsRecipe">レシピ：</span>
                     <select @change="onChangedRecipe" v-if="existsRecipe">
-                        <option v-for="recipe in recipeList" :key="recipe" :selected="recipe === recipeName">
-                            {{ recipe }}
+                        <option v-for="recipe in recipeList" :key="recipe.id"
+                            :selected="recipe.id === recipeId" :value="recipe.id">
+                            {{ recipe.name }}
                         </option>
                     </select>
                 </div>
@@ -47,6 +48,7 @@ import { useFlowStore } from '@/stores/flow_store'
 import { useConfigStore } from '@/stores/config_store'
 import { useImageStore } from '@/stores/image_store'
 import { FlowPath, Flow } from '@/defines/types/flow'
+import { ConfigRecipe } from '@/defines/types/config'
 import { CeilDigit } from '@/logics/primitives'
 
 // 子コンポーネント ---------------------------------------------
@@ -87,7 +89,7 @@ const getFlow = computed(() => {
 
 const existsRecipe = computed((): boolean => {
     if (!getFlow.value?.materialId) return false;
-    return configStore.recipeNamesHasOutputMaterialId(getFlow.value?.materialId).length > 0;
+    return configStore.recipesHasOutputMaterialId(getFlow.value?.materialId).length > 0;
 });
 /** 素材名 */
 const materialName = computed((): string => {
@@ -100,14 +102,14 @@ const materialImg = computed((): string => {
     return imageStore.getData(getFlow.value?.materialId);
 });
 /** レシピ名 */
-const recipeName = computed((): string => {
+const recipeId = computed((): string => {
     if (!getFlow.value?.recipeId) return '';
     return getFlow.value?.recipeId;
 });
 /** レシピ名リスト */
-const recipeList = computed((): Array<string> => {
+const recipeList = computed((): Array<ConfigRecipe> => {
     if (!getFlow.value?.materialId) return [];
-    return configStore.recipeNamesHasOutputMaterialId(getFlow.value?.materialId);
+    return configStore.recipesHasOutputMaterialId(getFlow.value?.materialId);
 });
 /** 生産レート(%) */
 const needsRate = computed((): number => {

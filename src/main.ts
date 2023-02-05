@@ -44,10 +44,10 @@ for(const key in DefaultImageUrls) {
 }
 
 // ページ離脱時のメモリ解放などの処理を登録
-window.onunload = () => {
+window.addEventListener('beforeunload', () => {
     // 画像データをクリア
     imageStore.clear();
-};
+});
 
 // 最後にマウント
 app.mount('#app');

@@ -54,9 +54,6 @@ const IndexNone = -1;
 
 // 内部変数 -----------------------------------------------------
 
-/** 設定ストア */
-const configStore = useConfigStore();
-
 /** 画像ストア */
 const imageStore = useImageStore();
 
@@ -89,6 +86,11 @@ const machineName = computed((): string => {
 
 /** props の値が更新された際の反映 */
 const applyPropsSelect = () => {
+    if (!props.modelValue) {
+        // 親から伝搬されている設備IDが空なら問答無用で選択無し「-」にする
+        latestSelectedIndex.value = 0;
+        return;
+    }
     const index = props.machines.findIndex((machine) => machine.id == props.modelValue);
     if (index >= 0) {
         // 指定の設備IDがリストにあれば選択

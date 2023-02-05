@@ -78,6 +78,7 @@ const selectedIndex = computed((): number => {
 
 /** 指定の素材の状態のリスト */
 const filteredMaterials = computed((): Array<ConfigMaterial> => {
+    if (!props.type) return props.materials;
     return props.materials.filter((material: ConfigMaterial) => {
         if (!(material.state in MaterialState)) return true;
         return MaterialState[material.state].Port === props.type;

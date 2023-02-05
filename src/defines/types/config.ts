@@ -468,6 +468,8 @@ export class ConfigRecipe {
     static InputMax = 4;
     /** 出力素材の最大数 */
     static OutputMax = 2;
+    /** レシピID */
+    id: string = '';
     /** レシピ名 */
     name: string = '';
     /** 素材 (素材IDと必要数) */
@@ -490,6 +492,7 @@ export class ConfigRecipe {
     /** 代入 */
     assign(target: ConfigRecipe) {
         if (!target) return;
+        this.id = target.id
         this.name = target.name;
         this.input = new Array<ConfigRecipeMaterial>(ConfigRecipe.InputMax);
         target.input.forEach((v: any, i: number) => {
@@ -505,6 +508,10 @@ export class ConfigRecipe {
         });
         this.productTime = target.productTime;
         this.machineId = target.machineId;
+    };
+    /** レシピIDエラー */
+    idError(): boolean {
+        return !this.id;
     };
     /** レシピ名エラー */
     nameError(): boolean {
@@ -576,7 +583,8 @@ export class ConfigRecipe {
     };
     /** エラーチェック */
     existError(machine: ConfigMachine, materials: Array<ConfigMaterial>): boolean {
-        return (this.nameError()
+        return (this.idError()
+            || this.nameError()
             || this.inputError(machine, materials)
             || this.input.some((v) => v.existError())
             || this.outputError(machine, materials)
@@ -587,6 +595,7 @@ export class ConfigRecipe {
     /** シリアライズ */
     serialize(): any {
         return {
+            Id: this.id,
             Name: this.name,
             // 入出力素材は最大数分枠を確保しているので値が入っていない部分は出力しない
             Input: this.input.filter((v) => v).map((v) => v.serialize()),
@@ -599,15 +608,16 @@ export class ConfigRecipe {
     deserialize(data: any | null = null, 
                 machines: Array<ConfigMachine> | null = null,
                 materials: Array<ConfigMaterial> | null = null) {
+        this.id = data.Id;
         this.name = data.Name;
         this.productTime = data.ProductTime;
         this.machineId = data.Machine;
         this.input = new Array<ConfigRecipeMaterial>(ConfigRecipe.InputMax);
-        data.Input.forEach((v: any, i: number) => {
+        data.Input?.forEach((v: any, i: number) => {
             this.input[i] = new ConfigRecipeMaterial(v);
         });
         this.output = new Array<ConfigRecipeMaterial>(ConfigRecipe.OutputMax);
-        data.Output.forEach((v: any, i: number) => {
+        data.Output?.forEach((v: any, i: number) => {
             this.output[i] = new ConfigRecipeMaterial(v);
         });
         
@@ -767,10 +777,10 @@ export class Config {
         const ids = this.materials.map((v) => v.id);
         return getDuplicates(ids);
     };
-    /** レシピ名重複 */
-    duplicateRecipeNames(): Array<string> {
-        const names = this.recipes.map((v) => v.name);
-        return getDuplicates(names);
+    /** レシピID重複 */
+    duplicateRecipeIds(): Array<string> {
+        const ids = this.recipes.map((v) => v.id);
+        return getDuplicates(ids);
     };
     /** エラーチェック */
     existError(): boolean {

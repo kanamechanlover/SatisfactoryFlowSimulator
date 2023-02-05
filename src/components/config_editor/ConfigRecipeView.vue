@@ -54,12 +54,17 @@
                     </div>
                 </div>
                 <div class="grid">
+                    <div class="label">レシピID</div>
+                    <div class="recipe-id-box">
+                        <input type="text" :value="recipeId" :title="recipeId"
+                            @change="changeRecipeId" :class="{ error: idError, warning: hasDuplicate }" />
+                    </div>
                     <div class="label">レシピ名</div>
                     <div class="recipe-name-box">
                         <input type="text" :value="recipeName" :title="recipeName"
-                            @change="changeRecipeName" :class="{ error: nameError, warning: hasDuplicate }" />
+                            @change="changeRecipeName" :class="{ error: nameError }" />
                     </div>
-                    <div class="label">設備</div>
+                    <div class="label machine-label">設備</div>
                     <div class="machine-id-box">
                         <MachineSelect
                             :modelValue="machineId" :machines="machines" :isError="machineIdError"
@@ -193,6 +198,10 @@ const deleteRecipe = (): boolean => {
 // Getters -----------------------------------------------------
 
 /** レシピ名 */
+const recipeId = computed((): string => {
+    return props.recipe.id;
+});
+/** レシピ名 */
 const recipeName = computed((): string => {
     return props.recipe.name;
 });
@@ -282,6 +291,10 @@ const machineOutputTypeIsPipe = computed(() => (index: number): boolean => {
     return props.machine.outputNumber.portType(index) == MachinePortType.Pipe;
 });
 
+/** レシピIDエラー */
+const idError = computed((): boolean => {
+    return props.recipe.idError();
+});
 /** レシピ名エラー */
 const nameError = computed((): boolean => {
     return props.recipe.nameError();
@@ -329,6 +342,19 @@ const toEditMode = () => {
 const toViewMode = () => {
     editMode.value = false;
 }
+/** レシピID更新 */
+const changeRecipeId = (event: Event) => {
+    if (event?.target === undefined) return;
+    const target = event.target as HTMLInputElement;
+    const recipe = props.recipe.clone();
+    recipe.id = target.value;
+    // ストア更新
+    const succeeded = applyRecipeData(recipe);
+    if (!succeeded) {
+        // 失敗したらフォームの値を元に戻す
+        target.value = props.recipe.id;
+    }
+};
 /** レシピ名更新 */
 const changeRecipeName = (event: Event) => {
     if (event?.target === undefined) return;
@@ -645,11 +671,11 @@ const changeOutputMaterialNumber = (index: number, event: Event) => {
     grid-template-columns: 5em 1fr 5em 1fr;
     grid-template-rows: repeat(5, 1.5em);
     grid-template-areas:
-        ". recipe-name . machine"
-        "input-label input1 output-label output1"
-        "input-label input2 output-label output2"
-        "input-label input3 . ."
-        "input-label input4 product-time-label product-time";
+        ". recipe-id . recipe-name"
+        "input-label input1 machine-label machine"
+        "input-label input2 product-time-label product-time"
+        "input-label input3 output-label output1"
+        "input-label input4 output-label output2";
     grid-gap: 4px;
     margin: 4px;
 }
@@ -665,6 +691,9 @@ const changeOutputMaterialNumber = (index: number, event: Event) => {
 }
 .edit-mode-box .grid .recipe-name-box > * {
     flex: 1;
+}
+.edit-mode-box .grid .machine-label {
+    grid-area: machine-label;
 }
 .edit-mode-box .grid .machine-id-box {
     grid-area: machine;

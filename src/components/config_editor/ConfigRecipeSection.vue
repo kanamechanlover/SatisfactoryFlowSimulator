@@ -30,7 +30,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
 import {
-    ConfigRecipe, ConfigRecipeMaterial, ConfigRecipeList, ConfigMachineList, ConfigMaterialList, ConfigMachine
+    ConfigRecipe, ConfigRecipeMaterial, ConfigRecipeList,
+    ConfigMachineList, ConfigMaterialList, ConfigMachine
 } from '@/defines/types/config'
 import { getDuplicates } from '@/logics/primitives'
 
@@ -71,15 +72,15 @@ const duplicatedIndexes = ref([] as Array<number>);
 /** 重複IDを持つ要素のインデックスリストを取得 */
 const getDuplicateIndexes = () => {
     // 重複IDを持つ要素を取得
-    const recipeNames = recipes.value.map((v) => v.name);
-    const duplicatedNames = getDuplicates(recipeNames);
+    const recipeIds = recipes.value.map((v) => v.id);
+    const duplicatedIds = getDuplicates(recipeIds);
     // 重複IDを持つ要素のインデックスを取得
     let indexes = [] as Array<number>;
-    duplicatedNames.forEach((name) => {
+    duplicatedIds.forEach((recipeId) => {
         indexes = indexes.concat(
             recipes.value
                 .map((v, i) => { return {i, v}; })
-                .filter((data) => data.v.name == name)
+                .filter((data) => data.v.id == recipeId)
                 .map((data) => data.i)
         );
     });
@@ -201,7 +202,9 @@ configStore.$subscribe(() => {
 .result-counter {
     font-size: 0.8em;
     line-height: 1em;
-    margin-bottom: 8px;
+    padding: 8px 0px;
+    margin: 0px 4px;
+    border-top: 1px solid var(--dark-main-color)
 }
 .search-box {
     display: flex;

@@ -193,7 +193,7 @@ const hasDuplicateMaterialId = computed((): boolean => {
 });
 /** ID重複：レシピ */
 const hasDuplicateRecipeName = computed((): boolean => {
-    return configStore.config.duplicateRecipeNames().length > 0;
+    return configStore.config.duplicateRecipeIds().length > 0;
 });
 
 // Actions -----------------------------------------------------
