@@ -13,12 +13,16 @@
                     </div>
                 </div>
                 <div class="title-box">
-                    <div class="recipe-name-box" :class="{ error: nameError, warning: hasDuplicate }">
+                    <div class="recipe-id-box" :class="{ error: idError, warning: hasDuplicate }">
+                        <span>{{ recipeId }}</span>
+                    </div>
+                    <div class="recipe-name-box" :class="{ error: nameError }">
                         <span>{{ recipeName }}</span>
                     </div>
-                    <div class="machine-name-box" :class="{ error: machineIdError }">
+                </div>
+                <div class="machine-box">
+                    <div class="machine-img-box" :class="{ error: machineIdError }">
                         <img v-if="machineImage" :src="machineImage" :title="machineName" />
-                        <span>{{ machineName }}</span>
                     </div>
                 </div>
                 <div class="recipe-detail-box">
@@ -26,8 +30,8 @@
                         :key="'input' + inputIndex" :class="{
                             conveyor: machineInputTypeIsConveyor(inputIndex),
                             pipe: machineInputTypeIsPipe(inputIndex),
-                    }">
-                        <img v-if="material" :src="imageStore.getData(material.id)" :title="materialName(material.id)" :alt="materialName(material.id)" />
+                    }" :title="materialTooltip(material)">
+                        <img v-if="material" :src="imageStore.getData(material.id)" :alt="materialName(material.id)" />
                         <div v-if="material" class="number">{{ material.number }}</div>
                     </div>
                     <div class="arrow">▶</div>
@@ -35,8 +39,8 @@
                         :key="'output' + outputIndex" :class="{
                             conveyor: machineOutputTypeIsConveyor(outputIndex),
                             pipe: machineOutputTypeIsPipe(outputIndex),
-                    }">
-                        <img v-if="material" :src="imageStore.getData(material.id)" :title="materialName(material.id)" :alt="materialName(material.id)" />
+                    }" :title="materialTooltip(material)">
+                        <img v-if="material" :src="imageStore.getData(material.id)" :alt="materialName(material.id)" />
                         <div v-if="material" class="number">{{ material.number }}</div>
                     </div>
                 </div>
@@ -80,9 +84,14 @@
                             :materials="materials" :isError="inputError"
                             @update:modelValue="changeInputMaterialId(inputIndex - 1, $event)">
                         </MaterialSelect>
-                        <input v-if="machineInputPortNumber > inputIndex - 1" type="number" min="0" :title="materialInputNumber(inputIndex - 1).toString()"
-                            :value="materialInputNumber(inputIndex - 1)" @change="changeInputMaterialNumber(inputIndex - 1, $event)"
-                            :class="{ error: inputNumberError(inputIndex - 1), hide: !materialInputNumberShow(inputIndex - 1) }" />
+                        <input v-if="machineInputPortNumber > inputIndex - 1" type="number" min="0"
+                            :title="materialInputNumber(inputIndex - 1).toString()"
+                            :value="materialInputNumber(inputIndex - 1)"
+                            @change="changeInputMaterialNumber(inputIndex - 1, $event)"
+                            :class="{
+                                error: inputNumberError(inputIndex - 1),
+                                hide: !materialInputNumberShow(inputIndex - 1) }"
+                            />
                     </div>
                     <div class="label output-label">出力素材</div>
                     <div class="output-material-box" :class="'output' + outputIndex"
@@ -93,9 +102,14 @@
                             :materials="materials" :isError="outputError"
                             @update:modelValue="changeOutputMaterialId(outputIndex - 1, $event)">
                         </MaterialSelect>
-                        <input v-if="machineOutputPortNumber > outputIndex - 1" type="number" min="0" :title="materialOutputNumber(outputIndex - 1).toString()"
-                            :value="materialOutputNumber(outputIndex - 1)" @change="changeOutputMaterialNumber(outputIndex - 1, $event)"
-                            :class="{ error: outputNumberError(outputIndex - 1), hide: !materialOutputNumberShow(outputIndex - 1) }" />
+                        <input v-if="machineOutputPortNumber > outputIndex - 1" type="number" min="0"
+                            :title="materialOutputNumber(outputIndex - 1).toString()"
+                            :value="materialOutputNumber(outputIndex - 1)"
+                            @change="changeOutputMaterialNumber(outputIndex - 1, $event)"
+                            :class="{
+                                error: outputNumberError(outputIndex - 1),
+                                hide: !materialOutputNumberShow(outputIndex - 1) }"
+                            />
                     </div>
                     <div class="label product-time-label">製造時間</div>
                     <div class="product-time-box">
@@ -124,9 +138,8 @@ import { machine } from 'os';
 // 子コンポーネント ---------------------------------------------
 
 
-// 基本定義 -----------------------------------------------------
+// 外部連携 -----------------------------------------------------
 
-/** プロパティを定義 */
 const props = defineProps({
     /** レシピインデックス（エミット用） */
     index: {
@@ -165,6 +178,12 @@ const props = defineProps({
     },
 });
 
+// 内部定義 -----------------------------------------------------
+
+const emits = defineEmits<{
+    (e: 'delete', index: number): void // 削除した旨を親に伝える（設定ストアの反映後）
+}>();
+
 // 内部変数 -----------------------------------------------------
 
 /** 設定ストア */
@@ -193,8 +212,24 @@ const applyRecipeData = (recipe: ConfigRecipe): boolean => {
  * @return 処理開始の成否（true: 成功）
  */
 const deleteRecipe = (): boolean => {
-    return configStore.deleteRecipe(props.index);
+    const succeeded = configStore.deleteRecipe(props.index);
+    emits('delete', props.index); // 削除したことを親に通知しておく
+    return succeeded;
 };
+
+/**
+ * 分間の数値を表す文字列
+ * @param num 値
+ * @return 分間の数値を表す文字列
+ */
+const toPerMinute = (num: number): string => {
+    // 生産時間に異常値が入っているとエラーになる為除外
+    if (!props.recipe || props.recipe.productTime <= 0) return num.toString();
+    // 分間の数値に変換
+    const perMinute = num * (60 / props.recipe.productTime);
+    return `${perMinute} /分`; // 単位を付けて返す
+};
+
 // Getters -----------------------------------------------------
 
 /** レシピ名 */
@@ -256,6 +291,12 @@ const materialOutputNumberShow = computed(() => (index: number): boolean => {
 const materialOutputNumber = computed(() => (index: number): number => {
     if (index < 0 || props.recipe.output[index] === undefined) return 0; // イレギュラー
     return props.recipe.output[index].number;
+});
+/** 素材のツールチップ */
+const materialTooltip = computed(() => (material: ConfigRecipeMaterial): string => {
+    if (!material) return '';
+    const perMinuteText = toPerMinute(material.number);
+    return `${material.number.toString()} (${perMinuteText})`;
 });
 
 /** 設備の入力ポート数 */
@@ -483,6 +524,10 @@ const changeOutputMaterialNumber = (index: number, event: Event) => {
     }
 };
 
+// 公開設定 -----------------------------------------------------
+
+defineExpose({toEditMode, toViewMode});
+
 // サイクル -----------------------------------------------------
 
 // 監視 --------------------------------------------------------
@@ -555,8 +600,16 @@ const changeOutputMaterialNumber = (index: number, event: Event) => {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    border-right: 3px solid var(--dark-main-color);
     padding-right: 4px;
+}
+.view-mode-box .title-box .recipe-id-box {
+    flex: 1;
+    text-align: left;
+    font-size: 0.9em;
+    font-weight: bold;
+    user-select: text;
+    border-radius: 4px;
+    padding: 0px 2px;
 }
 .view-mode-box .title-box .recipe-name-box {
     flex: 1;
@@ -568,20 +621,37 @@ const changeOutputMaterialNumber = (index: number, event: Event) => {
     border-radius: 4px;
     padding: 0px 2px;
 }
-.view-mode-box .title-box .machine-name-box {
+
+.view-mode-box .machine-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 6px;
+    border-right: 3px solid var(--dark-main-color);
+}
+.view-mode-box .machine-box .machine-img-box {
     text-align: left;
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 4px;
-    padding: 0px 2px;
+    padding: 1px 2px;
+    aspect-ratio: 1;
+    width: calc(2.5em + 2px);
 }
-.view-mode-box .title-box .machine-name-box.error {
+.view-mode-box .machine-box .machine-img-box.error {
     border-radius: 4px;
     padding-left: 4px;
 }
-.view-mode-box .title-box .machine-name-box img {
+.view-mode-box .machine-box .machine-img-box img {
+    border: 1px solid var(--dark-main-color);
+    border-radius: 4px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     aspect-ratio: 1;
-    height: 1em;
+    height: calc(2.5em + 2px);
     mix-blend-mode: screen;
 }
 .view-mode-box .recipe-detail-box {

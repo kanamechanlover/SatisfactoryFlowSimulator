@@ -13,7 +13,6 @@
 
 <script setup lang="ts">
 import { computed, ref, watch, onMounted } from 'vue'
-import { useConfigStore } from '@/stores/config_store'
 import { useImageStore } from '@/stores/image_store';
 import { getEventValue } from '@/logics/event_data'
 import { MaterialState, ConfigMaterial, MachinePortType, ConfigMaterialList } from '@/defines/types/config';
@@ -21,10 +20,8 @@ import { MaterialState, ConfigMaterial, MachinePortType, ConfigMaterialList } fr
 
 // 子コンポーネント ---------------------------------------------
 
+// 外部連携 -----------------------------------------------------
 
-// 基本定義 -----------------------------------------------------
-
-/** プロパティを定義 */
 const props = defineProps({
     /** 現在の値(v-model用) */
     modelValue: {
@@ -35,13 +32,12 @@ const props = defineProps({
     type: {
         type: String,
         default: '',
-        require: true,
     },
     /** 素材リスト */
     materials: {
         type: Array<ConfigMaterial>,
         default: [] as Array<ConfigMaterial>,
-        require: true,
+        required: true,
     },
     /** エラー表示フラグ */
     isError: {
@@ -50,10 +46,11 @@ const props = defineProps({
     },
 });
 
-// エミット
 const emits = defineEmits<{
     (e: 'update:modelValue', value: string): void
 }>();
+
+// 内部定義 -----------------------------------------------------
 
 /** 未選択状態時のインデックス値 */
 const IndexNone = -1;
@@ -103,6 +100,11 @@ const materialName = computed((): string => {
 
 /** props の値が更新された際の反映 */
 const applyPropsSelect = () => {
+    if (!props.modelValue) {
+        // 親から伝搬されている設備IDが空なら問答無用で選択無し「-」にする
+        latestSelectedIndex.value = 0;
+        return;
+    }
     const index = filteredMaterials.value.findIndex((material) => material.id == props.modelValue);
     if (index >= 0) {
         // 指定の素材IDがリストにあれば選択

@@ -22,7 +22,7 @@ import { ConfigMachine } from '@/defines/types/config';
 // 子コンポーネント ---------------------------------------------
 
 
-// 基本定義 -----------------------------------------------------
+// 外部連携 -----------------------------------------------------
 
 /** プロパティを定義 */
 const props = defineProps({
@@ -35,7 +35,7 @@ const props = defineProps({
     machines: {
         type: Array<ConfigMachine>,
         default: [] as Array<ConfigMachine>,
-        require: true,
+        required: true,
     },
     /** エラー表示フラグ */
     isError: {
@@ -48,6 +48,8 @@ const props = defineProps({
 const emits = defineEmits<{
     (e: 'update:modelValue', value: string): void
 }>();
+
+// 内部定義 -----------------------------------------------------
 
 /** 未選択状態時のインデックス値 */
 const IndexNone = -1;

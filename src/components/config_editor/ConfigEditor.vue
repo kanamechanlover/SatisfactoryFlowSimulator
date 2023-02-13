@@ -26,9 +26,11 @@
                         <hr />
                         <ConfigEditorSection section-name="画像データ"
                             :item-count="sectionNumbers.image">
+                            <!-- 画像データセクション -->
                             <ImageSection></ImageSection>
                         </ConfigEditorSection>
                         <ConfigEditorSection section-name="バージョン" :has-error="versionError">
+                            <!-- バージョンセクション -->
                             <p>任意のバージョン名を付けることができます。バージョン名はページ上部のツール名の隣に表示されます。</p>
                             <input type="text" :value="config.version" @change="changeVersion" :class="{ error: versionError }" />
                         </ConfigEditorSection>
@@ -36,31 +38,36 @@
                             :item-count="sectionNumbers.machineCategories"
                             :has-error="hasMachineCategoriesError"
                             :has-duplicate="hasDuplicateMachineCategoryId">
+                            <!-- 設備カテゴリセクション -->
                             <MachineCategorySection></MachineCategorySection>
                         </ConfigEditorSection>
                         <ConfigEditorSection section-name="素材カテゴリ"
                             :item-count="sectionNumbers.materialCategories"
                             :has-error="hasMaterialCategoriesError"
                             :has-duplicate="hasDuplicateMaterialCategoryId">
+                            <!-- 素材カテゴリセクション -->
                             <MaterialCategorySection></MaterialCategorySection>
                         </ConfigEditorSection>
                         <ConfigEditorSection section-name="設備"
                             :item-count="sectionNumbers.machines"
                             :has-error="hsdMachinesError"
                             :has-duplicate="hasDuplicateMachineId">
+                            <!-- 設備セクション -->
                             <ConfigMachineSection></ConfigMachineSection>
                         </ConfigEditorSection>
                         <ConfigEditorSection section-name="素材"
                             :item-count="sectionNumbers.materials"
                             :has-error="hasMaterialsError"
                             :has-duplicate="hasDuplicateMaterialId">
+                            <!-- 素材セクション -->
                             <MaterialSection></MaterialSection>
                         </ConfigEditorSection>
                         <ConfigEditorSection section-name="レシピ"
                             :item-count="sectionNumbers.recipes"
                             :has-error="hasRecipesError"
                             :has-duplicate="hasDuplicateRecipeName">
-                            <ConfigRecipeSection></ConfigRecipeSection>
+                            <!-- レシピセクション　インポート処理時のリスト更新の為に ref を設定 -->
+                            <ConfigRecipeSection ref="recipeSection"></ConfigRecipeSection>
                         </ConfigEditorSection>
                         <!-- 設定ファイル読み込み時のファイル選択ダイアログ表示用フォーム -->
                         <input class="hide" ref="importFilePicker" type="file" accept=".json" @change="onSelectedImportFile" />
@@ -72,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
 import { useImageStore } from '@/stores/image_store'
 import { Config } from '@/defines/types/config'
@@ -89,7 +96,7 @@ import ConfigMachineSection from '@/components/config_editor/ConfigMachineSectio
 import MaterialSection from '@/components/config_editor/MaterialSection.vue'
 import ConfigRecipeSection from '@/components/config_editor/ConfigRecipeSection.vue'
 
-// 基本定義 -----------------------------------------------------
+// 外部連携 -----------------------------------------------------
 
 /** プロパティを定義 */
 
@@ -97,6 +104,8 @@ import ConfigRecipeSection from '@/components/config_editor/ConfigRecipeSection.
 const emits = defineEmits<{
     (e: 'close'): void
 }>();
+
+// 内部定義 -----------------------------------------------------
 
 /** 各セクションの要素数セット */
 interface SectionNumbers {
@@ -125,6 +134,9 @@ const imageStore = useImageStore();
 /** ファイル選択ダイアログ表示用参照要素 */
 const frame = ref(null);
 const importFilePicker = ref<InstanceType<typeof HTMLInputElement> | null>(null);
+
+/** 各セクションへのアクセサ */
+const recipeSection = ref<InstanceType<typeof ConfigRecipeSection> | null>(null);
 
 // 内部関数 -----------------------------------------------------
 
@@ -239,6 +251,8 @@ const onSelectedImportFile = () => {
         }
         // 設定ストアに反映
         configStore.setup(responce.data);
+        // セクションへも通達
+        recipeSection.value?.onImportedConfig();
         // 通知
         alert('Succeeded: 設定に反映しました。');
     }).catch(Logger.error);
@@ -256,7 +270,7 @@ const closeWindow = () => {
         ].join('\n');
         if (!confirm(confirmText)) return;
     }
-    emits("close");
+    emits('close');
 };
 
 /**

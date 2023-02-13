@@ -1,6 +1,6 @@
 {
     "Format": "1.0",
-    "Version": "Update 7",
+    "Version": "Update 5",
     "MachineCategories": [
         {
             "Id": "Extractor",
@@ -804,6 +804,18 @@
             "Category": "Plants"
         },
         {
+            "Id": "HogRemains",
+            "Name": "異星生物甲殻",
+            "State": "Solid",
+            "Category": "Plants"
+        },
+        {
+            "Id": "PlasmaSpitterRemains",
+            "Name": "異星生物器官",
+            "State": "Solid",
+            "Category": "Plants"
+        },
+        {
             "Id": "GreenPowerSlug",
             "Name": "青のパワー・スラッグ",
             "State": "Solid",
@@ -889,7 +901,7 @@
         },
         {
             "Id": "SteelPipe",
-            "Name": "鋼管",
+            "Name": "鋼鉄のパイプ",
             "State": "Solid",
             "Category": "StandardParts"
         },
@@ -913,7 +925,7 @@
         },
         {
             "Id": "CopperSheet",
-            "Name": "銅板",
+            "Name": "銅のシート",
             "State": "Solid",
             "Category": "StandardParts"
         },
@@ -1075,13 +1087,13 @@
         },
         {
             "Id": "IronRebar",
-            "Name": "鉄筋",
+            "Name": "有刺鉄筋",
             "State": "Solid",
             "Category": "Consumed"
         },
         {
             "Id": "RifleAmmo",
-            "Name": "ライフル弾",
+            "Name": "ライフル弾薬",
             "State": "Solid",
             "Category": "Consumed"
         },
@@ -1398,34 +1410,10 @@
             "Category": "Nuclear"
         },
         {
-            "Id": "HogRemains",
-            "Name": "ホッグの遺骸",
+            "Id": "SmokelessPowder",
+            "Name": "無煙火薬",
             "State": "Solid",
-            "Category": "Plants"
-        },
-        {
-            "Id": "HatcherRemains",
-            "Name": "ハッチャーの遺骸",
-            "State": "Solid",
-            "Category": "Plants"
-        },
-        {
-            "Id": "StingerRemains",
-            "Name": "スティンガーの遺骸",
-            "State": "Solid",
-            "Category": "Plants"
-        },
-        {
-            "Id": "PlasmaSpitterRemains",
-            "Name": "スピッターの遺骸",
-            "State": "Solid",
-            "Category": "Plants"
-        },
-        {
-            "Id": "AlienProtein",
-            "Name": "エイリアンのタンパク質",
-            "State": "Solid",
-            "Category": "Plants"
+            "Category": "Consumed"
         },
         {
             "Id": "AlienDNACapsule",
@@ -1434,10 +1422,10 @@
             "Category": "Plants"
         },
         {
-            "Id": "SmokelessPowder",
-            "Name": "無煙火薬",
+            "Id": "AlienProtein",
+            "Name": "エイリアンのたんぱく質",
             "State": "Solid",
-            "Category": "Consumed"
+            "Category": "Plants"
         },
         {
             "Id": "StunRebar",
@@ -1584,12 +1572,12 @@
             ],
             "Output": [
                 {
-                    "Id": "Silica",
-                    "Number": 5
-                },
-                {
                     "Id": "AluminaSolution",
                     "Number": 12
+                },
+                {
+                    "Id": "Silica",
+                    "Number": 5
                 }
             ],
             "ProductTime": 6,
@@ -1597,7 +1585,7 @@
         },
         {
             "Id": "AluminaSolutionAlt1",
-            "Name": "アルミナ溶液・容器取り出し",
+            "Name": "容器入りアルミナ溶液",
             "Input": [
                 {
                     "Id": "PackagedAluminaSolution",
@@ -1606,16 +1594,16 @@
             ],
             "Output": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "AluminaSolution",
                     "Number": 2
                 },
                 {
-                    "Id": "AluminaSolution",
+                    "Id": "EmptyCanister",
                     "Number": 2
                 }
             ],
             "ProductTime": 1,
-            "Machine": "Packager"
+            "Machine": "Refinery"
         },
         {
             "Id": "AluminaSolutionAlt2",
@@ -1724,12 +1712,12 @@
             "Name": "アルミのスクラップ",
             "Input": [
                 {
-                    "Id": "Coal",
-                    "Number": 2
-                },
-                {
                     "Id": "AluminaSolution",
                     "Number": 4
+                },
+                {
+                    "Id": "Coal",
+                    "Number": 2
                 }
             ],
             "Output": [
@@ -1750,12 +1738,12 @@
             "Name": "代替: 電極アルミ・スクラップ",
             "Input": [
                 {
-                    "Id": "PetroleumCoke",
-                    "Number": 4
-                },
-                {
                     "Id": "AluminaSolution",
                     "Number": 12
+                },
+                {
+                    "Id": "PetroleumCoke",
+                    "Number": 4
                 }
             ],
             "Output": [
@@ -1880,29 +1868,29 @@
             "Name": "バッテリー",
             "Input": [
                 {
-                    "Id": "AluminumCasing",
-                    "Number": 1
-                },
-                {
                     "Id": "SulfuricAcid",
-                    "Number": 2.5
+                    "Number": 5
                 },
                 {
                     "Id": "AluminaSolution",
+                    "Number": 4
+                },
+                {
+                    "Id": "AluminumCasing",
                     "Number": 2
                 }
             ],
             "Output": [
                 {
                     "Id": "Battery",
-                    "Number": 1
+                    "Number": 2
                 },
                 {
                     "Id": "Water",
-                    "Number": 1.5
+                    "Number": 3
                 }
             ],
-            "ProductTime": 3,
+            "ProductTime": 6,
             "Machine": "Blender"
         },
         {
@@ -1938,7 +1926,6 @@
         {
             "Id": "BauxiteMk1",
             "Name": "Miner Mk.1 (ボーキサイト)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Bauxite",
@@ -1951,7 +1938,6 @@
         {
             "Id": "BauxiteMk2",
             "Name": "Miner Mk.2 (ボーキサイト)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Bauxite",
@@ -1964,7 +1950,6 @@
         {
             "Id": "BauxiteMk3",
             "Name": "Miner Mk.3 (ボーキサイト)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Bauxite",
@@ -2072,7 +2057,7 @@
             "Input": [
                 {
                     "Id": "Mycelia",
-                    "Number": 1
+                    "Number": 10
                 }
             ],
             "Output": [
@@ -2085,6 +2070,42 @@
             "Machine": "Constructor"
         },
         {
+            "Id": "BiomassHogRemains",
+            "Name": "バイオマス(異星生物甲殻)",
+            "Input": [
+                {
+                    "Id": "HogRemains",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Biomass",
+                    "Number": 100
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "BiomassPlasmaSpitterRemains",
+            "Name": "バイオマス(異星生物器官)",
+            "Input": [
+                {
+                    "Id": "PlasmaSpitterRemains",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Biomass",
+                    "Number": 200
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Constructor"
+        },
+        {
             "Id": "BlackPowder",
             "Name": "黒色火薬",
             "Input": [
@@ -2094,7 +2115,7 @@
                 },
                 {
                     "Id": "Sulfur",
-                    "Number": 1
+                    "Number": 2
                 }
             ],
             "Output": [
@@ -2255,7 +2276,6 @@
         {
             "Id": "CateriumOreMk1",
             "Name": "Miner Mk.1 (カテリウム鉱石)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "CateriumOre",
@@ -2268,7 +2288,6 @@
         {
             "Id": "CateriumOreMk2",
             "Name": "Miner Mk.2 (カテリウム鉱石)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "CateriumOre",
@@ -2281,7 +2300,6 @@
         {
             "Id": "CateriumOreMk3",
             "Name": "Miner Mk.3 (カテリウム鉱石)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "CateriumOre",
@@ -2418,7 +2436,6 @@
         {
             "Id": "CoalMk1",
             "Name": "Miner Mk.1 (石炭)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Coal",
@@ -2431,7 +2448,6 @@
         {
             "Id": "CoalMk2",
             "Name": "Miner Mk.2 (石炭)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Coal",
@@ -2444,7 +2460,6 @@
         {
             "Id": "CoalMk3",
             "Name": "Miner Mk.3 (石炭)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Coal",
@@ -2469,7 +2484,7 @@
                     "Number": 10
                 }
             ],
-            "ProductTime": 6,
+            "ProductTime": 8,
             "Machine": "Constructor"
         },
         {
@@ -2777,7 +2792,6 @@
         {
             "Id": "CopperOreMk1",
             "Name": "Miner Mk.1 (銅鉱石)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "CopperOre",
@@ -2790,7 +2804,6 @@
         {
             "Id": "CopperOreMk2",
             "Name": "Miner Mk.2 (銅鉱石)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "CopperOre",
@@ -2803,7 +2816,6 @@
         {
             "Id": "CopperOreMk3",
             "Name": "Miner Mk.3 (銅鉱石)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "CopperOre",
@@ -2851,7 +2863,7 @@
         },
         {
             "Id": "CopperSheetAlt1",
-            "Name": "代替: 蒸気加熱銅板",
+            "Name": "代替: 蒸気加熱・銅のシート",
             "Input": [
                 {
                     "Id": "CopperIngot",
@@ -2874,7 +2886,6 @@
         {
             "Id": "CrudeOil",
             "Name": "原油抽出機",
-            "Input": [],
             "Output": [
                 {
                     "Id": "CrudeOil",
@@ -2895,11 +2906,11 @@
             ],
             "Output": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "CrudeOil",
                     "Number": 2
                 },
                 {
-                    "Id": "CrudeOil",
+                    "Id": "EmptyCanister",
                     "Number": 2
                 }
             ],
@@ -3102,7 +3113,7 @@
         },
         {
             "Id": "EncasedIndustrialBeamAlt1",
-            "Name": "代替: コンクリート被覆型鋼管",
+            "Name": "代替: コンクリート被覆型パイプ",
             "Input": [
                 {
                     "Id": "SteelPipe",
@@ -3254,11 +3265,11 @@
             "Input": [
                 {
                     "Id": "PolymerResin",
-                    "Number": 1
+                    "Number": 16
                 },
                 {
                     "Id": "Water",
-                    "Number": 1
+                    "Number": 10
                 }
             ],
             "Output": [
@@ -3267,7 +3278,7 @@
                     "Number": 1
                 }
             ],
-            "ProductTime": 6,
+            "ProductTime": 12,
             "Machine": "Refinery"
         },
         {
@@ -3281,12 +3292,12 @@
             ],
             "Output": [
                 {
-                    "Id": "PolymerResin",
-                    "Number": 3
-                },
-                {
                     "Id": "Fuel",
                     "Number": 4
+                },
+                {
+                    "Id": "PolymerResin",
+                    "Number": 3
                 }
             ],
             "ProductTime": 6,
@@ -3294,7 +3305,7 @@
         },
         {
             "Id": "FuelAlt1",
-            "Name": "燃料･容器取り出し",
+            "Name": "燃料･容器取出し",
             "Input": [
                 {
                     "Id": "PackagedFuel",
@@ -3303,11 +3314,11 @@
             ],
             "Output": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "Fuel",
                     "Number": 2
                 },
                 {
-                    "Id": "Fuel",
+                    "Id": "EmptyCanister",
                     "Number": 2
                 }
             ],
@@ -3581,11 +3592,11 @@
             ],
             "Output": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "HeavyOilResidue",
                     "Number": 2
                 },
                 {
-                    "Id": "HeavyOilResidue",
+                    "Id": "EmptyCanister",
                     "Number": 2
                 }
             ],
@@ -3603,12 +3614,12 @@
             ],
             "Output": [
                 {
-                    "Id": "PolymerResin",
-                    "Number": 2
-                },
-                {
                     "Id": "HeavyOilResidue",
                     "Number": 4
+                },
+                {
+                    "Id": "PolymerResin",
+                    "Number": 2
                 }
             ],
             "ProductTime": 6,
@@ -3757,7 +3768,6 @@
         {
             "Id": "IronOreMk1",
             "Name": "Miner Mk.1 (鉄鉱石)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "IronOre",
@@ -3770,7 +3780,6 @@
         {
             "Id": "IronOreMk2",
             "Name": "Miner Mk.2 (鉄鉱石)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "IronOre",
@@ -3783,7 +3792,6 @@
         {
             "Id": "IronOreMk3",
             "Name": "Miner Mk.3 (鉄鉱石)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "IronOre",
@@ -3857,7 +3865,7 @@
         },
         {
             "Id": "IronRebar",
-            "Name": "鉄筋",
+            "Name": "有刺鉄筋",
             "Input": [
                 {
                     "Id": "IronRod",
@@ -3912,7 +3920,6 @@
         {
             "Id": "LimestoneMk1",
             "Name": "Miner Mk.1 (石灰岩)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Limestone",
@@ -3925,7 +3932,6 @@
         {
             "Id": "LimestoneMk2",
             "Name": "Miner Mk.2 (石灰岩)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Limestone",
@@ -3938,7 +3944,6 @@
         {
             "Id": "LimestoneMk3",
             "Name": "Miner Mk.3 (石灰岩)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Limestone",
@@ -3981,11 +3986,11 @@
             ],
             "Output": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "LiquidBiofuel",
                     "Number": 2
                 },
                 {
-                    "Id": "LiquidBiofuel",
+                    "Id": "EmptyCanister",
                     "Number": 2
                 }
             ],
@@ -4185,16 +4190,16 @@
             "Name": "硝酸",
             "Input": [
                 {
-                    "Id": "IronPlate",
-                    "Number": 1
-                },
-                {
                     "Id": "NitrogenGas",
                     "Number": 12
                 },
                 {
                     "Id": "Water",
                     "Number": 3
+                },
+                {
+                    "Id": "IronPlate",
+                    "Number": 1
                 }
             ],
             "Output": [
@@ -4217,11 +4222,11 @@
             ],
             "Output": [
                 {
-                    "Id": "EmptyFluidTank",
+                    "Id": "NitricAcid",
                     "Number": 1
                 },
                 {
-                    "Id": "NitricAcid",
+                    "Id": "EmptyFluidTank",
                     "Number": 1
                 }
             ],
@@ -4231,7 +4236,6 @@
         {
             "Id": "NitrogenGas",
             "Name": "窒素ガス",
-            "Input": [],
             "Output": [
                 {
                     "Id": "NitrogenGas",
@@ -4252,12 +4256,12 @@
             ],
             "Output": [
                 {
-                    "Id": "EmptyFluidTank",
-                    "Number": 1
-                },
-                {
                     "Id": "NitrogenGas",
                     "Number": 4
+                },
+                {
+                    "Id": "EmptyFluidTank",
+                    "Number": 1
                 }
             ],
             "ProductTime": 1,
@@ -4269,11 +4273,11 @@
             "Input": [
                 {
                     "Id": "BlackPowder",
-                    "Number": 2
+                    "Number": 5
                 },
                 {
                     "Id": "SteelPipe",
-                    "Number": 2
+                    "Number": 10
                 }
             ],
             "Output": [
@@ -4282,8 +4286,34 @@
                     "Number": 1
                 }
             ],
-            "ProductTime": 6,
+            "ProductTime": 20,
             "Machine": "Assembler"
+        },
+        {
+            "Id": "NobeliskAlt1",
+            "Name": "代替: サイズミック・ノーべリスク",
+            "Input": [
+                {
+                    "Id": "BlackPowder",
+                    "Number": 8
+                },
+                {
+                    "Id": "SteelPipe",
+                    "Number": 8
+                },
+                {
+                    "Id": "CrystalOscillator",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Nobelisk",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 40,
+            "Machine": "Manufacturer"
         },
         {
             "Id": "NonfissileUranium",
@@ -4380,11 +4410,11 @@
             "Name": "容器入りアルミナ溶液",
             "Input": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "AluminaSolution",
                     "Number": 2
                 },
                 {
-                    "Id": "AluminaSolution",
+                    "Id": "EmptyCanister",
                     "Number": 2
                 }
             ],
@@ -4402,11 +4432,11 @@
             "Name": "容器入り燃料",
             "Input": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "Fuel",
                     "Number": 2
                 },
                 {
-                    "Id": "Fuel",
+                    "Id": "EmptyCanister",
                     "Number": 2
                 }
             ],
@@ -4424,12 +4454,12 @@
             "Name": "代替: 容器入り希釈燃料",
             "Input": [
                 {
-                    "Id": "PackagedWater",
-                    "Number": 2
-                },
-                {
                     "Id": "HeavyOilResidue",
                     "Number": 1
+                },
+                {
+                    "Id": "PackagedWater",
+                    "Number": 2
                 }
             ],
             "Output": [
@@ -4446,11 +4476,11 @@
             "Name": "容器入り廃重油",
             "Input": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "HeavyOilResidue",
                     "Number": 2
                 },
                 {
-                    "Id": "HeavyOilResidue",
+                    "Id": "EmptyCanister",
                     "Number": 2
                 }
             ],
@@ -4468,11 +4498,11 @@
             "Name": "容器入り液体バイオ燃料",
             "Input": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "LiquidBiofuel",
                     "Number": 2
                 },
                 {
-                    "Id": "LiquidBiofuel",
+                    "Id": "EmptyCanister",
                     "Number": 2
                 }
             ],
@@ -4490,11 +4520,11 @@
             "Name": "容器入り硝酸",
             "Input": [
                 {
-                    "Id": "EmptyFluidTank",
+                    "Id": "NitricAcid",
                     "Number": 1
                 },
                 {
-                    "Id": "NitricAcid",
+                    "Id": "EmptyFluidTank",
                     "Number": 1
                 }
             ],
@@ -4512,12 +4542,12 @@
             "Name": "容器入り窒素ガス",
             "Input": [
                 {
-                    "Id": "EmptyFluidTank",
-                    "Number": 1
-                },
-                {
                     "Id": "NitrogenGas",
                     "Number": 4
+                },
+                {
+                    "Id": "EmptyFluidTank",
+                    "Number": 1
                 }
             ],
             "Output": [
@@ -4534,11 +4564,11 @@
             "Name": "容器入り原油",
             "Input": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "CrudeOil",
                     "Number": 2
                 },
                 {
-                    "Id": "CrudeOil",
+                    "Id": "EmptyCanister",
                     "Number": 2
                 }
             ],
@@ -4556,11 +4586,11 @@
             "Name": "容器入り硫酸",
             "Input": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "SulfuricAcid",
                     "Number": 2
                 },
                 {
-                    "Id": "SulfuricAcid",
+                    "Id": "EmptyCanister",
                     "Number": 2
                 }
             ],
@@ -4578,11 +4608,11 @@
             "Name": "容器入りターボ燃料",
             "Input": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "Turbofuel",
                     "Number": 2
                 },
                 {
-                    "Id": "Turbofuel",
+                    "Id": "EmptyCanister",
                     "Number": 2
                 }
             ],
@@ -4600,11 +4630,11 @@
             "Name": "容器入り水",
             "Input": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "Water",
                     "Number": 2
                 },
                 {
-                    "Id": "Water",
+                    "Id": "EmptyCanister",
                     "Number": 2
                 }
             ],
@@ -4864,7 +4894,7 @@
                     "Number": 1
                 }
             ],
-            "ProductTime": 8,
+            "ProductTime": 10,
             "Machine": "Constructor"
         },
         {
@@ -4882,7 +4912,7 @@
                     "Number": 2
                 }
             ],
-            "ProductTime": 12,
+            "ProductTime": 15,
             "Machine": "Constructor"
         },
         {
@@ -4900,7 +4930,7 @@
                     "Number": 5
                 }
             ],
-            "ProductTime": 24,
+            "ProductTime": 20,
             "Machine": "Constructor"
         },
         {
@@ -5090,7 +5120,6 @@
         {
             "Id": "RawQuartzMk1",
             "Name": "Miner Mk.1 (未加工石英)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "RawQuartz",
@@ -5103,7 +5132,6 @@
         {
             "Id": "RawQuartzMk2",
             "Name": "Miner Mk.2 (未加工石英)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "RawQuartz",
@@ -5116,7 +5144,6 @@
         {
             "Id": "RawQuartzMk3",
             "Name": "Miner Mk.3 (未加工石英)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "RawQuartz",
@@ -5213,6 +5240,36 @@
             ],
             "ProductTime": 16,
             "Machine": "Assembler"
+        },
+        {
+            "Id": "RifleAmmo",
+            "Name": "ライフル弾薬",
+            "Input": [
+                {
+                    "Id": "Beacon",
+                    "Number": 1
+                },
+                {
+                    "Id": "SteelPipe",
+                    "Number": 10
+                },
+                {
+                    "Id": "BlackPowder",
+                    "Number": 10
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 10
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "RifleAmmo",
+                    "Number": 5
+                }
+            ],
+            "ProductTime": 20,
+            "Machine": "Manufacturer"
         },
         {
             "Id": "Rotor",
@@ -5349,7 +5406,6 @@
         {
             "Id": "SAMOreMk1",
             "Name": "Miner Mk.1 (S.A.M.鉱石)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "SAMOre",
@@ -5362,7 +5418,6 @@
         {
             "Id": "SAMOreMk2",
             "Name": "Miner Mk.2 (S.A.M.鉱石)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "SAMOre",
@@ -5375,7 +5430,6 @@
         {
             "Id": "SAMOreMk3",
             "Name": "Miner Mk.3 (S.A.M.鉱石)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "SAMOre",
@@ -5697,7 +5751,7 @@
         },
         {
             "Id": "SteelPipe",
-            "Name": "鋼管",
+            "Name": "鋼鉄のパイプ",
             "Input": [
                 {
                     "Id": "SteelIngot",
@@ -5716,7 +5770,6 @@
         {
             "Id": "SulfurMk1",
             "Name": "Miner Mk.1 (硫黄)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Sulfur",
@@ -5729,7 +5782,6 @@
         {
             "Id": "SulfurMk2",
             "Name": "Miner Mk.2 (硫黄)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Sulfur",
@@ -5742,7 +5794,6 @@
         {
             "Id": "SulfurMk3",
             "Name": "Miner Mk.3 (硫黄)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Sulfur",
@@ -5785,11 +5836,11 @@
             ],
             "Output": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "SulfuricAcid",
                     "Number": 1
                 },
                 {
-                    "Id": "SulfuricAcid",
+                    "Id": "EmptyCanister",
                     "Number": 1
                 }
             ],
@@ -5913,12 +5964,12 @@
             "Name": "ターボ燃料",
             "Input": [
                 {
-                    "Id": "CompactedCoal",
-                    "Number": 4
-                },
-                {
                     "Id": "Fuel",
                     "Number": 6
+                },
+                {
+                    "Id": "CompactedCoal",
+                    "Number": 4
                 }
             ],
             "Output": [
@@ -5941,11 +5992,11 @@
             ],
             "Output": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "Turbofuel",
                     "Number": 2
                 },
                 {
-                    "Id": "Turbofuel",
+                    "Id": "EmptyCanister",
                     "Number": 2
                 }
             ],
@@ -5957,12 +6008,12 @@
             "Name": "代替: ターボ重油",
             "Input": [
                 {
-                    "Id": "CompactedCoal",
-                    "Number": 4
-                },
-                {
                     "Id": "HeavyOilResidue",
                     "Number": 5
+                },
+                {
+                    "Id": "CompactedCoal",
+                    "Number": 4
                 }
             ],
             "Output": [
@@ -5979,20 +6030,20 @@
             "Name": "代替: 混合ターボ燃料",
             "Input": [
                 {
-                    "Id": "Sulfur",
-                    "Number": 3
-                },
-                {
-                    "Id": "PetroleumCoke",
-                    "Number": 3
-                },
-                {
                     "Id": "Fuel",
                     "Number": 2
                 },
                 {
                     "Id": "HeavyOilResidue",
                     "Number": 4
+                },
+                {
+                    "Id": "Sulfur",
+                    "Number": 3
+                },
+                {
+                    "Id": "PetroleumCoke",
+                    "Number": 3
                 }
             ],
             "Output": [
@@ -6097,7 +6148,6 @@
         {
             "Id": "UraniumMk1",
             "Name": "Miner Mk.1 (ウラン)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Uranium",
@@ -6110,7 +6160,6 @@
         {
             "Id": "UraniumMk2",
             "Name": "Miner Mk.2 (ウラン)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Uranium",
@@ -6123,7 +6172,6 @@
         {
             "Id": "UraniumMk3",
             "Name": "Miner Mk.3 (ウラン)",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Uranium",
@@ -6262,7 +6310,6 @@
         {
             "Id": "Water",
             "Name": "揚水ポンプ",
-            "Input": [],
             "Output": [
                 {
                     "Id": "Water",
@@ -6274,7 +6321,7 @@
         },
         {
             "Id": "WaterAlt1",
-            "Name": "水･容器取り出し",
+            "Name": "代替: 水･容器取り出し",
             "Input": [
                 {
                     "Id": "PackagedWater",
@@ -6283,11 +6330,11 @@
             ],
             "Output": [
                 {
-                    "Id": "EmptyCanister",
+                    "Id": "Water",
                     "Number": 2
                 },
                 {
-                    "Id": "Water",
+                    "Id": "EmptyCanister",
                     "Number": 2
                 }
             ],
@@ -6379,7 +6426,6 @@
                     "Number": 1
                 }
             ],
-            "Output": [],
             "ProductTime": 5,
             "Machine": "BiomassBurnerHUB"
         },
@@ -6392,7 +6438,6 @@
                     "Number": 1
                 }
             ],
-            "Output": [],
             "ProductTime": 1,
             "Machine": "BiomassBurnerHUB"
         },
@@ -6405,7 +6450,6 @@
                     "Number": 1
                 }
             ],
-            "Output": [],
             "ProductTime": "0.8",
             "Machine": "BiomassBurnerHUB"
         },
@@ -6418,7 +6462,6 @@
                     "Number": 1
                 }
             ],
-            "Output": [],
             "ProductTime": 9,
             "Machine": "BiomassBurnerHUB"
         },
@@ -6431,7 +6474,6 @@
                     "Number": 1
                 }
             ],
-            "Output": [],
             "ProductTime": "22.5",
             "Machine": "BiomassBurnerHUB"
         },
@@ -6444,8 +6486,31 @@
                     "Number": 1
                 }
             ],
-            "Output": [],
             "ProductTime": "37.5",
+            "Machine": "BiomassBurnerHUB"
+        },
+        {
+            "Id": "BiomassBurnerHUBHogRemains",
+            "Name": "バイオマス・バーナー(HUB) (異星生物甲殻)",
+            "Input": [
+                {
+                    "Id": "HogRemains",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "12.5",
+            "Machine": "BiomassBurnerHUB"
+        },
+        {
+            "Id": "BiomassBurnerHUBPlasmaSpitterRemains",
+            "Name": "バイオマス・バーナー(HUB) (異星生物器官)",
+            "Input": [
+                {
+                    "Id": "PlasmaSpitterRemains",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "12.5",
             "Machine": "BiomassBurnerHUB"
         },
         {
@@ -6457,7 +6522,6 @@
                     "Number": 1
                 }
             ],
-            "Output": [],
             "ProductTime": "3.3",
             "Machine": "BiomassBurner"
         },
@@ -6470,7 +6534,6 @@
                     "Number": 1
                 }
             ],
-            "Output": [],
             "ProductTime": "0.7",
             "Machine": "BiomassBurner"
         },
@@ -6483,7 +6546,6 @@
                     "Number": 1
                 }
             ],
-            "Output": [],
             "ProductTime": "0.5",
             "Machine": "BiomassBurner"
         },
@@ -6496,7 +6558,6 @@
                     "Number": 1
                 }
             ],
-            "Output": [],
             "ProductTime": 6,
             "Machine": "BiomassBurner"
         },
@@ -6509,7 +6570,6 @@
                     "Number": 1
                 }
             ],
-            "Output": [],
             "ProductTime": 15,
             "Machine": "BiomassBurner"
         },
@@ -6522,8 +6582,31 @@
                     "Number": 1
                 }
             ],
-            "Output": [],
             "ProductTime": 25,
+            "Machine": "BiomassBurner"
+        },
+        {
+            "Id": "BiomassBurnerHogRemains",
+            "Name": "バイオマス・バーナー (異星生物甲殻)",
+            "Input": [
+                {
+                    "Id": "HogRemains",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "8.3",
+            "Machine": "BiomassBurner"
+        },
+        {
+            "Id": "BiomassBurnerPlasmaSpitterRemains",
+            "Name": "バイオマス・バーナー (異星生物器官)",
+            "Input": [
+                {
+                    "Id": "PlasmaSpitterRemains",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "8.3",
             "Machine": "BiomassBurner"
         },
         {
@@ -6539,7 +6622,6 @@
                     "Number": 3
                 }
             ],
-            "Output": [],
             "ProductTime": 4,
             "Machine": "CoalGenerator"
         },
@@ -6556,7 +6638,6 @@
                     "Number": "6.3"
                 }
             ],
-            "Output": [],
             "ProductTime": "8.4",
             "Machine": "CoalGenerator"
         },
@@ -6573,7 +6654,6 @@
                     "Number": "1.8"
                 }
             ],
-            "Output": [],
             "ProductTime": "2.4",
             "Machine": "CoalGenerator"
         },
@@ -6586,7 +6666,6 @@
                     "Number": 1
                 }
             ],
-            "Output": [],
             "ProductTime": 5,
             "Machine": "FuelGenerator"
         },
@@ -6599,7 +6678,6 @@
                     "Number": 1
                 }
             ],
-            "Output": [],
             "ProductTime": "13.33",
             "Machine": "FuelGenerator"
         },
@@ -6612,539 +6690,8 @@
                     "Number": 1
                 }
             ],
-            "Output": [],
             "ProductTime": 5,
             "Machine": "FuelGenerator"
-        },
-        {
-            "Id": "AlienProteinHogRemains",
-            "Name": "ホッグのタンパク質",
-            "Input": [
-                {
-                    "Id": "HogRemains",
-                    "Number": 1
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "AlienProtein",
-                    "Number": 1
-                }
-            ],
-            "ProductTime": 3,
-            "Machine": "Constructor"
-        },
-        {
-            "Id": "AlienProteinHatcherRemains",
-            "Name": "ハッチャーのタンパク質",
-            "Input": [
-                {
-                    "Id": "HatcherRemains",
-                    "Number": 1
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "AlienProtein",
-                    "Number": 1
-                }
-            ],
-            "ProductTime": 3,
-            "Machine": "Constructor"
-        },
-        {
-            "Id": "AlienProteinStingerRemains",
-            "Name": "スティンガーのタンパク質",
-            "Input": [
-                {
-                    "Id": "StingerRemains",
-                    "Number": 1
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "AlienProtein",
-                    "Number": 1
-                }
-            ],
-            "ProductTime": 3,
-            "Machine": "Constructor"
-        },
-        {
-            "Id": "AlienProteinPlasmaSpitterRemains",
-            "Name": "スピッターのタンパク質",
-            "Input": [
-                {
-                    "Id": "PlasmaSpitterRemains",
-                    "Number": 1
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "AlienProtein",
-                    "Number": 1
-                }
-            ],
-            "ProductTime": 3,
-            "Machine": "Constructor"
-        },
-        {
-            "Id": "AlienDNACapsule",
-            "Name": "エイリアンのDNAカプセル",
-            "Input": [
-                {
-                    "Id": "AlienProtein",
-                    "Number": 1
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "AlienDNACapsule",
-                    "Number": 1
-                }
-            ],
-            "ProductTime": 6,
-            "Machine": "Constructor"
-        },
-        {
-            "Id": "SmokelessPowder",
-            "Name": "無煙火薬",
-            "Input": [
-                {
-                    "Id": "BlackPowder",
-                    "Number": 2
-                },
-                {
-                    "Id": "HeavyOilResidue",
-                    "Number": 1
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "SmokelessPowder",
-                    "Number": 2
-                }
-            ],
-            "ProductTime": 6,
-            "Machine": "Refinery"
-        },
-        {
-            "Id": "StunRebar",
-            "Name": "スタン鉄筋",
-            "Input": [
-                {
-                    "Id": "IronRebar",
-                    "Number": 1
-                },
-                {
-                    "Id": "Quickwire",
-                    "Number": 5
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "StunRebar",
-                    "Number": 1
-                }
-            ],
-            "ProductTime": 6,
-            "Machine": "Assembler"
-        },
-        {
-            "Id": "ShatterRebar",
-            "Name": "破砕鉄筋",
-            "Input": [
-                {
-                    "Id": "IronRebar",
-                    "Number": 2
-                },
-                {
-                    "Id": "QuartzCrystal",
-                    "Number": 3
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "ShatterRebar",
-                    "Number": 1
-                }
-            ],
-            "ProductTime": 12,
-            "Machine": "Assembler"
-        },
-        {
-            "Id": "ExplosiveRebar",
-            "Name": "爆砕鉄筋",
-            "Input": [
-                {
-                    "Id": "IronRebar",
-                    "Number": 2
-                },
-                {
-                    "Id": "SmokelessPowder",
-                    "Number": 2
-                },
-                {
-                    "Id": "SteelPipe",
-                    "Number": 2
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "ExplosiveRebar",
-                    "Number": 1
-                }
-            ],
-            "ProductTime": 12,
-            "Machine": "Manufacturer"
-        },
-        {
-            "Id": "GasNobelisk",
-            "Name": "ガス・ノーベリスク",
-            "Input": [
-                {
-                    "Id": "Nobelisk",
-                    "Number": 1
-                },
-                {
-                    "Id": "Biomass",
-                    "Number": 10
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "GasNobelisk",
-                    "Number": 1
-                }
-            ],
-            "ProductTime": 12,
-            "Machine": "Assembler"
-        },
-        {
-            "Id": "ClusterNobelisk",
-            "Name": "クラスター・ノーベリスク",
-            "Input": [
-                {
-                    "Id": "Nobelisk",
-                    "Number": 3
-                },
-                {
-                    "Id": "SmokelessPowder",
-                    "Number": 4
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "ClusterNobelisk",
-                    "Number": 1
-                }
-            ],
-            "ProductTime": 24,
-            "Machine": "Assembler"
-        },
-        {
-            "Id": "PulseNobelisk",
-            "Name": "パルス・ノーベリスク",
-            "Input": [
-                {
-                    "Id": "Nobelisk",
-                    "Number": 5
-                },
-                {
-                    "Id": "CrystalOscillator",
-                    "Number": 1
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "PulseNobelisk",
-                    "Number": 5
-                }
-            ],
-            "ProductTime": 60,
-            "Machine": "Assembler"
-        },
-        {
-            "Id": "NukeNobelisk",
-            "Name": "ニューク・ノーベリスク",
-            "Input": [
-                {
-                    "Id": "Nobelisk",
-                    "Number": 5
-                },
-                {
-                    "Id": "EncasedUraniumCell",
-                    "Number": 20
-                },
-                {
-                    "Id": "SmokelessPowder",
-                    "Number": 10
-                },
-                {
-                    "Id": "AILimiter",
-                    "Number": 6
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "NukeNobelisk",
-                    "Number": 1
-                }
-            ],
-            "ProductTime": 120,
-            "Machine": "Manufacturer"
-        },
-        {
-            "Id": "RifleAmmo",
-            "Name": "ライフル弾",
-            "Input": [
-                {
-                    "Id": "CopperSheet",
-                    "Number": 3
-                },
-                {
-                    "Id": "SmokelessPowder",
-                    "Number": 2
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "RifleAmmo",
-                    "Number": 15
-                }
-            ],
-            "ProductTime": 12,
-            "Machine": "Assembler"
-        },
-        {
-            "Id": "HomingRifleAmmo",
-            "Name": "ホーミングライフル弾",
-            "Input": [
-                {
-                    "Id": "RifleAmmo",
-                    "Number": 20
-                },
-                {
-                    "Id": "HighSpeedConnector",
-                    "Number": 1
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "HomingRifleAmmo",
-                    "Number": 10
-                }
-            ],
-            "ProductTime": 24,
-            "Machine": "Assembler"
-        },
-        {
-            "Id": "TurboRifleAmmoManufacturer",
-            "Name": "ターボライフル弾(製造機)",
-            "Input": [
-                {
-                    "Id": "RifleAmmo",
-                    "Number": 25
-                },
-                {
-                    "Id": "AluminumCasing",
-                    "Number": 3
-                },
-                {
-                    "Id": "PackagedTurbofuel",
-                    "Number": 3
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "TurboRifleAmmo",
-                    "Number": 50
-                }
-            ],
-            "ProductTime": 12,
-            "Machine": "Manufacturer"
-        },
-        {
-            "Id": "TurboRifleAmmoBlender",
-            "Name": "ターボライフル弾(混合機)",
-            "Input": [
-                {
-                    "Id": "RifleAmmo",
-                    "Number": 25
-                },
-                {
-                    "Id": "AluminumCasing",
-                    "Number": 3
-                },
-                {
-                    "Id": "Turbofuel",
-                    "Number": 3
-                }
-            ],
-            "Output": [
-                {
-                    "Id": "TurboRifleAmmo",
-                    "Number": 50
-                }
-            ],
-            "ProductTime": 12,
-            "Machine": "Blender"
-        },
-        {
-            "Id": "BiomassBurnerHUBFlowerPetals",
-            "Name": "バイオマス・バーナー(HUB) (花弁)",
-            "Input": [
-                {
-                    "Id": "FlowerPetals",
-                    "Number": 1
-                }
-            ],
-            "Output": [],
-            "ProductTime": 5,
-            "Machine": "BiomassBurnerHUB"
-        },
-        {
-            "Id": "BiomassBurnerHUBHogRemains",
-            "Name": "バイオマス・バーナー(HUB) (ホッグの遺骸)",
-            "Input": [
-                {
-                    "Id": "HogRemains",
-                    "Number": 1
-                }
-            ],
-            "Output": [],
-            "ProductTime": 12.5,
-            "Machine": "BiomassBurnerHUB"
-        },
-        {
-            "Id": "BiomassBurnerHUBHatcherRemains",
-            "Name": "バイオマス・バーナー(HUB) (ハッチャーの遺骸)",
-            "Input": [
-                {
-                    "Id": "HatcherRemains",
-                    "Number": 1
-                }
-            ],
-            "Output": [],
-            "ProductTime": 12.5,
-            "Machine": "BiomassBurnerHUB"
-        },
-        {
-            "Id": "BiomassBurnerHUBStingerRemains",
-            "Name": "バイオマス・バーナー(HUB) (スティンガーの遺骸)",
-            "Input": [
-                {
-                    "Id": "StingerRemains",
-                    "Number": 1
-                }
-            ],
-            "Output": [],
-            "ProductTime": 12.5,
-            "Machine": "BiomassBurnerHUB"
-        },
-        {
-            "Id": "BiomassBurnerHUBPlasmaSpitterRemains",
-            "Name": "バイオマス・バーナー(HUB) (スピッターの遺骸)",
-            "Input": [
-                {
-                    "Id": "PlasmaSpitterRemains",
-                    "Number": 1
-                }
-            ],
-            "Output": [],
-            "ProductTime": 12.5,
-            "Machine": "BiomassBurnerHUB"
-        },
-        {
-            "Id": "BiomassBurnerFlowerPetals",
-            "Name": "バイオマス・バーナー(花弁)",
-            "Input": [
-                {
-                    "Id": "FlowerPetals",
-                    "Number": 1
-                }
-            ],
-            "Output": [],
-            "ProductTime": 3.3,
-            "Machine": "BiomassBurner"
-        },
-        {
-            "Id": "BiomassBurnerHogRemains",
-            "Name": "バイオマス・バーナー(ホッグの遺骸)",
-            "Input": [
-                {
-                    "Id": "HogRemains",
-                    "Number": 1
-                }
-            ],
-            "Output": [],
-            "ProductTime": 8.3,
-            "Machine": "BiomassBurner"
-        },
-        {
-            "Id": "BiomassBurnerHatcherRemains",
-            "Name": "バイオマス・バーナー(ハッチャーの遺骸)",
-            "Input": [
-                {
-                    "Id": "HatcherRemains",
-                    "Number": 1
-                }
-            ],
-            "Output": [],
-            "ProductTime": 8.3,
-            "Machine": "BiomassBurner"
-        },
-        {
-            "Id": "BiomassBurnerStingerRemains",
-            "Name": "バイオマス・バーナー(スティンガーの遺骸)",
-            "Input": [
-                {
-                    "Id": "StingerRemains",
-                    "Number": 1
-                }
-            ],
-            "Output": [],
-            "ProductTime": 8.3,
-            "Machine": "BiomassBurner"
-        },
-        {
-            "Id": "BiomassBurnerPlasmaSpitterRemains",
-            "Name": "バイオマス・バーナー(スピッターの遺骸)",
-            "Input": [
-                {
-                    "Id": "PlasmaSpitterRemains",
-                    "Number": 1
-                }
-            ],
-            "Output": [],
-            "ProductTime": 8.3,
-            "Machine": "BiomassBurner"
-        },
-        {
-            "Id": "WaterAlt2",
-            "Name": "水(地下資源抽出機)",
-            "Input": [],
-            "Output": [
-                {
-                    "Id": "Water",
-                    "Number": 1
-                }
-            ],
-            "ProductTime": 1,
-            "Machine": "ResourceWellExtractor"
-        },
-        {
-            "Id": "CrudeOilAlt2",
-            "Name": "原油(地下資源抽出機)",
-            "Input": [],
-            "Output": [
-                {
-                    "Id": "CrudeOil",
-                    "Number": 1
-                }
-            ],
-            "ProductTime": 1,
-            "Machine": "ResourceWellExtractor"
         }
     ]
 }

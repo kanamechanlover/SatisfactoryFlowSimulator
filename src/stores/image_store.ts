@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import { hasObjectUrls, readObjectUrls, writeObjectUrls, removeObjectUrls } from '@/logics/local_strage';
 
 /** 画像データ */
 export class ImageData {
@@ -27,6 +28,8 @@ export const useImageStore = defineStore('image', {
                 /** 全て Blob データとして取得 */
                 responseType: 'blob',
             }),
+            /** 読み込みに失敗したファイルリスト */
+            failedFileList: [] as Array<string>,
         };
     },
     getters: {
@@ -96,6 +99,11 @@ export const useImageStore = defineStore('image', {
         },
     },
     actions: {
+        /** 環境を綺麗にする */
+        initialize() {
+            // ストレージをクリーン
+            this.cleanStorage();
+        },
         /** 
          * 読み込み成功時の処理
          * @param imageId [in] 画像ID
@@ -116,6 +124,15 @@ export const useImageStore = defineStore('image', {
             this.imageDataList[imageId] = imageData;
             // 読み込み完了したので、読み込み中ファイル数を減らす
             this.loadingFileNum--;
+            // 全て読み終えたらストレージに書き込み
+            if (this.loadingFileNum == 0) {
+                this.updateStorage();
+                // 読み込みに失敗したファイルを表示
+                if (this.failedFileList.length > 0) {
+                    this.showFailedAlert();
+                    this.failedFileList = [] as Array<string>;
+                }
+            }
         },
         /**
          * 単体読み込み
@@ -128,6 +145,10 @@ export const useImageStore = defineStore('image', {
                 // オブジェクトURL作成（データはキャッシュ上に配置される）
                 const objectUrl = URL.createObjectURL(res.data);
                 this.onSuccessful(imageId, path, objectUrl);
+            }).catch(() => {
+                // 失敗時は失敗したファイルリストに追加
+                this.failedFileList.push(imageId);
+                this.loadingFileNum--;
             });
             // 読み込み中ファイル数を増やす
             this.loadingFileNum++;
@@ -145,7 +166,11 @@ export const useImageStore = defineStore('image', {
                 const reader = new FileReader();
                 reader.onload = () => {
                     this.onSuccessful(imageId, path, reader.result as string, true);
-                }
+                };
+                reader.onerror = () => {
+                    this.failedFileList.push(imageId);
+                    this.loadingFileNum--;
+                };
                 reader.readAsDataURL(file);
                 this.loadingFileNum++;
             })
@@ -161,7 +186,42 @@ export const useImageStore = defineStore('image', {
             }
             // データを空にする
             this.imageDataList = {} as ImageDataList;
+            this.failedFileList = [] as Array<string>;
+            // ローカルストレージに登録されていたらクリアしておく
+            this.cleanStorage();
         },
+
+        /** 読み込み失敗アラート表示 */
+        showFailedAlert() {
+            alert(
+                '以下のファイルの読み込みに失敗しました。\n' +
+                this.failedFileList.join('\n')
+            );
+        },
+
+        // reload 時のメモリリーク回避の為の処置 -------------------------------
+
+        /** ローカルストレージの内容を更新 */
+        updateStorage() {
+            const urls = Object.keys(this.imageDataList).map((key: string): string => {
+                return this.imageDataList[key].objectUrl;
+            });
+            writeObjectUrls(urls);
+        },
+        /** ローカルストレージの内容を削除 */
+        cleanStorage() {
+            // ストレージに登録されていなければ何もしない
+            if (!hasObjectUrls()) return;
+
+            // ストレージから URL リストを取得して解放
+            const urls = readObjectUrls();
+            urls.forEach((url: string) => {
+                URL.revokeObjectURL(url);
+            });
+            
+            // ストレージクリア
+            removeObjectUrls();
+        }
     },
 });
 

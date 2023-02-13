@@ -37,17 +37,12 @@ import './style.css'
 
 import { useImageStore } from '@/stores/image_store'
 const imageStore = useImageStore();
+imageStore.initialize(); // 初期化しておく
 import DefaultImageUrls from '@/defines/config/assets.json'
 for(const key in DefaultImageUrls) {
     const path = (DefaultImageUrls as {[key: string]: string})[key];
     imageStore.add(key, path);
 }
-
-// ページ離脱時のメモリ解放などの処理を登録
-window.addEventListener('beforeunload', () => {
-    // 画像データをクリア
-    imageStore.clear();
-});
 
 // 最後にマウント
 app.mount('#app');

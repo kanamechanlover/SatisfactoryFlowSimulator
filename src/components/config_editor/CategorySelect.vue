@@ -17,9 +17,8 @@ import { ConfigCategory } from '@/defines/types/config'
 // 子コンポーネント ---------------------------------------------
 
 
-// 基本定義 -----------------------------------------------------
+// 外部連携 -----------------------------------------------------
 
-/** プロパティを定義 */
 const props = defineProps({
     /** 現在の値(v-model用) */
     modelValue: {
@@ -30,7 +29,7 @@ const props = defineProps({
     categories: {
         type: Array<ConfigCategory>,
         default: [] as Array<ConfigCategory>,
-        require: true,
+        required: true,
     },
     /** エラー表示フラグ */
     isError: {
@@ -39,10 +38,11 @@ const props = defineProps({
     },
 });
 
-/** エミットを定義 */
 const emits = defineEmits<{
     (e: 'update:modelValue', value: string): void
 }>();
+
+// 内部定義 -----------------------------------------------------
 
 /** 未選択状態時のインデックス値 */
 const IndexNone = -1;

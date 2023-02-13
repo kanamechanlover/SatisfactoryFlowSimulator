@@ -31,6 +31,8 @@ export const useConfigStore = defineStore('config', {
              * - Promise に実行中の処理追加はできないので作成
              */
             processingNumber: 0,
+            /** ソート反映フラグ（設定エディタ上のソート結果をエクスポートする設定ファイルに反映するか） */
+            sortEffect: false,
         };
     },
     getters: {
@@ -415,6 +417,9 @@ export const useConfigStore = defineStore('config', {
                 });
             }).map((v) => v.id);
         },
+        isEffectSort: (state): boolean => {
+            return state.sortEffect;
+        }
     },
     actions: {
         /** 更新開始 */
@@ -792,14 +797,19 @@ export const useConfigStore = defineStore('config', {
             });
         },
 
-        /** レシピ追加 */
-        addRecipe() {
+        /**
+         * レシピ追加
+         * @return 追加後のレシピのインデックス
+         */
+        addRecipe(): number {
+            const index = this.config.recipes.length;
             this.process(() => {
                 let item = new ConfigRecipe()
                 item.uniqueKey = this.uniqueKey++;
                 this.config.recipes.push(item);
                 Logger.log('Added recipe.', 'ConfigStore.addRecipe');
             });
+            return index;
         },
         /**
          * 素材更新
@@ -846,5 +856,11 @@ export const useConfigStore = defineStore('config', {
             });
             return true;
         },
+        /**
+         * ソート反映フラグ
+         */
+        toggleSortEffect() {
+            this.sortEffect = !this.sortEffect;
+        }
     }
 });

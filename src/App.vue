@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, onBeforeUnmount } from 'vue'
 import { useConfigStore } from './stores/config_store'
 import { useImageStore } from './stores/image_store'
 import Logger from '@/logics/logger'
@@ -84,6 +84,12 @@ const closeConfigEditor = () => {
 
 // サイクル -----------------------------------------------------
 
+// ページ離脱時のメモリ解放などの処理を登録
+// ただし、ページ更新時は発火されないので画像ストアで何とかする
+onBeforeUnmount(() => {
+    // 画像データをクリア
+    imageStore.clear();
+});
 
 // 監視 ---------------------------------------------------------
 
