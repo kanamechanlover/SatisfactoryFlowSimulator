@@ -18,83 +18,72 @@
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, Ref, computed } from 'vue'
+
+<script setup lang="ts">
+
+import { ref, computed } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
 import { useFlowStore } from '@/stores/flow_store'
 
+// 子コンポーネント ---------------------------------------------
 
-/** プロパティを定義 */
-const Props = {
-    /** 制作フローパス */
-    flowPath: {
-        type: String,
-        default: '',
-    }
+import FlowView from '@/components/FlowView.vue'
+
+// 外部連携 -----------------------------------------------------
+
+// 内部定義 -----------------------------------------------------
+
+// 内部変数 -----------------------------------------------------
+
+/** 設定ストア */
+const configStore = useConfigStore();
+
+/** 制作フローストア */
+const flowStore = useFlowStore();
+
+// 内部関数 -----------------------------------------------------
+
+
+// Getters -----------------------------------------------------
+
+const options = computed(() => {
+    const productMaterialIds = configStore.productMaterialIds;
+    const categoryIds = configStore.materialCategoryIds;
+    let options: string[] = [];
+    categoryIds.forEach((categoryId: string) => {
+        // 入力素材のあるレシピを持つ素材IDリストから対象カテゴリのものを取得
+        const categoryMaterialIds = productMaterialIds.filter((materialId: string) => {
+            return configStore.materialCategory(materialId) == categoryId;
+        });
+        // 対象の素材が１つも見つからないカテゴリばスキップ
+        if (!categoryMaterialIds.length) return;
+        // 選択肢に追加
+        const categoryName = configStore.materialCategoryName(categoryId);
+        options.push('■ ' + categoryName);
+        options = options.concat(categoryMaterialIds);
+    });
+    return options;
+});
+const isCategoryOption = computed(() => (option: string) => {
+    return option.startsWith('■');
+});
+const materialName = computed(() => (materialId: string) => {
+    return configStore.materialName(materialId);
+});
+const currentProducts = computed((): string[] => {
+    return flowStore.products;
+});
+
+// Actions -----------------------------------------------------
+
+const onProductChange = (event: Event) => {
+    if (!(event.target instanceof HTMLSelectElement)) return;
+    flowStore.setMaterialId([], event.target.value);
 };
 
-/** テンプレート参照する定義 */
-interface Refs {
-    frame: Ref<HTMLElement|null>,
-}
+// サイクル -----------------------------------------------------
 
-export default defineComponent({
-    name: 'flow-view',
-    props: Props,
-    setup(props) {
-        const configStore = useConfigStore();
-        const flowStore = useFlowStore();
-        const refs: Refs = {
-            frame: ref(null),
-        };
 
-        // computed
-        const computes = {
-            options: computed(() => {
-                const productMaterialIds = configStore.productMaterialIds;
-                const categoryIds = configStore.materialCategoryIds;
-                let options: string[] = [];
-                categoryIds.forEach((categoryId: string) => {
-                    // 入力素材のあるレシピを持つ素材IDリストから対象カテゴリのものを取得
-                    const categoryMaterialIds = productMaterialIds.filter((materialId: string) => {
-                        return configStore.materialCategory(materialId) == categoryId;
-                    });
-                    // 対象の素材が１つも見つからないカテゴリばスキップ
-                    if (!categoryMaterialIds.length) return;
-                    // 選択肢に追加
-                    const categoryName = configStore.materialCategoryName(categoryId);
-                    options.push('■ ' + categoryName);
-                    options = options.concat(categoryMaterialIds);
-                });
-                return options;
-            }),
-            isCategoryOption: computed(() => (option: string) => {
-                return option.startsWith('■');
-            }),
-            materialName: computed(() => (materialId: string) => {
-                return configStore.materialName(materialId);
-            }),
-            currentProducts: computed((): string[] => {
-                return flowStore.products;
-            }),
-        };
-
-        // methods
-        const methods = {
-            onProductChange: (event: Event) => {
-                if (!(event.target instanceof HTMLSelectElement)) return;
-                flowStore.setMaterialId([], event.target.value);
-            },
-        };
-
-        return {
-            ...props,
-            ...refs,
-            ...computes,
-            ...methods,
-        };
-    },
-});
 </script>
 
 <style src="@/to_dark_theme.css" scoped />

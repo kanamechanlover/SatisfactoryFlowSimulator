@@ -21,8 +21,9 @@
                 <div class="recipe-box">
                     <span v-if="existsRecipe">レシピ：</span>
                     <select @change="onChangedRecipe" v-if="existsRecipe">
-                        <option v-for="recipe in recipeList" :key="recipe" :selected="recipe === recipeName">
-                            {{ recipe }}
+                        <option v-for="recipe in recipeList" :key="recipe.id"
+                            :selected="recipe.id === recipeId" :value="recipe.id">
+                            {{ recipe.name }}
                         </option>
                     </select>
                 </div>
@@ -40,163 +41,164 @@
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, Ref, computed } from 'vue'
-import { FlowPath, Flow } from '@/defines/types/flow'
+<script setup lang="ts">
+
+import { ref, computed } from 'vue'
 import { useFlowStore } from '@/stores/flow_store'
 import { useConfigStore } from '@/stores/config_store'
+import { useImageStore } from '@/stores/image_store'
+import { FlowPath, Flow } from '@/defines/types/flow'
+import { ConfigRecipe } from '@/defines/types/config'
 import { CeilDigit } from '@/logics/primitives'
-import { materialImgPath, machineIconPath } from '@/logics/access_path'
 
+// 子コンポーネント ---------------------------------------------
+
+
+// 外部連携 -----------------------------------------------------
 
 /** プロパティを定義 */
-const Props = {
+const props = defineProps({
     /** 制作フローパス */
     flowPath: {
         type: String,
         default: '',
     }
+});
+
+// 内部定義 -----------------------------------------------------
+
+// 内部変数 -----------------------------------------------------
+
+/** 設定ストア */
+const configStore = useConfigStore();
+
+/** 制作フローストア */
+const flowStore = useFlowStore();
+
+/** 画像ストア */
+const imageStore = useImageStore();
+
+/** 制作フローパス */
+const flowPath = ref(new FlowPath(props.flowPath));
+
+// 内部関数 -----------------------------------------------------
+
+const getFlow = computed(() => {
+    return flowStore.flowOnPath(flowPath.value);
+});
+
+// Getters -----------------------------------------------------
+
+const existsRecipe = computed((): boolean => {
+    if (!getFlow.value?.materialId) return false;
+    return configStore.recipesHasOutputMaterialId(getFlow.value?.materialId).length > 0;
+});
+/** 素材名 */
+const materialName = computed((): string => {
+    if (!getFlow.value?.materialId) return '';
+    return configStore.materialName(getFlow.value?.materialId);
+});
+/** 素材画像 */
+const materialImg = computed((): string => {
+    if (!getFlow.value?.materialId) return '';
+    return imageStore.getData(getFlow.value?.materialId);
+});
+/** レシピ名 */
+const recipeId = computed((): string => {
+    if (!getFlow.value?.recipeId) return '';
+    return getFlow.value?.recipeId;
+});
+/** レシピ名リスト */
+const recipeList = computed((): Array<ConfigRecipe> => {
+    if (!getFlow.value?.materialId) return [];
+    return configStore.recipesHasOutputMaterialId(getFlow.value?.materialId);
+});
+/** 生産レート(%) */
+const needsRate = computed((): number => {
+    if (!getFlow.value?.needsRate) return 100;
+    return getFlow.value?.needsRate * 100;
+});
+/** 設備ID */
+const machineId = computed((): string => {
+    if (!getFlow.value?.machineId) return '';
+    return getFlow.value?.machineId;
+});
+/** 設備画像 */
+const machineSvg = computed((): string => {
+    if (!getFlow.value?.machineId) {
+        // 設備が無い場合は手採取用のアイコンにする
+        return imageStore.getData('Hand');
+    }
+    return imageStore.getData(getFlow.value?.machineId);
+});
+/** 設備名 */
+const machineName = computed((): string => {
+    if (!getFlow.value?.machineId) {
+        // 設備が無い場合は手採取用のアイコンにする
+        return '手採取';
+    }
+    return configStore.machineName(getFlow.value?.machineId);
+});
+/** ルートフローか */
+const isRootFlow = computed((): boolean => {
+    if (!getFlow.value?.isRootFlow) return false;
+    return getFlow.value?.isRootFlow;
+});
+/** 必要数 */
+const needs = computed((): number => {
+    if (!getFlow.value?.needs) return 0;
+    return CeilDigit(getFlow.value?.needs, 6);
+});
+/** 必要数の入力タイプ（ルートフローだけ数値として入力可能） */
+const needsInputType = computed((): string => {
+    return (getFlow.value?.isRootFlow) ? 'number': 'text';
+});
+/** 入力素材の制作フロー */
+const materialFlows = computed((): Array<Flow> => {
+    if (!getFlow.value?.materialFlows) return [];
+    return getFlow.value?.materialFlows;
+});
+/** 副産物名 */
+const byproductName = computed((): string => {
+    const byproductId = getFlow.value?.byproductId;
+    if (!byproductId) return '';
+    const name = configStore.materialName(byproductId);
+    return name;
+});
+/** 副産物の生産数 */
+const byproductNeeds = computed((): string => {
+    if (!getFlow.value?.byproductNeeds) return '';
+    return CeilDigit(getFlow.value?.byproductNeeds, 6).toString();
+});
+/** 副産物の画像 */
+const byproductImg = computed((): string => {
+    if (!getFlow.value?.byproductId) return '';
+    return imageStore.getData(getFlow.value?.byproductId);
+});
+
+// Actions -----------------------------------------------------
+
+/** 入力素材のパスを取得 */
+const materialFlowPath = (flow: Flow) => {
+    if (!props.flowPath.length) return flow.materialId;
+    return [props.flowPath, flow.materialId].join(',');
+};
+/** 素材の必要数が変更された時のコールバック */
+const onChangedRecipe = (event: Event) => {
+    if (!(event.target instanceof HTMLSelectElement)) return;
+    // 制作フローストア更新
+    flowStore.setRecipeId(new FlowPath(props.flowPath), event.target.value);
+};
+/** 素材の必要数が変更された時のコールバック */
+const onChangedMaterialNeeds = (event: Event) => {
+    if (!(event.target instanceof HTMLInputElement)) return;
+    // 制作フローストア更新
+    flowStore.setNeeds(new FlowPath(props.flowPath), parseFloat(event.target.value));
 };
 
-/** テンプレート参照する定義 */
-interface Refs {
-    frame: Ref<HTMLElement|null>,
-}
+// サイクル -----------------------------------------------------
 
-export default defineComponent({
-    name: 'flow-view',
-    props: Props,
-    setup(props) {
-        const flowStore = useFlowStore();
-        const configStore = useConfigStore();
-        const flowPath = ref(new FlowPath(props.flowPath));
-        const getFlow = computed(() => {
-            return flowStore.flowOnPath(flowPath.value);
-        });
-        const refs: Refs = {
-            frame: ref(null),
-        };
 
-        // computed
-        const computes = {
-            flow: getFlow,
-            existsRecipe: computed((): boolean => {
-                if (!getFlow.value?.materialId) return false;
-                return configStore.recipeNamesHasOutputMaterialId(getFlow.value?.materialId).length > 0;
-            }),
-            /** 素材名 */
-            materialName: computed((): string => {
-                if (!getFlow.value?.materialId) return '';
-                return configStore.materialName(getFlow.value?.materialId);
-            }),
-            /** 素材画像 */
-            materialImg: computed((): string => {
-                if (!getFlow.value?.materialId) return '';
-                return materialImgPath(getFlow.value?.materialId);
-            }),
-            /** レシピ名 */
-            recipeName: computed((): string => {
-                if (!getFlow.value?.recipeId) return '';
-                return getFlow.value?.recipeId;
-            }),
-            /** レシピ名リスト */
-            recipeList: computed((): Array<string> => {
-                if (!getFlow.value?.materialId) return [];
-                return configStore.recipeNamesHasOutputMaterialId(getFlow.value?.materialId);
-            }),
-            /** 生産レート(%) */
-            needsRate: computed((): number => {
-                if (!getFlow.value?.needsRate) return 100;
-                return getFlow.value?.needsRate * 100;
-            }),
-            /** 設備ID */
-            machineId: computed((): string => {
-                if (!getFlow.value?.machineId) return '';
-                return getFlow.value?.machineId;
-            }),
-            /** 設備画像 */
-            machineSvg: computed((): string => {
-                if (!getFlow.value?.machineId) {
-                    // 設備が無い場合は手採取用のアイコンにする
-                    return machineIconPath('Hand');
-                }
-                return machineIconPath(getFlow.value?.machineId);
-            }),
-            /** 設備名 */
-            machineName: computed((): string => {
-                if (!getFlow.value?.machineId) {
-                    // 設備が無い場合は手採取用のアイコンにする
-                    return '手採取';
-                }
-                return configStore.machineName(getFlow.value?.machineId);
-            }),
-            /** ルートフローか */
-            isRootFlow: computed((): boolean => {
-                if (!getFlow.value?.isRootFlow) return false;
-                return getFlow.value?.isRootFlow;
-            }),
-            /** 必要数 */
-            needs: computed((): number => {
-                if (!getFlow.value?.needs) return 0;
-                return CeilDigit(getFlow.value?.needs, 6);
-            }),
-            /** 必要数の入力タイプ（ルートフローだけ数値として入力可能） */
-            needsInputType: computed((): string => {
-                return (getFlow.value?.isRootFlow) ? 'number': 'text';
-            }),
-            /** 入力素材の制作フロー */
-            materialFlows: computed((): Array<Flow> => {
-                if (!getFlow.value?.materialFlows) return [];
-                return getFlow.value?.materialFlows;
-            }),
-            /** 副産物名 */
-            byproductName: computed((): string => {
-                const byproductId = getFlow.value?.byproductId;
-                if (!byproductId) return '';
-                const name = configStore.materialName(byproductId);
-                return name;
-            }),
-            /** 副産物の生産数 */
-            byproductNeeds: computed((): string => {
-                if (!getFlow.value?.byproductNeeds) return '';
-                return CeilDigit(getFlow.value?.byproductNeeds, 6).toString();
-            }),
-            /** 副産物の画像 */
-            byproductImg: computed((): string => {
-                if (!getFlow.value?.byproductId) return '';
-                return materialImgPath(getFlow.value?.byproductId);
-            }),
-        };
-
-        // methods
-        const methods = {
-            /** 入力素材のパスを取得 */
-            materialFlowPath: (flow: Flow) => {
-                if (!props.flowPath.length) return flow.materialId;
-                return [props.flowPath, flow.materialId].join(',');
-            },
-            /** 素材の必要数が変更された時のコールバック */
-            onChangedRecipe: (event: Event) => {
-                if (!(event.target instanceof HTMLSelectElement)) return;
-                // 制作フローストア更新
-                flowStore.setRecipeId(new FlowPath(props.flowPath), event.target.value);
-            },
-            /** 素材の必要数が変更された時のコールバック */
-            onChangedMaterialNeeds: (event: Event) => {
-                if (!(event.target instanceof HTMLInputElement)) return;
-                // 制作フローストア更新
-                flowStore.setNeeds(new FlowPath(props.flowPath), parseFloat(event.target.value));
-            },
-        };
-
-        return {
-            ...props,
-            ...refs,
-            ...computes,
-            ...methods,
-        };
-    },
-});
 </script>
 
 <style src="@/to_dark_theme.css" scoped />

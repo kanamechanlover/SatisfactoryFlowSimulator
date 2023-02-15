@@ -1,11 +1,14 @@
-import { createApp } from 'vue'
-import './style.css'
-import { createPinia } from 'pinia'
-import App from './App.vue'
-import { useConfigStore } from '@/stores/config_store'
 
-// 設定ファイル読み込み
-import ConfigData from '@/defines/config/config.json'
+
+// Vue3 アプリ作成
+import { createApp } from 'vue'
+import App from './App.vue'
+const app = createApp(App);
+
+// Pinia 作成
+import { createPinia } from 'pinia'
+const pinia = createPinia();
+app.use(pinia);
 
 // Awesome Font を使用する準備
 // - コア
@@ -13,20 +16,33 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 // - コンポーネント
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 // - 使用するアイコン
-import { faTwitter, faGithub, faSteam } from '@fortawesome/free-brands-svg-icons'
+import {
+    faCube, faDroplet, faPenToSquare, faArrowUpRightFromSquare, faWrench
+} from '@fortawesome/free-solid-svg-icons'
+import {
+    faTwitter, faGithub, faSteam
+} from '@fortawesome/free-brands-svg-icons'
+library.add(faCube, faDroplet, faPenToSquare, faArrowUpRightFromSquare, faWrench);
 library.add(faTwitter, faGithub, faSteam);
-
-
-// アプリケーションの初期化
-const pinia = createPinia();
-const app = createApp(App);
-app.use(pinia);
 app.component('fa', FontAwesomeIcon);
-app.mount('#app');
 
-// 全体から参照する設定ストアはここで定義しておく
+// 全体から参照する設定ストアはここで宣言して実体を作っておく
+import { useConfigStore } from '@/stores/config_store'
 const configStore = useConfigStore();
+import ConfigData from '@/defines/config/config.json'
 configStore.setup(ConfigData);
 
-console.log(pinia);
+// 共通のスタイルを指定
+import './style.css'
 
+import { useImageStore } from '@/stores/image_store'
+const imageStore = useImageStore();
+imageStore.initialize(); // 初期化しておく
+import DefaultImageUrls from '@/defines/config/assets.json'
+for(const key in DefaultImageUrls) {
+    const path = (DefaultImageUrls as {[key: string]: string})[key];
+    imageStore.add(key, path);
+}
+
+// 最後にマウント
+app.mount('#app');

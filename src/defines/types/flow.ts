@@ -3,7 +3,7 @@
  * （Vue3 の props を経由する為文字列変換できるようにする）
  */
 export class FlowPath extends Array<string> {
-    /** @param [in] data 配列または文字列（カンマ区切り） */
+    /** @param data [in] 配列または文字列（カンマ区切り） */
     constructor(data:FlowPath|Array<string>|string = []) {
         if (typeof data === 'string') {
             const splittedData:Array<string> = (data === '') ? [] : data.split(',');
@@ -46,7 +46,7 @@ export class Flow {
 
     /**
      * コンストラクタ
-     * @param [in] parent 親階層のフロー
+     * @param parent [in] 親階層のフロー
      */
     public constructor(parent: Flow | null = null) {
         // 親階層のフロー設定

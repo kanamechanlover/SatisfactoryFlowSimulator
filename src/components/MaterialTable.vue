@@ -46,23 +46,20 @@
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, Ref, computed } from 'vue'
-import { Flow } from '@/defines/types/flow'
-import { useFlowStore } from '@/stores/flow_store'
+<script setup lang="ts">
+
+import { ref, computed } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
+import { useFlowStore } from '@/stores/flow_store'
+import { useImageStore } from '@/stores/image_store'
+import { Flow } from '@/defines/types/flow'
 import { MaterialTable } from '@/defines/types/material_table'
 import { CeilDigit } from '@/logics/primitives'
-import { materialImgPath } from '@/logics/access_path'
+
+// 子コンポーネント ---------------------------------------------
 
 
-/** プロパティを定義 */
-const Props = {};
-
-/** テンプレート参照する定義 */
-interface Refs {
-    frame: Ref<HTMLElement|null>,
-}
+// 内部定義 -----------------------------------------------------
 
 /** カテゴリ名行を含めた表示用クラス */
 class CategorisedRow {
@@ -76,120 +73,114 @@ class CategorisedRow {
     }
 };
 
-export default defineComponent({
-    name: 'material-table',
-    props: Props,
-    setup(props) {
-        // テーブルデータ定義
-        const productTable = ref(new MaterialTable());
-        const byproductTable = ref(new MaterialTable());
-        // 制作フローストア取得
-        const flowStore = useFlowStore();
-        // 設定ストア取得
-        const configStore = useConfigStore();
-        // 更新処理定義
-        const update = () => {
-            // 製品IDリスト
-            const products = flowStore.products;
-            // テーブル更新
-            productTable.value.clear();
-            byproductTable.value.clear();
-            products.forEach((product: string) => {
-                // 制作フローから再帰的にテーブル情報取得する関数定義
-                const collectMaterialNeeds = (flow: Flow) => {
-                    // 製品IDとその必要数を追加
-                    const materialId = flow.materialId;
-                    const needs = flow.needs;
-                    productTable.value.add(materialId, product, needs);
-                    // 生産の際に生成される副産物を追加
-                    const byproductId = flow.byproductId;
-                    if (byproductId) {
-                        const byproductNeeds = flow.byproductNeeds;
-                        byproductTable.value.add(byproductId, product, byproductNeeds);
-                    }
-                    flow.materialIds.forEach((materialId: string) => {
-                        const materialFlow = flow.getMaterialFlow(materialId);
-                        if (materialFlow) collectMaterialNeeds(materialFlow);
-                    });
-                };
-                // 副産物はルートフローからも取得する
-                const rootFlow = flowStore.flowOnPath();
-                if (!rootFlow) return; // ルートに素材の指定が無い（ツリーが空）なら場合は
-                const byproductId = rootFlow.byproductId;
-                if (byproductId) {
-                    const byproductNeeds = rootFlow.byproductNeeds;
-                    byproductTable.value.add(byproductId, product, byproductNeeds);
-                }
-                // ルートフローの入力素材から再帰的に走査
-                rootFlow.materialIds.forEach((materialId: string) => {
-                    const flow = rootFlow.getMaterialFlow(materialId);
-                    if (flow) collectMaterialNeeds(flow);
-                });
+// 内部変数 -----------------------------------------------------
+
+/** 設定ストア */
+const configStore = useConfigStore();
+
+/** 制作フローストア取得 */
+const flowStore = useFlowStore();
+
+/** 画像ストア */
+const imageStore = useImageStore();
+
+// テーブルデータ定義
+const productTable = ref(new MaterialTable());
+const byproductTable = ref(new MaterialTable());
+
+// 内部関数 -----------------------------------------------------
+
+const update = () => {
+    // 製品IDリスト
+    const products = flowStore.products;
+    // テーブル更新
+    productTable.value.clear();
+    byproductTable.value.clear();
+    products.forEach((product: string) => {
+        // 制作フローから再帰的にテーブル情報取得する関数定義
+        const collectMaterialNeeds = (flow: Flow) => {
+            // 製品IDとその必要数を追加
+            const materialId = flow.materialId;
+            const needs = flow.needs;
+            productTable.value.add(materialId, product, needs);
+            // 生産の際に生成される副産物を追加
+            const byproductId = flow.byproductId;
+            if (byproductId) {
+                const byproductNeeds = flow.byproductNeeds;
+                byproductTable.value.add(byproductId, product, byproductNeeds);
+            }
+            flow.materialIds.forEach((materialId: string) => {
+                const materialFlow = flow.getMaterialFlow(materialId);
+                if (materialFlow) collectMaterialNeeds(materialFlow);
             });
         };
-        // 更新処理初回実行
-        update();
-        // 制作フローが更新されたら呼び出されるようにする
-        flowStore.$subscribe(update);
+        // 副産物はルートフローからも取得する
+        const rootFlow = flowStore.flowOnPath();
+        if (!rootFlow) return; // ルートに素材の指定が無い（ツリーが空）なら場合は
+        const byproductId = rootFlow.byproductId;
+        if (byproductId) {
+            const byproductNeeds = rootFlow.byproductNeeds;
+            byproductTable.value.add(byproductId, product, byproductNeeds);
+        }
+        // ルートフローの入力素材から再帰的に走査
+        rootFlow.materialIds.forEach((materialId: string) => {
+            const flow = rootFlow.getMaterialFlow(materialId);
+            if (flow) collectMaterialNeeds(flow);
+        });
+    });
+};
+// 更新処理初回実行
+update();
+// 制作フローが更新されたら呼び出されるようにする
+flowStore.$subscribe(update);
 
-        const refs: Refs = {
-            frame: ref(null),
-        };
+// Getters -----------------------------------------------------
 
-        // computed
-        const computes = {
-            products: computed((): Array<string> => {
-                return flowStore.products;
-            }),
-            /** カテゴリ分けしたテーブル */
-            categorisedTable: computed((): Array<CategorisedRow> => {
-                const categoryIds = configStore.materialCategoryIds;
-                let table:Array<CategorisedRow> = [];
-                categoryIds.forEach((categoryId: string) => {
-                    // カテゴリに属する素材IDリストを取得
-                    const materialIds = productTable.value.materials.filter((materialId: string) => {
-                        return configStore.materialCategory(materialId) == categoryId;
-                    });
-                    // カテゴリに素材が１つでもあればテーブルに追加
-                    if (materialIds.length > 0) {
-                        table.push(new CategorisedRow(categoryId, true));
-                        table = table.concat(materialIds.map((materialId: string) => new CategorisedRow(materialId, false)));
-                    }
-                });
-                return table;
-            }),
-        };
-
-        // methods
-        const methods = {
-            /** 製品毎の総数 */
-            productTotal(materialId: string, product: string): string {
-                const value = productTable.value.getProductTotal(materialId, product);
-                return CeilDigit(value, 6).toString();
-            },
-            /** 製品毎の副産物の総数 */
-            byproductProductTotal(materialId: string, product: string): string {
-                const value = byproductTable.value.getProductTotal(materialId, product);
-                return CeilDigit(value, 6).toString();
-            },
-            /** 素材画像 */
-            materialImg: computed(() => (materialId: string) => {
-                if (!materialId) return '';
-                return materialImgPath(materialId);
-            }),
-        };
-
-        return {
-            productTable: productTable,
-            byproductTable: byproductTable,
-            configStore,
-            ...props,
-            ...refs,
-            ...computes,
-            ...methods,
-        };
-    },
+/** 製品リスト */
+const products = computed((): Array<string> => {
+    return flowStore.products;
 });
+
+/** カテゴリ分けしたテーブル */
+const categorisedTable = computed((): Array<CategorisedRow> => {
+    const categoryIds = configStore.materialCategoryIds;
+    let table:Array<CategorisedRow> = [];
+    categoryIds.forEach((categoryId: string) => {
+        // カテゴリに属する素材IDリストを取得
+        const materialIds = productTable.value.materials.filter((materialId: string) => {
+            return configStore.materialCategory(materialId) == categoryId;
+        });
+        // カテゴリに素材が１つでもあればテーブルに追加
+        if (materialIds.length > 0) {
+            table.push(new CategorisedRow(categoryId, true));
+            table = table.concat(materialIds.map((materialId: string) => new CategorisedRow(materialId, false)));
+        }
+    });
+    return table;
+});
+
+/** 素材画像 */
+const materialImg = computed(() => (materialId: string) => {
+    if (!materialId) return '';
+    return imageStore.getData(materialId);
+});
+
+// Actions -----------------------------------------------------
+
+/** 製品毎の総数 */
+const productTotal = (materialId: string, product: string): string => {
+    const value = productTable.value.getProductTotal(materialId, product);
+    return CeilDigit(value, 6).toString();
+};
+/** 製品毎の副産物の総数 */
+const byproductProductTotal = (materialId: string, product: string): string => {
+    const value = byproductTable.value.getProductTotal(materialId, product);
+    return CeilDigit(value, 6).toString();
+};
+
+// サイクル -----------------------------------------------------
+
+
 </script>
 
 <style src="@/to_dark_theme.css" scoped />

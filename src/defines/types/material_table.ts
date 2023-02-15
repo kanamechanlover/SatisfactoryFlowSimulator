@@ -17,7 +17,7 @@ export class MaterialRow {
     }
     /**
      * 製品毎の合計値を取得
-     * @param [in] productMaterialId 製品ID
+     * @param productMaterialId [in] 製品ID
      * @return 製品毎の合計値
      */
     public getProductTotal(productMaterialId: string): number {

@@ -1,0 +1,6697 @@
+{
+    "Format": "1.0",
+    "Version": "Update 5",
+    "MachineCategories": [
+        {
+            "Id": "Extractor",
+            "Name": "資源抽出"
+        },
+        {
+            "Id": "Production",
+            "Name": "製造"
+        },
+        {
+            "Id": "ElectricPower",
+            "Name": "電力"
+        },
+        {
+            "Id": "Special",
+            "Name": "特殊"
+        },
+        {
+            "Id": "Logistics",
+            "Name": "運搬ライン"
+        },
+        {
+            "Id": "Structure",
+            "Name": "建設"
+        },
+        {
+            "Id": "Transportation",
+            "Name": "移動手段"
+        }
+    ],
+    "MaterialCategories": [
+        {
+            "Id": "Resources",
+            "Name": "資源"
+        },
+        {
+            "Id": "Minerals",
+            "Name": "鉱物"
+        },
+        {
+            "Id": "Ingot",
+            "Name": "インゴット"
+        },
+        {
+            "Id": "StandardParts",
+            "Name": "基本部品"
+        },
+        {
+            "Id": "Electronics",
+            "Name": "電子機器"
+        },
+        {
+            "Id": "IndustrialParts",
+            "Name": "産業用部品"
+        },
+        {
+            "Id": "Communications",
+            "Name": "通信"
+        },
+        {
+            "Id": "OilProducts",
+            "Name": "石油製品"
+        },
+        {
+            "Id": "Fuel",
+            "Name": "燃料"
+        },
+        {
+            "Id": "AdvancedRefinement",
+            "Name": "先進的な精製"
+        },
+        {
+            "Id": "Biomass",
+            "Name": "バイオマス"
+        },
+        {
+            "Id": "Packaging",
+            "Name": "容器入り"
+        },
+        {
+            "Id": "Containers",
+            "Name": "貯蔵庫"
+        },
+        {
+            "Id": "Nuclear",
+            "Name": "原子力"
+        },
+        {
+            "Id": "SpaceElevator",
+            "Name": "軌道エレベーター"
+        },
+        {
+            "Id": "Equipments",
+            "Name": "装備品"
+        },
+        {
+            "Id": "Consumed",
+            "Name": "消耗品"
+        },
+        {
+            "Id": "Plants",
+            "Name": "植物・動物類"
+        },
+        {
+            "Id": "PowerShard",
+            "Name": "パワー・シャード"
+        },
+        {
+            "Id": "Other",
+            "Name": "その他・シーズナブル"
+        }
+    ],
+    "Machines": [
+        {
+            "Id": "MinerMk1",
+            "Name": "採掘機 Mk.1",
+            "Category": "Extractor",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "Power": -5,
+            "Tier": 0
+        },
+        {
+            "Id": "MinerMk2",
+            "Name": "採掘機 Mk.2",
+            "Category": "Extractor",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "Power": -12,
+            "Tier": 4
+        },
+        {
+            "Id": "MinerMk3",
+            "Name": "採掘機 Mk.3",
+            "Category": "Extractor",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "Power": -30,
+            "Tier": 8
+        },
+        {
+            "Id": "Smelter",
+            "Name": "製錬炉",
+            "Category": "Production",
+            "InputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "Power": -4,
+            "Tier": 0
+        },
+        {
+            "Id": "Foundry",
+            "Name": "鋳造炉",
+            "Category": "Production",
+            "InputNumber": {
+                "Conveyor": 2,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "Power": -16,
+            "Tier": 3
+        },
+        {
+            "Id": "Constructor",
+            "Name": "製作機",
+            "Category": "Production",
+            "InputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "Power": -4,
+            "Tier": 0
+        },
+        {
+            "Id": "Assembler",
+            "Name": "組立機",
+            "Category": "Production",
+            "InputNumber": {
+                "Conveyor": 2,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "Power": -15,
+            "Tier": 2
+        },
+        {
+            "Id": "Manufacturer",
+            "Name": "製造機",
+            "Category": "Production",
+            "InputNumber": {
+                "Conveyor": 4,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "Power": -55,
+            "Tier": 5
+        },
+        {
+            "Id": "Blender",
+            "Name": "混合機",
+            "Category": "Production",
+            "InputNumber": {
+                "Conveyor": 2,
+                "Pipe": 2
+            },
+            "OutputNumber": {
+                "Conveyor": 1,
+                "Pipe": 1
+            },
+            "Power": -75,
+            "Tier": 7
+        },
+        {
+            "Id": "ParticleAccelerator",
+            "Name": "粒子加速器",
+            "Category": "Production",
+            "InputNumber": {
+                "Conveyor": 2,
+                "Pipe": 1
+            },
+            "OutputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "Power": -12,
+            "Tier": 8
+        },
+        {
+            "Id": "OilExtractor",
+            "Name": "原油抽出機",
+            "Category": "Extractor",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 1
+            },
+            "Power": -40,
+            "Tier": 5
+        },
+        {
+            "Id": "WaterExtractor",
+            "Name": "揚水ポンプ",
+            "Category": "Extractor",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 1
+            },
+            "Power": -20,
+            "Tier": 3
+        },
+        {
+            "Id": "Refinery",
+            "Name": "精製施設",
+            "Category": "Production",
+            "InputNumber": {
+                "Conveyor": 1,
+                "Pipe": 1
+            },
+            "OutputNumber": {
+                "Conveyor": 1,
+                "Pipe": 1
+            },
+            "Power": -30,
+            "Tier": 5
+        },
+        {
+            "Id": "Packager",
+            "Name": "充填機",
+            "Category": "Production",
+            "InputNumber": {
+                "Conveyor": 1,
+                "Pipe": 1
+            },
+            "OutputNumber": {
+                "Conveyor": 1,
+                "Pipe": 1
+            },
+            "Power": -10,
+            "Tier": 5
+        },
+        {
+            "Id": "ResourceWellPressurizer",
+            "Name": "資源井戸加圧機",
+            "Category": "Extractor",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": -150,
+            "Tier": 8
+        },
+        {
+            "Id": "ResourceWellExtractor",
+            "Name": "地下資源抽出機",
+            "Category": "Extractor",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 1
+            },
+            "Power": 0,
+            "Tier": 8
+        },
+        {
+            "Id": "BiomassBurnerHUB",
+            "Name": "バイオマス・バーナー(HUB)",
+            "Category": "ElectricPower",
+            "InputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": 20,
+            "Tier": 0
+        },
+        {
+            "Id": "BiomassBurner",
+            "Name": "バイオマス・バーナー",
+            "Category": "ElectricPower",
+            "InputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": 30,
+            "Tier": 0
+        },
+        {
+            "Id": "CoalGenerator",
+            "Name": "石炭発電機",
+            "Category": "ElectricPower",
+            "InputNumber": {
+                "Conveyor": 1,
+                "Pipe": 1
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": 75,
+            "Tier": 3
+        },
+        {
+            "Id": "FuelGenerator",
+            "Name": "燃料式発電機",
+            "Category": "ElectricPower",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 1
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": 150,
+            "Tier": 6
+        },
+        {
+            "Id": "GeothermalGenerator",
+            "Name": "地熱発電機",
+            "Category": "ElectricPower",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": 200,
+            "Tier": -1
+        },
+        {
+            "Id": "NuclearPowerPlant",
+            "Name": "原子力発電所",
+            "Category": "ElectricPower",
+            "InputNumber": {
+                "Conveyor": 1,
+                "Pipe": 1
+            },
+            "OutputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "Power": 2500,
+            "Tier": 4
+        },
+        {
+            "Id": "SpaceElevator",
+            "Name": "軌道エレベータ",
+            "Category": "Special",
+            "InputNumber": {
+                "Conveyor": 3,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": 0,
+            "Tier": 0
+        },
+        {
+            "Id": "PipelinePumpMk1",
+            "Name": "パイプラインポンプ",
+            "Category": "Logistics",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 1
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 1
+            },
+            "Power": -4,
+            "Tier": 3
+        },
+        {
+            "Id": "PipelinePumpMk2",
+            "Name": "パイプラインポンプ Mk.2",
+            "Category": "Logistics",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 1
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 1
+            },
+            "Power": -8,
+            "Tier": 6
+        },
+        {
+            "Id": "RadarTower",
+            "Name": "レーダー・タワー",
+            "Category": "Structure",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": -30,
+            "Tier": -1
+        },
+        {
+            "Id": "StreetLight",
+            "Name": "街灯",
+            "Category": "Structure",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": -1,
+            "Tier": -2
+        },
+        {
+            "Id": "FloodLightTower",
+            "Name": "投光照明塔",
+            "Category": "Structure",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": -6,
+            "Tier": -2
+        },
+        {
+            "Id": "WallMountedFloodLight",
+            "Name": "壁付投光器",
+            "Category": "Structure",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": -6,
+            "Tier": -2
+        },
+        {
+            "Id": "CeilingLight",
+            "Name": "天井灯",
+            "Category": "Structure",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": -2,
+            "Tier": -2
+        },
+        {
+            "Id": "JumpPad",
+            "Name": "ジャンプパッド",
+            "Category": "Transportation",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": -5,
+            "Tier": 2
+        },
+        {
+            "Id": "UJellyLandingPad",
+            "Name": "Uジェル・着地パッド",
+            "Category": "Transportation",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": -5,
+            "Tier": 2
+        },
+        {
+            "Id": "TruckStation",
+            "Name": "トラック・ステーション",
+            "Category": "Transportation",
+            "InputNumber": {
+                "Conveyor": 2,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "Power": -20,
+            "Tier": 3
+        },
+        {
+            "Id": "ElectricLocomotive",
+            "Name": "電気機関車",
+            "Category": "Transportation",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": -110,
+            "Tier": 6
+        },
+        {
+            "Id": "Station",
+            "Name": "駅",
+            "Category": "Transportation",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": -50,
+            "Tier": 6
+        },
+        {
+            "Id": "FreightPlatform",
+            "Name": "貨物プラットフォーム",
+            "Category": "Transportation",
+            "InputNumber": {
+                "Conveyor": 2,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 2,
+                "Pipe": 0
+            },
+            "Power": -50,
+            "Tier": 6
+        },
+        {
+            "Id": "LiquidPlatform",
+            "Name": "貨物プラットフォーム",
+            "Category": "Transportation",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 2
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 2
+            },
+            "Power": -50,
+            "Tier": 6
+        },
+        {
+            "Id": "HyperTubeEntrance",
+            "Name": "ハイパーチューブ入り口",
+            "Category": "Transportation",
+            "InputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 0,
+                "Pipe": 0
+            },
+            "Power": -10,
+            "Tier": 4
+        },
+        {
+            "Id": "DronePort",
+            "Name": "ドローン基地",
+            "Category": "Transportation",
+            "InputNumber": {
+                "Conveyor": 2,
+                "Pipe": 0
+            },
+            "OutputNumber": {
+                "Conveyor": 1,
+                "Pipe": 0
+            },
+            "Power": -100,
+            "Tier": 7
+        }
+    ],
+    "Materials": [
+        {
+            "Id": "IronOre",
+            "Name": "鉄鉱石",
+            "State": "Solid",
+            "Category": "Resources"
+        },
+        {
+            "Id": "CopperOre",
+            "Name": "銅鉱石",
+            "State": "Solid",
+            "Category": "Resources"
+        },
+        {
+            "Id": "Limestone",
+            "Name": "石灰岩",
+            "State": "Solid",
+            "Category": "Resources"
+        },
+        {
+            "Id": "Coal",
+            "Name": "石炭",
+            "State": "Solid",
+            "Category": "Resources"
+        },
+        {
+            "Id": "CateriumOre",
+            "Name": "カテリウム鉱石",
+            "State": "Solid",
+            "Category": "Resources"
+        },
+        {
+            "Id": "RawQuartz",
+            "Name": "未加工石英",
+            "State": "Solid",
+            "Category": "Resources"
+        },
+        {
+            "Id": "Sulfur",
+            "Name": "硫黄",
+            "State": "Solid",
+            "Category": "Resources"
+        },
+        {
+            "Id": "Bauxite",
+            "Name": "ボーキサイト",
+            "State": "Solid",
+            "Category": "Resources"
+        },
+        {
+            "Id": "Uranium",
+            "Name": "ウラン",
+            "State": "Solid",
+            "Category": "Resources"
+        },
+        {
+            "Id": "SAMOre",
+            "Name": "S.A.M.鉱石",
+            "State": "Solid",
+            "Category": "Resources"
+        },
+        {
+            "Id": "CrudeOil",
+            "Name": "原油",
+            "State": "Fluid",
+            "Category": "Resources"
+        },
+        {
+            "Id": "Water",
+            "Name": "水",
+            "State": "Fluid",
+            "Category": "Resources"
+        },
+        {
+            "Id": "NitrogenGas",
+            "Name": "窒素ガス",
+            "State": "Gas",
+            "Category": "Resources"
+        },
+        {
+            "Id": "Leaves",
+            "Name": "葉",
+            "State": "Solid",
+            "Category": "Plants"
+        },
+        {
+            "Id": "Wood",
+            "Name": "木",
+            "State": "Solid",
+            "Category": "Plants"
+        },
+        {
+            "Id": "FlowerPetals",
+            "Name": "花弁",
+            "State": "Solid",
+            "Category": "Plants"
+        },
+        {
+            "Id": "Mycelia",
+            "Name": "菌糸",
+            "State": "Solid",
+            "Category": "Plants"
+        },
+        {
+            "Id": "HogRemains",
+            "Name": "異星生物甲殻",
+            "State": "Solid",
+            "Category": "Plants"
+        },
+        {
+            "Id": "PlasmaSpitterRemains",
+            "Name": "異星生物器官",
+            "State": "Solid",
+            "Category": "Plants"
+        },
+        {
+            "Id": "GreenPowerSlug",
+            "Name": "青のパワー・スラッグ",
+            "State": "Solid",
+            "Category": "Plants"
+        },
+        {
+            "Id": "YellowPowerSlug",
+            "Name": "黄のパワー・スラッグ",
+            "State": "Solid",
+            "Category": "Plants"
+        },
+        {
+            "Id": "PurplePowerSlug",
+            "Name": "紫のパワー・スラッグ",
+            "State": "Solid",
+            "Category": "Plants"
+        },
+        {
+            "Id": "IronIngot",
+            "Name": "鉄のインゴット",
+            "State": "Solid",
+            "Category": "Ingot"
+        },
+        {
+            "Id": "CopperIngot",
+            "Name": "銅のインゴット",
+            "State": "Solid",
+            "Category": "Ingot"
+        },
+        {
+            "Id": "SteelIngot",
+            "Name": "鋼鉄のインゴット",
+            "State": "Solid",
+            "Category": "Ingot"
+        },
+        {
+            "Id": "CateriumIngot",
+            "Name": "カテリウムのインゴット",
+            "State": "Solid",
+            "Category": "Ingot"
+        },
+        {
+            "Id": "AluminumIngot",
+            "Name": "アルミのインゴット",
+            "State": "Solid",
+            "Category": "Ingot"
+        },
+        {
+            "Id": "IronPlate",
+            "Name": "鉄板",
+            "State": "Solid",
+            "Category": "StandardParts"
+        },
+        {
+            "Id": "IronRod",
+            "Name": "鉄のロッド",
+            "State": "Solid",
+            "Category": "StandardParts"
+        },
+        {
+            "Id": "Screw",
+            "Name": "ネジ",
+            "State": "Solid",
+            "Category": "StandardParts"
+        },
+        {
+            "Id": "ReinforcedIronPlate",
+            "Name": "強化鉄板",
+            "State": "Solid",
+            "Category": "StandardParts"
+        },
+        {
+            "Id": "ModularFrame",
+            "Name": "モジュラー・フレーム",
+            "State": "Solid",
+            "Category": "StandardParts"
+        },
+        {
+            "Id": "SteelBeam",
+            "Name": "鋼梁",
+            "State": "Solid",
+            "Category": "StandardParts"
+        },
+        {
+            "Id": "SteelPipe",
+            "Name": "鋼鉄のパイプ",
+            "State": "Solid",
+            "Category": "StandardParts"
+        },
+        {
+            "Id": "EncasedIndustrialBeam",
+            "Name": "コンクリート被覆型鋼梁",
+            "State": "Solid",
+            "Category": "StandardParts"
+        },
+        {
+            "Id": "HeavyModularFrame",
+            "Name": "ヘビー・モジュラー・フレーム",
+            "State": "Solid",
+            "Category": "StandardParts"
+        },
+        {
+            "Id": "AlcladAluminumSheet",
+            "Name": "アルクラッド・アルミシート",
+            "State": "Solid",
+            "Category": "StandardParts"
+        },
+        {
+            "Id": "CopperSheet",
+            "Name": "銅のシート",
+            "State": "Solid",
+            "Category": "StandardParts"
+        },
+        {
+            "Id": "Wire",
+            "Name": "ワイヤー",
+            "State": "Solid",
+            "Category": "Electronics"
+        },
+        {
+            "Id": "Cable",
+            "Name": "ケーブル",
+            "State": "Solid",
+            "Category": "Electronics"
+        },
+        {
+            "Id": "Quickwire",
+            "Name": "クイックワイヤー",
+            "State": "Solid",
+            "Category": "Electronics"
+        },
+        {
+            "Id": "CircuitBoard",
+            "Name": "回路基板",
+            "State": "Solid",
+            "Category": "Electronics"
+        },
+        {
+            "Id": "AILimiter",
+            "Name": "A.I.リミッター",
+            "State": "Solid",
+            "Category": "Electronics"
+        },
+        {
+            "Id": "HighSpeedConnector",
+            "Name": "高速コネクター",
+            "State": "Solid",
+            "Category": "Electronics"
+        },
+        {
+            "Id": "Battery",
+            "Name": "バッテリー",
+            "State": "Solid",
+            "Category": "IndustrialParts"
+        },
+        {
+            "Id": "Biomass",
+            "Name": "バイオマス",
+            "State": "Solid",
+            "Category": "Biomass"
+        },
+        {
+            "Id": "SolidBiofuel",
+            "Name": "固体バイオ燃料",
+            "State": "Solid",
+            "Category": "Biomass"
+        },
+        {
+            "Id": "Fabric",
+            "Name": "布地",
+            "State": "Solid",
+            "Category": "Biomass"
+        },
+        {
+            "Id": "Concrete",
+            "Name": "コンクリート",
+            "State": "Solid",
+            "Category": "Minerals"
+        },
+        {
+            "Id": "QuartzCrystal",
+            "Name": "石英結晶",
+            "State": "Solid",
+            "Category": "Minerals"
+        },
+        {
+            "Id": "Silica",
+            "Name": "シリカ",
+            "State": "Solid",
+            "Category": "Minerals"
+        },
+        {
+            "Id": "CompactedCoal",
+            "Name": "圧縮石炭",
+            "State": "Solid",
+            "Category": "Minerals"
+        },
+        {
+            "Id": "CopperPowder",
+            "Name": "銅粉",
+            "State": "Solid",
+            "Category": "Minerals"
+        },
+        {
+            "Id": "Rotor",
+            "Name": "ローター",
+            "State": "Solid",
+            "Category": "IndustrialParts"
+        },
+        {
+            "Id": "Stator",
+            "Name": "固定子",
+            "State": "Solid",
+            "Category": "IndustrialParts"
+        },
+        {
+            "Id": "Motor",
+            "Name": "モーター",
+            "State": "Solid",
+            "Category": "IndustrialParts"
+        },
+        {
+            "Id": "HeatSink",
+            "Name": "ヒートシンク",
+            "State": "Solid",
+            "Category": "IndustrialParts"
+        },
+        {
+            "Id": "TurboMotor",
+            "Name": "ターボ・モーター",
+            "State": "Solid",
+            "Category": "IndustrialParts"
+        },
+        {
+            "Id": "AluminumCasing",
+            "Name": "アルミ筐体",
+            "State": "Solid",
+            "Category": "StandardParts"
+        },
+        {
+            "Id": "CoolingSystem",
+            "Name": "冷却システム",
+            "State": "Solid",
+            "Category": "IndustrialParts"
+        },
+        {
+            "Id": "FusedModularFrame",
+            "Name": "溶融モジュラー・フレーム",
+            "State": "Solid",
+            "Category": "IndustrialParts"
+        },
+        {
+            "Id": "PressureConversionCube",
+            "Name": "圧力変換キューブ",
+            "State": "Solid",
+            "Category": "Containers"
+        },
+        {
+            "Id": "PowerShard",
+            "Name": "パワー・シャード",
+            "State": "Solid",
+            "Category": "PowerShard"
+        },
+        {
+            "Id": "BlackPowder",
+            "Name": "黒色火薬",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "IronRebar",
+            "Name": "有刺鉄筋",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "RifleAmmo",
+            "Name": "ライフル弾薬",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "ColorCartridge",
+            "Name": "カラー弾薬",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "GasFilter",
+            "Name": "ガスフィルター",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "IodineInfusedFilter",
+            "Name": "ヨウ素注入フィルター",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "Nobelisk",
+            "Name": "ノーベリスク",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "Plastic",
+            "Name": "プラスチック",
+            "State": "Solid",
+            "Category": "OilProducts"
+        },
+        {
+            "Id": "Rubber",
+            "Name": "ゴム",
+            "State": "Solid",
+            "Category": "OilProducts"
+        },
+        {
+            "Id": "PetroleumCoke",
+            "Name": "石油コークス",
+            "State": "Solid",
+            "Category": "OilProducts"
+        },
+        {
+            "Id": "PolymerResin",
+            "Name": "合成樹脂",
+            "State": "Solid",
+            "Category": "OilProducts"
+        },
+        {
+            "Id": "Fuel",
+            "Name": "燃料",
+            "State": "Fluid",
+            "Category": "Fuel"
+        },
+        {
+            "Id": "Turbofuel",
+            "Name": "ターボ燃料",
+            "State": "Fluid",
+            "Category": "Fuel"
+        },
+        {
+            "Id": "LiquidBiofuel",
+            "Name": "液体バイオ燃料",
+            "State": "Fluid",
+            "Category": "Fuel"
+        },
+        {
+            "Id": "PackagedFuel",
+            "Name": "容器入り燃料",
+            "State": "Solid",
+            "Category": "Packaging"
+        },
+        {
+            "Id": "PackagedTurbofuel",
+            "Name": "容器入りターボ燃料",
+            "State": "Solid",
+            "Category": "Fuel"
+        },
+        {
+            "Id": "PackagedLiquidBiofuel",
+            "Name": "容器入り液体バイオ燃料",
+            "State": "Solid",
+            "Category": "Packaging"
+        },
+        {
+            "Id": "PackagedHeavyOilResidue",
+            "Name": "容器入り廃重油",
+            "State": "Solid",
+            "Category": "Packaging"
+        },
+        {
+            "Id": "PackagedOil",
+            "Name": "容器入り原油",
+            "State": "Solid",
+            "Category": "Packaging"
+        },
+        {
+            "Id": "PackagedWater",
+            "Name": "容器入り水",
+            "State": "Solid",
+            "Category": "Packaging"
+        },
+        {
+            "Id": "PackagedAluminaSolution",
+            "Name": "容器入りアルミナ溶液",
+            "State": "Solid",
+            "Category": "Packaging"
+        },
+        {
+            "Id": "PackagedNitrogenGas",
+            "Name": "容器入り窒素ガス",
+            "State": "Solid",
+            "Category": "Packaging"
+        },
+        {
+            "Id": "PackagedSulfuricAcid",
+            "Name": "容器入り硫酸",
+            "State": "Solid",
+            "Category": "Packaging"
+        },
+        {
+            "Id": "PackagedNitricAcid",
+            "Name": "容器入り硝酸",
+            "State": "Solid",
+            "Category": "Packaging"
+        },
+        {
+            "Id": "AluminumScrap",
+            "Name": "アルミのスクラップ",
+            "State": "Solid",
+            "Category": "AdvancedRefinement"
+        },
+        {
+            "Id": "AluminaSolution",
+            "Name": "アルミナ溶液",
+            "State": "Fluid",
+            "Category": "AdvancedRefinement"
+        },
+        {
+            "Id": "SulfuricAcid",
+            "Name": "硫酸",
+            "State": "Fluid",
+            "Category": "AdvancedRefinement"
+        },
+        {
+            "Id": "NitricAcid",
+            "Name": "硝酸",
+            "State": "Fluid",
+            "Category": "AdvancedRefinement"
+        },
+        {
+            "Id": "EmptyCanister",
+            "Name": "空の容器",
+            "State": "Solid",
+            "Category": "Containers"
+        },
+        {
+            "Id": "EmptyFluidTank",
+            "Name": "空の液体タンク",
+            "State": "Solid",
+            "Category": "Containers"
+        },
+        {
+            "Id": "HeavyOilResidue",
+            "Name": "廃重油",
+            "State": "Fluid",
+            "Category": "OilProducts"
+        },
+        {
+            "Id": "SmartPlating",
+            "Name": "スマート･プレート",
+            "State": "Solid",
+            "Category": "SpaceElevator"
+        },
+        {
+            "Id": "VersatileFramework",
+            "Name": "多目的フレームワーク",
+            "State": "Solid",
+            "Category": "SpaceElevator"
+        },
+        {
+            "Id": "AutomatedWiring",
+            "Name": "自動ワイヤー",
+            "State": "Solid",
+            "Category": "SpaceElevator"
+        },
+        {
+            "Id": "ModularEngine",
+            "Name": "モジュラーエンジン",
+            "State": "Solid",
+            "Category": "SpaceElevator"
+        },
+        {
+            "Id": "AdaptiveControlUnit",
+            "Name": "自律制御ユニット",
+            "State": "Solid",
+            "Category": "SpaceElevator"
+        },
+        {
+            "Id": "AssemblyDirectorSystem",
+            "Name": "組立指揮システム",
+            "State": "Solid",
+            "Category": "SpaceElevator"
+        },
+        {
+            "Id": "MagneticFieldGenerator",
+            "Name": "磁界発生装置",
+            "State": "Solid",
+            "Category": "SpaceElevator"
+        },
+        {
+            "Id": "ThermalPropulsionRocket",
+            "Name": "熱推進型ロケット",
+            "State": "Solid",
+            "Category": "SpaceElevator"
+        },
+        {
+            "Id": "NuclearPasta",
+            "Name": "核パスタ",
+            "State": "Solid",
+            "Category": "SpaceElevator"
+        },
+        {
+            "Id": "Beacon",
+            "Name": "ビーコン",
+            "State": "Solid",
+            "Category": "Equipments"
+        },
+        {
+            "Id": "PortableMiner",
+            "Name": "携帯式採鉱機",
+            "State": "Solid",
+            "Category": "Equipments"
+        },
+        {
+            "Id": "CrystalOscillator",
+            "Name": "水晶発振器",
+            "State": "Solid",
+            "Category": "Communications"
+        },
+        {
+            "Id": "Computer",
+            "Name": "コンピューター",
+            "State": "Solid",
+            "Category": "Communications"
+        },
+        {
+            "Id": "Supercomputer",
+            "Name": "スーパーコンピューター",
+            "State": "Solid",
+            "Category": "Communications"
+        },
+        {
+            "Id": "RadioControlUnit",
+            "Name": "無線制御ユニット",
+            "State": "Solid",
+            "Category": "Communications"
+        },
+        {
+            "Id": "ElectromagneticControlRod",
+            "Name": "電磁制御棒",
+            "State": "Solid",
+            "Category": "Nuclear"
+        },
+        {
+            "Id": "EncasedUraniumCell",
+            "Name": "被覆型ウラン･セル",
+            "State": "Solid",
+            "Category": "Nuclear"
+        },
+        {
+            "Id": "UraniumFuelRod",
+            "Name": "ウラン燃料棒",
+            "State": "Solid",
+            "Category": "Nuclear"
+        },
+        {
+            "Id": "UraniumWaste",
+            "Name": "ウラン廃棄物",
+            "State": "Solid",
+            "Category": "Nuclear"
+        },
+        {
+            "Id": "NonfissileUranium",
+            "Name": "非分裂性ウラン",
+            "State": "Solid",
+            "Category": "Nuclear"
+        },
+        {
+            "Id": "PlutoniumPellet",
+            "Name": "プルトニウム・ペレット",
+            "State": "Solid",
+            "Category": "Nuclear"
+        },
+        {
+            "Id": "EncasedPlutoniumCell",
+            "Name": "被覆型プルトニウム・セル",
+            "State": "Solid",
+            "Category": "Nuclear"
+        },
+        {
+            "Id": "PlutoniumFuelRod",
+            "Name": "プルトニウム燃料棒",
+            "State": "Solid",
+            "Category": "Nuclear"
+        },
+        {
+            "Id": "PlutoniumWaste",
+            "Name": "プルトニウム廃棄物",
+            "State": "Solid",
+            "Category": "Nuclear"
+        },
+        {
+            "Id": "SmokelessPowder",
+            "Name": "無煙火薬",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "AlienDNACapsule",
+            "Name": "エイリアンのDNAカプセル",
+            "State": "Solid",
+            "Category": "Plants"
+        },
+        {
+            "Id": "AlienProtein",
+            "Name": "エイリアンのたんぱく質",
+            "State": "Solid",
+            "Category": "Plants"
+        },
+        {
+            "Id": "StunRebar",
+            "Name": "スタン鉄筋",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "ShatterRebar",
+            "Name": "破砕鉄筋",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "ExplosiveRebar",
+            "Name": "爆砕鉄筋",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "TurboRifleAmmo",
+            "Name": "ターボライフル弾",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "HomingRifleAmmo",
+            "Name": "ホーミングライフル弾",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "PulseNobelisk",
+            "Name": "パルス・ノーベリスク",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "GasNobelisk",
+            "Name": "ガス・ノーベリスク",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "ClusterNobelisk",
+            "Name": "クラスター・ノーベリスク",
+            "State": "Solid",
+            "Category": "Consumed"
+        },
+        {
+            "Id": "NukeNobelisk",
+            "Name": "ニューク・ノーベリスク",
+            "State": "Solid",
+            "Category": "Consumed"
+        }
+    ],
+    "Recipes": [
+        {
+            "Id": "AdaptiveControlUnit",
+            "Name": "自律制御ユニット",
+            "Input": [
+                {
+                    "Id": "AutomatedWiring",
+                    "Number": 15
+                },
+                {
+                    "Id": "CircuitBoard",
+                    "Number": 10
+                },
+                {
+                    "Id": "HeavyModularFrame",
+                    "Number": 2
+                },
+                {
+                    "Id": "Computer",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AdaptiveControlUnit",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 120,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "AILimiter",
+            "Name": "A.I.リミッター",
+            "Input": [
+                {
+                    "Id": "CopperSheet",
+                    "Number": 5
+                },
+                {
+                    "Id": "Quickwire",
+                    "Number": 20
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AILimiter",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "AlcladAluminumSheet",
+            "Name": "アルクラッド・アルミシート",
+            "Input": [
+                {
+                    "Id": "AluminumIngot",
+                    "Number": 3
+                },
+                {
+                    "Id": "CopperIngot",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AlcladAluminumSheet",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "AluminaSolution",
+            "Name": "アルミナ溶液",
+            "Input": [
+                {
+                    "Id": "Bauxite",
+                    "Number": 12
+                },
+                {
+                    "Id": "Water",
+                    "Number": 18
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AluminaSolution",
+                    "Number": 12
+                },
+                {
+                    "Id": "Silica",
+                    "Number": 5
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "AluminaSolutionAlt1",
+            "Name": "容器入りアルミナ溶液",
+            "Input": [
+                {
+                    "Id": "PackagedAluminaSolution",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AluminaSolution",
+                    "Number": 2
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "AluminaSolutionAlt2",
+            "Name": "代替: 汚濁アルミナ溶液",
+            "Input": [
+                {
+                    "Id": "Bauxite",
+                    "Number": 10
+                },
+                {
+                    "Id": "Water",
+                    "Number": 10
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AluminaSolution",
+                    "Number": 12
+                }
+            ],
+            "ProductTime": 3,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "AluminumCasing",
+            "Name": "アルミ筐体",
+            "Input": [
+                {
+                    "Id": "AluminumIngot",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AluminumCasing",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 2,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "AluminumCasingAlt1",
+            "Name": "代替: アルクラッド筐体",
+            "Input": [
+                {
+                    "Id": "AluminumIngot",
+                    "Number": 20
+                },
+                {
+                    "Id": "CopperIngot",
+                    "Number": 10
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AluminumCasing",
+                    "Number": 15
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "AluminumIngot",
+            "Name": "アルミのインゴット",
+            "Input": [
+                {
+                    "Id": "AluminumScrap",
+                    "Number": 6
+                },
+                {
+                    "Id": "Silica",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AluminumIngot",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Foundry"
+        },
+        {
+            "Id": "AluminumIngotAlt1",
+            "Name": "代替: 純アルミニウムのインゴット",
+            "Input": [
+                {
+                    "Id": "AluminumScrap",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AluminumIngot",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 2,
+            "Machine": "Smelter"
+        },
+        {
+            "Id": "AluminumScrap",
+            "Name": "アルミのスクラップ",
+            "Input": [
+                {
+                    "Id": "AluminaSolution",
+                    "Number": 4
+                },
+                {
+                    "Id": "Coal",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AluminumScrap",
+                    "Number": 6
+                },
+                {
+                    "Id": "Water",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "AluminumScrapAlt1",
+            "Name": "代替: 電極アルミ・スクラップ",
+            "Input": [
+                {
+                    "Id": "AluminaSolution",
+                    "Number": 12
+                },
+                {
+                    "Id": "PetroleumCoke",
+                    "Number": 4
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AluminumScrap",
+                    "Number": 20
+                },
+                {
+                    "Id": "Water",
+                    "Number": 7
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "AluminumScrapAlt2",
+            "Name": "代替: 即席スクラップ",
+            "Input": [
+                {
+                    "Id": "Bauxite",
+                    "Number": 15
+                },
+                {
+                    "Id": "Coal",
+                    "Number": 10
+                },
+                {
+                    "Id": "SulfuricAcid",
+                    "Number": 5
+                },
+                {
+                    "Id": "Water",
+                    "Number": 6
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AluminumScrap",
+                    "Number": 30
+                },
+                {
+                    "Id": "Water",
+                    "Number": 5
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Blender"
+        },
+        {
+            "Id": "AssemblyDirectorSystem",
+            "Name": "組立指揮システム",
+            "Input": [
+                {
+                    "Id": "AdaptiveControlUnit",
+                    "Number": 2
+                },
+                {
+                    "Id": "Supercomputer",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AssemblyDirectorSystem",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 80,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "AutomatedWiring",
+            "Name": "自動ワイヤー",
+            "Input": [
+                {
+                    "Id": "Stator",
+                    "Number": 1
+                },
+                {
+                    "Id": "Cable",
+                    "Number": 20
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AutomatedWiring",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 24,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "AutomatedWiringAlt1",
+            "Name": "代替: 自動スピードワイヤー",
+            "Input": [
+                {
+                    "Id": "Stator",
+                    "Number": 2
+                },
+                {
+                    "Id": "Cable",
+                    "Number": 40
+                },
+                {
+                    "Id": "HighSpeedConnector",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "AutomatedWiring",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 32,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "Battery",
+            "Name": "バッテリー",
+            "Input": [
+                {
+                    "Id": "SulfuricAcid",
+                    "Number": 5
+                },
+                {
+                    "Id": "AluminaSolution",
+                    "Number": 4
+                },
+                {
+                    "Id": "AluminumCasing",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Battery",
+                    "Number": 2
+                },
+                {
+                    "Id": "Water",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Blender"
+        },
+        {
+            "Id": "BatteryAlt1",
+            "Name": "代替: クラシック・バッテリー",
+            "Input": [
+                {
+                    "Id": "Sulfur",
+                    "Number": 6
+                },
+                {
+                    "Id": "AlcladAluminumSheet",
+                    "Number": 7
+                },
+                {
+                    "Id": "Plastic",
+                    "Number": 8
+                },
+                {
+                    "Id": "Wire",
+                    "Number": 12
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Battery",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "BauxiteMk1",
+            "Name": "Miner Mk.1 (ボーキサイト)",
+            "Output": [
+                {
+                    "Id": "Bauxite",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "MinerMk1"
+        },
+        {
+            "Id": "BauxiteMk2",
+            "Name": "Miner Mk.2 (ボーキサイト)",
+            "Output": [
+                {
+                    "Id": "Bauxite",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.5",
+            "Machine": "MinerMk2"
+        },
+        {
+            "Id": "BauxiteMk3",
+            "Name": "Miner Mk.3 (ボーキサイト)",
+            "Output": [
+                {
+                    "Id": "Bauxite",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.25",
+            "Machine": "MinerMk3"
+        },
+        {
+            "Id": "Beacon",
+            "Name": "ビーコン",
+            "Input": [
+                {
+                    "Id": "IronPlate",
+                    "Number": 3
+                },
+                {
+                    "Id": "IronRod",
+                    "Number": 1
+                },
+                {
+                    "Id": "Wire",
+                    "Number": 15
+                },
+                {
+                    "Id": "Cable",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Beacon",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "BeaconAlt1",
+            "Name": "代替: クリスタル・ビーコン",
+            "Input": [
+                {
+                    "Id": "SteelBeam",
+                    "Number": 4
+                },
+                {
+                    "Id": "SteelPipe",
+                    "Number": 16
+                },
+                {
+                    "Id": "CrystalOscillator",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Beacon",
+                    "Number": 20
+                }
+            ],
+            "ProductTime": 120,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "BiomassLeaves",
+            "Name": "バイオマス(葉)",
+            "Input": [
+                {
+                    "Id": "Leaves",
+                    "Number": 10
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Biomass",
+                    "Number": 5
+                }
+            ],
+            "ProductTime": 5,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "BiomassWood",
+            "Name": "バイオマス(木)",
+            "Input": [
+                {
+                    "Id": "Wood",
+                    "Number": 4
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Biomass",
+                    "Number": 20
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "BiomassMycelia",
+            "Name": "バイオマス(菌糸)",
+            "Input": [
+                {
+                    "Id": "Mycelia",
+                    "Number": 10
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Biomass",
+                    "Number": 10
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "BiomassHogRemains",
+            "Name": "バイオマス(異星生物甲殻)",
+            "Input": [
+                {
+                    "Id": "HogRemains",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Biomass",
+                    "Number": 100
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "BiomassPlasmaSpitterRemains",
+            "Name": "バイオマス(異星生物器官)",
+            "Input": [
+                {
+                    "Id": "PlasmaSpitterRemains",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Biomass",
+                    "Number": 200
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "BlackPowder",
+            "Name": "黒色火薬",
+            "Input": [
+                {
+                    "Id": "Coal",
+                    "Number": 1
+                },
+                {
+                    "Id": "Sulfur",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "BlackPowder",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "BlackPowderAlt1",
+            "Name": "代替: 上質黒色火薬",
+            "Input": [
+                {
+                    "Id": "Sulfur",
+                    "Number": 2
+                },
+                {
+                    "Id": "CompactedCoal",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "BlackPowder",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 16,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "Cable",
+            "Name": "ケーブル",
+            "Input": [
+                {
+                    "Id": "Wire",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Cable",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 2,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "CableAlt1",
+            "Name": "代替: 絶縁ケーブル",
+            "Input": [
+                {
+                    "Id": "Wire",
+                    "Number": 9
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 6
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Cable",
+                    "Number": 20
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "CableAlt2",
+            "Name": "代替: クイックワイヤー・ケーブル",
+            "Input": [
+                {
+                    "Id": "Quickwire",
+                    "Number": 3
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Cable",
+                    "Number": 11
+                }
+            ],
+            "ProductTime": 24,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "CableAlt3",
+            "Name": "代替: 被覆ケーブル",
+            "Input": [
+                {
+                    "Id": "Wire",
+                    "Number": 5
+                },
+                {
+                    "Id": "HeavyOilResidue",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Cable",
+                    "Number": 9
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "CateriumIngot",
+            "Name": "カテリウムのインゴット",
+            "Input": [
+                {
+                    "Id": "CateriumOre",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CateriumIngot",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Smelter"
+        },
+        {
+            "Id": "CateriumIngotAlt2",
+            "Name": "代替: 純カテリウムのインゴット",
+            "Input": [
+                {
+                    "Id": "CateriumOre",
+                    "Number": 2
+                },
+                {
+                    "Id": "Water",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CateriumIngot",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 5,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "CateriumOreMk1",
+            "Name": "Miner Mk.1 (カテリウム鉱石)",
+            "Output": [
+                {
+                    "Id": "CateriumOre",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "MinerMk1"
+        },
+        {
+            "Id": "CateriumOreMk2",
+            "Name": "Miner Mk.2 (カテリウム鉱石)",
+            "Output": [
+                {
+                    "Id": "CateriumOre",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.5",
+            "Machine": "MinerMk2"
+        },
+        {
+            "Id": "CateriumOreMk3",
+            "Name": "Miner Mk.3 (カテリウム鉱石)",
+            "Output": [
+                {
+                    "Id": "CateriumOre",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.25",
+            "Machine": "MinerMk3"
+        },
+        {
+            "Id": "CircuitBoard",
+            "Name": "回路基板",
+            "Input": [
+                {
+                    "Id": "CopperSheet",
+                    "Number": 2
+                },
+                {
+                    "Id": "Plastic",
+                    "Number": 4
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CircuitBoard",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "CircuitBoardAlt1",
+            "Name": "代替: シリコン回路基板",
+            "Input": [
+                {
+                    "Id": "CopperSheet",
+                    "Number": 11
+                },
+                {
+                    "Id": "Silica",
+                    "Number": 11
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CircuitBoard",
+                    "Number": 5
+                }
+            ],
+            "ProductTime": 24,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "CircuitBoardAlt2",
+            "Name": "代替: カテリウム回路基板",
+            "Input": [
+                {
+                    "Id": "Plastic",
+                    "Number": 10
+                },
+                {
+                    "Id": "Quickwire",
+                    "Number": 30
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CircuitBoard",
+                    "Number": 7
+                }
+            ],
+            "ProductTime": 48,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "CircuitBoardAlt3",
+            "Name": "代替: 黒鉛電極・回路基板",
+            "Input": [
+                {
+                    "Id": "Rubber",
+                    "Number": 6
+                },
+                {
+                    "Id": "PetroleumCoke",
+                    "Number": 9
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CircuitBoard",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "CoalAlt1",
+            "Name": "代替: バイオ炭",
+            "Input": [
+                {
+                    "Id": "Biomass",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Coal",
+                    "Number": 6
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "CoalAlt2",
+            "Name": "代替: 木炭",
+            "Input": [
+                {
+                    "Id": "Wood",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Coal",
+                    "Number": 10
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "CoalMk1",
+            "Name": "Miner Mk.1 (石炭)",
+            "Output": [
+                {
+                    "Id": "Coal",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "MinerMk1"
+        },
+        {
+            "Id": "CoalMk2",
+            "Name": "Miner Mk.2 (石炭)",
+            "Output": [
+                {
+                    "Id": "Coal",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.5",
+            "Machine": "MinerMk2"
+        },
+        {
+            "Id": "CoalMk3",
+            "Name": "Miner Mk.3 (石炭)",
+            "Output": [
+                {
+                    "Id": "Coal",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.25",
+            "Machine": "MinerMk3"
+        },
+        {
+            "Id": "ColorCartridge",
+            "Name": "カラー弾薬",
+            "Input": [
+                {
+                    "Id": "FlowerPetals",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "ColorCartridge",
+                    "Number": 10
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "CompactedCoalAlt1",
+            "Name": "代替: 圧縮石炭",
+            "Input": [
+                {
+                    "Id": "Coal",
+                    "Number": 5
+                },
+                {
+                    "Id": "Sulfur",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CompactedCoal",
+                    "Number": 5
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "Computer",
+            "Name": "コンピューター",
+            "Input": [
+                {
+                    "Id": "CircuitBoard",
+                    "Number": 10
+                },
+                {
+                    "Id": "Cable",
+                    "Number": 9
+                },
+                {
+                    "Id": "Plastic",
+                    "Number": 18
+                },
+                {
+                    "Id": "Screw",
+                    "Number": 52
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Computer",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 24,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "ComputerAlt1",
+            "Name": "代替: カテリウム・コンピューター",
+            "Input": [
+                {
+                    "Id": "CircuitBoard",
+                    "Number": 7
+                },
+                {
+                    "Id": "Quickwire",
+                    "Number": 28
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 12
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Computer",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 16,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "ComputerAlt2",
+            "Name": "代替: クリスタル・コンピューター",
+            "Input": [
+                {
+                    "Id": "CircuitBoard",
+                    "Number": 8
+                },
+                {
+                    "Id": "CrystalOscillator",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Computer",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 64,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "Concrete",
+            "Name": "コンクリート",
+            "Input": [
+                {
+                    "Id": "Limestone",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Concrete",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "ConcreteAlt1",
+            "Name": "代替: 上質コンクリート",
+            "Input": [
+                {
+                    "Id": "Silica",
+                    "Number": 3
+                },
+                {
+                    "Id": "Limestone",
+                    "Number": 12
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Concrete",
+                    "Number": 10
+                }
+            ],
+            "ProductTime": 24,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "ConcreteAlt2",
+            "Name": "代替: ラバー・コンクリート",
+            "Input": [
+                {
+                    "Id": "Limestone",
+                    "Number": 10
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Concrete",
+                    "Number": 9
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "ConcreteAlt3",
+            "Name": "代替: 生コンクリート",
+            "Input": [
+                {
+                    "Id": "Limestone",
+                    "Number": 6
+                },
+                {
+                    "Id": "Water",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Concrete",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 3,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "CoolingSystem",
+            "Name": "冷却システム",
+            "Input": [
+                {
+                    "Id": "HeatSink",
+                    "Number": 2
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 2
+                },
+                {
+                    "Id": "Water",
+                    "Number": 5
+                },
+                {
+                    "Id": "NitrogenGas",
+                    "Number": 25
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CoolingSystem",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 10,
+            "Machine": "Blender"
+        },
+        {
+            "Id": "CoolingSystemAlt1",
+            "Name": "代替: 冷却装置",
+            "Input": [
+                {
+                    "Id": "HeatSink",
+                    "Number": 5
+                },
+                {
+                    "Id": "Motor",
+                    "Number": 1
+                },
+                {
+                    "Id": "NitrogenGas",
+                    "Number": 24
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CoolingSystem",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 32,
+            "Machine": "Blender"
+        },
+        {
+            "Id": "CopperIngot",
+            "Name": "銅のインゴット",
+            "Input": [
+                {
+                    "Id": "CopperOre",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CopperIngot",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 2,
+            "Machine": "Smelter"
+        },
+        {
+            "Id": "CopperIngotAlt1",
+            "Name": "代替: 銅合金のインゴット",
+            "Input": [
+                {
+                    "Id": "CopperOre",
+                    "Number": 10
+                },
+                {
+                    "Id": "IronOre",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CopperIngot",
+                    "Number": 20
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Foundry"
+        },
+        {
+            "Id": "CopperIngotAlt2",
+            "Name": "代替: 純銅のインゴット",
+            "Input": [
+                {
+                    "Id": "CopperOre",
+                    "Number": 6
+                },
+                {
+                    "Id": "Water",
+                    "Number": 4
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CopperIngot",
+                    "Number": 15
+                }
+            ],
+            "ProductTime": 24,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "CopperOreMk1",
+            "Name": "Miner Mk.1 (銅鉱石)",
+            "Output": [
+                {
+                    "Id": "CopperOre",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "MinerMk1"
+        },
+        {
+            "Id": "CopperOreMk2",
+            "Name": "Miner Mk.2 (銅鉱石)",
+            "Output": [
+                {
+                    "Id": "CopperOre",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.5",
+            "Machine": "MinerMk2"
+        },
+        {
+            "Id": "CopperOreMk3",
+            "Name": "Miner Mk.3 (銅鉱石)",
+            "Output": [
+                {
+                    "Id": "CopperOre",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.25",
+            "Machine": "MinerMk3"
+        },
+        {
+            "Id": "CopperPowder",
+            "Name": "銅粉",
+            "Input": [
+                {
+                    "Id": "CopperIngot",
+                    "Number": 30
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CopperPowder",
+                    "Number": 5
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "CopperSheet",
+            "Name": "銅のシート",
+            "Input": [
+                {
+                    "Id": "CopperIngot",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CopperSheet",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "CopperSheetAlt1",
+            "Name": "代替: 蒸気加熱・銅のシート",
+            "Input": [
+                {
+                    "Id": "CopperIngot",
+                    "Number": 3
+                },
+                {
+                    "Id": "Water",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CopperSheet",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "CrudeOil",
+            "Name": "原油抽出機",
+            "Output": [
+                {
+                    "Id": "CrudeOil",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.5",
+            "Machine": "OilExtractor"
+        },
+        {
+            "Id": "CrudeOilAlt1",
+            "Name": "代替: 原油･容器取り出し",
+            "Input": [
+                {
+                    "Id": "PackagedOil",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CrudeOil",
+                    "Number": 2
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 2,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "CrystalOscillator",
+            "Name": "水晶発振器",
+            "Input": [
+                {
+                    "Id": "QuartzCrystal",
+                    "Number": 36
+                },
+                {
+                    "Id": "Cable",
+                    "Number": 28
+                },
+                {
+                    "Id": "ReinforcedIronPlate",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CrystalOscillator",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 120,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "CrystalOscillatorAlt1",
+            "Name": "代替: 絶縁水晶発振器",
+            "Input": [
+                {
+                    "Id": "QuartzCrystal",
+                    "Number": 10
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 7
+                },
+                {
+                    "Id": "AILimiter",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "CrystalOscillator",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 32,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "ElectromagneticControlRod",
+            "Name": "電磁制御棒",
+            "Input": [
+                {
+                    "Id": "Stator",
+                    "Number": 3
+                },
+                {
+                    "Id": "AILimiter",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "ElectromagneticControlRod",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 30,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "ElectromagneticControlRodAlt1",
+            "Name": "代替: 電磁接続ロッド",
+            "Input": [
+                {
+                    "Id": "Stator",
+                    "Number": 2
+                },
+                {
+                    "Id": "HighSpeedConnector",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "ElectromagneticControlRod",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 15,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "EmptyCanister",
+            "Name": "空の容器",
+            "Input": [
+                {
+                    "Id": "Plastic",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "EmptyCanisterAlt1",
+            "Name": "代替: 鋼鉄容器",
+            "Input": [
+                {
+                    "Id": "SteelIngot",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 3,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "EmptyCanisterAlt2",
+            "Name": "代替: 被覆鉄板容器",
+            "Input": [
+                {
+                    "Id": "IronPlate",
+                    "Number": 2
+                },
+                {
+                    "Id": "CopperSheet",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "EmptyFluidTank",
+            "Name": "空の液体タンク",
+            "Input": [
+                {
+                    "Id": "AluminumIngot",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "EmptyFluidTank",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "EncasedIndustrialBeam",
+            "Name": "コンクリート被覆型鋼梁",
+            "Input": [
+                {
+                    "Id": "SteelBeam",
+                    "Number": 4
+                },
+                {
+                    "Id": "Concrete",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "EncasedIndustrialBeam",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 10,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "EncasedIndustrialBeamAlt1",
+            "Name": "代替: コンクリート被覆型パイプ",
+            "Input": [
+                {
+                    "Id": "SteelPipe",
+                    "Number": 7
+                },
+                {
+                    "Id": "Concrete",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "EncasedIndustrialBeam",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 15,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "EncasedPlutoniumCell",
+            "Name": "被覆型プルトニウム・セル",
+            "Input": [
+                {
+                    "Id": "PlutoniumPellet",
+                    "Number": 2
+                },
+                {
+                    "Id": "Concrete",
+                    "Number": 4
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "EncasedPlutoniumCell",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "EncasedPlutoniumCellAlt1",
+            "Name": "代替: 即席プルトニウム・セル",
+            "Input": [
+                {
+                    "Id": "NonfissileUranium",
+                    "Number": 150
+                },
+                {
+                    "Id": "AluminumCasing",
+                    "Number": 20
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "EncasedPlutoniumCell",
+                    "Number": 20
+                }
+            ],
+            "ProductTime": 120,
+            "Machine": "ParticleAccelerator"
+        },
+        {
+            "Id": "EncasedUraniumCell",
+            "Name": "被覆型ウラン･セル",
+            "Input": [
+                {
+                    "Id": "Uranium",
+                    "Number": 10
+                },
+                {
+                    "Id": "Concrete",
+                    "Number": 3
+                },
+                {
+                    "Id": "SulfuricAcid",
+                    "Number": 8
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "EncasedUraniumCell",
+                    "Number": 5
+                },
+                {
+                    "Id": "SulfuricAcid",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Blender"
+        },
+        {
+            "Id": "EncasedUraniumCellAlt1",
+            "Name": "代替: 注入型ウラン・セル",
+            "Input": [
+                {
+                    "Id": "Uranium",
+                    "Number": 5
+                },
+                {
+                    "Id": "Silica",
+                    "Number": 3
+                },
+                {
+                    "Id": "Sulfur",
+                    "Number": 5
+                },
+                {
+                    "Id": "Quickwire",
+                    "Number": 15
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "EncasedUraniumCell",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "Fabric",
+            "Name": "布地",
+            "Input": [
+                {
+                    "Id": "Mycelia",
+                    "Number": 1
+                },
+                {
+                    "Id": "Biomass",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Fabric",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "FabricAlt1",
+            "Name": "代替: ポリエステル生地",
+            "Input": [
+                {
+                    "Id": "PolymerResin",
+                    "Number": 16
+                },
+                {
+                    "Id": "Water",
+                    "Number": 10
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Fabric",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "Fuel",
+            "Name": "燃料",
+            "Input": [
+                {
+                    "Id": "CrudeOil",
+                    "Number": 6
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Fuel",
+                    "Number": 4
+                },
+                {
+                    "Id": "PolymerResin",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "FuelAlt1",
+            "Name": "燃料･容器取出し",
+            "Input": [
+                {
+                    "Id": "PackagedFuel",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Fuel",
+                    "Number": 2
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 2,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "FuelAlt2",
+            "Name": "残留燃料",
+            "Input": [
+                {
+                    "Id": "HeavyOilResidue",
+                    "Number": 6
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Fuel",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "FuelAlt3",
+            "Name": "代替: 希釈燃料",
+            "Input": [
+                {
+                    "Id": "HeavyOilResidue",
+                    "Number": 5
+                },
+                {
+                    "Id": "Water",
+                    "Number": 10
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Fuel",
+                    "Number": 10
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Blender"
+        },
+        {
+            "Id": "FusedModularFrame",
+            "Name": "溶融モジュラー・フレーム",
+            "Input": [
+                {
+                    "Id": "HeavyModularFrame",
+                    "Number": 1
+                },
+                {
+                    "Id": "AluminumCasing",
+                    "Number": 50
+                },
+                {
+                    "Id": "NitrogenGas",
+                    "Number": 25
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "FusedModularFrame",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 40,
+            "Machine": "Blender"
+        },
+        {
+            "Id": "FusedModularFrameAlt1",
+            "Name": "代替: 熱融合フレーム",
+            "Input": [
+                {
+                    "Id": "HeavyModularFrame",
+                    "Number": 1
+                },
+                {
+                    "Id": "AluminumIngot",
+                    "Number": 50
+                },
+                {
+                    "Id": "NitricAcid",
+                    "Number": 8
+                },
+                {
+                    "Id": "Fuel",
+                    "Number": 10
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "FusedModularFrame",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 20,
+            "Machine": "Blender"
+        },
+        {
+            "Id": "GasFilter",
+            "Name": "ガスフィルター",
+            "Input": [
+                {
+                    "Id": "Coal",
+                    "Number": 5
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 2
+                },
+                {
+                    "Id": "Fabric",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "GasFilter",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "HeatSinkAlt1",
+            "Name": "ヒートシンク",
+            "Input": [
+                {
+                    "Id": "AlcladAluminumSheet",
+                    "Number": 5
+                },
+                {
+                    "Id": "CopperSheet",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "HeatSink",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "HeatSinkAlt2",
+            "Name": "代替: 熱交換器",
+            "Input": [
+                {
+                    "Id": "AluminumCasing",
+                    "Number": 3
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "HeatSink",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "HeavyModularFrame",
+            "Name": "ヘビー・モジュラー・フレーム",
+            "Input": [
+                {
+                    "Id": "ModularFrame",
+                    "Number": 5
+                },
+                {
+                    "Id": "SteelPipe",
+                    "Number": 15
+                },
+                {
+                    "Id": "EncasedIndustrialBeam",
+                    "Number": 5
+                },
+                {
+                    "Id": "Screw",
+                    "Number": 100
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "HeavyModularFrame",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 30,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "HeavyModularFrameAlt1",
+            "Name": "代替: 被覆型ヘビー・フレーム",
+            "Input": [
+                {
+                    "Id": "ModularFrame",
+                    "Number": 8
+                },
+                {
+                    "Id": "EncasedIndustrialBeam",
+                    "Number": 10
+                },
+                {
+                    "Id": "SteelPipe",
+                    "Number": 36
+                },
+                {
+                    "Id": "Concrete",
+                    "Number": 22
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "HeavyModularFrame",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 64,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "HeavyModularFrameAlt2",
+            "Name": "代替: ヘビー・フレキシブル・フレーム",
+            "Input": [
+                {
+                    "Id": "ModularFrame",
+                    "Number": 5
+                },
+                {
+                    "Id": "EncasedIndustrialBeam",
+                    "Number": 3
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 20
+                },
+                {
+                    "Id": "Screw",
+                    "Number": 104
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "HeavyModularFrame",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 16,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "HeavyOilResidueAlt1",
+            "Name": "代替: 廃重油･容器取り出し",
+            "Input": [
+                {
+                    "Id": "PackagedHeavyOilResidue",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "HeavyOilResidue",
+                    "Number": 2
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "HeavyOilResidueAlt2",
+            "Name": "代替: 廃重油",
+            "Input": [
+                {
+                    "Id": "CrudeOil",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "HeavyOilResidue",
+                    "Number": 4
+                },
+                {
+                    "Id": "PolymerResin",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "HighSpeedConnector",
+            "Name": "高速コネクター",
+            "Input": [
+                {
+                    "Id": "Quickwire",
+                    "Number": 56
+                },
+                {
+                    "Id": "Cable",
+                    "Number": 10
+                },
+                {
+                    "Id": "CircuitBoard",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "HighSpeedConnector",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 16,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "HighSpeedConnectorAlt1",
+            "Name": "代替: シリコン高速コネクター",
+            "Input": [
+                {
+                    "Id": "Quickwire",
+                    "Number": 60
+                },
+                {
+                    "Id": "Silica",
+                    "Number": 25
+                },
+                {
+                    "Id": "CircuitBoard",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "HighSpeedConnector",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 40,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "IodineInfusedFilter",
+            "Name": "ヨウ素注入フィルター",
+            "Input": [
+                {
+                    "Id": "GasFilter",
+                    "Number": 1
+                },
+                {
+                    "Id": "Quickwire",
+                    "Number": 8
+                },
+                {
+                    "Id": "AluminumCasing",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "IodineInfusedFilter",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 16,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "IronIngot",
+            "Name": "鉄のインゴット",
+            "Input": [
+                {
+                    "Id": "IronOre",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "IronIngot",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 2,
+            "Machine": "Smelter"
+        },
+        {
+            "Id": "IronIngotAlt1",
+            "Name": "代替: 鉄合金のインゴット",
+            "Input": [
+                {
+                    "Id": "IronOre",
+                    "Number": 2
+                },
+                {
+                    "Id": "CopperOre",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "IronIngot",
+                    "Number": 5
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Foundry"
+        },
+        {
+            "Id": "IronIngotAlt2",
+            "Name": "代替: 純鉄のインゴット",
+            "Input": [
+                {
+                    "Id": "IronOre",
+                    "Number": 7
+                },
+                {
+                    "Id": "Water",
+                    "Number": 4
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "IronIngot",
+                    "Number": 13
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "IronOreMk1",
+            "Name": "Miner Mk.1 (鉄鉱石)",
+            "Output": [
+                {
+                    "Id": "IronOre",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "MinerMk1"
+        },
+        {
+            "Id": "IronOreMk2",
+            "Name": "Miner Mk.2 (鉄鉱石)",
+            "Output": [
+                {
+                    "Id": "IronOre",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.5",
+            "Machine": "MinerMk2"
+        },
+        {
+            "Id": "IronOreMk3",
+            "Name": "Miner Mk.3 (鉄鉱石)",
+            "Output": [
+                {
+                    "Id": "IronOre",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.25",
+            "Machine": "MinerMk3"
+        },
+        {
+            "Id": "IronPlate",
+            "Name": "鉄板",
+            "Input": [
+                {
+                    "Id": "IronIngot",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "IronPlate",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "IronPlateAlt1",
+            "Name": "代替: 被覆鉄板",
+            "Input": [
+                {
+                    "Id": "IronIngot",
+                    "Number": 10
+                },
+                {
+                    "Id": "Plastic",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "IronPlate",
+                    "Number": 15
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "IronPlateAlt2",
+            "Name": "代替: 被覆鋼板",
+            "Input": [
+                {
+                    "Id": "SteelIngot",
+                    "Number": 3
+                },
+                {
+                    "Id": "Plastic",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "IronPlate",
+                    "Number": 18
+                }
+            ],
+            "ProductTime": 24,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "IronRebar",
+            "Name": "有刺鉄筋",
+            "Input": [
+                {
+                    "Id": "IronRod",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "IronRebar",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "IronRod",
+            "Name": "鉄のロッド",
+            "Input": [
+                {
+                    "Id": "IronIngot",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "IronRod",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "IronRodAlt1",
+            "Name": "代替: 鋼鉄のロッド",
+            "Input": [
+                {
+                    "Id": "SteelIngot",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "IronRod",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 5,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "LimestoneMk1",
+            "Name": "Miner Mk.1 (石灰岩)",
+            "Output": [
+                {
+                    "Id": "Limestone",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "MinerMk1"
+        },
+        {
+            "Id": "LimestoneMk2",
+            "Name": "Miner Mk.2 (石灰岩)",
+            "Output": [
+                {
+                    "Id": "Limestone",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.5",
+            "Machine": "MinerMk2"
+        },
+        {
+            "Id": "LimestoneMk3",
+            "Name": "Miner Mk.3 (石灰岩)",
+            "Output": [
+                {
+                    "Id": "Limestone",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.25",
+            "Machine": "MinerMk3"
+        },
+        {
+            "Id": "LiquidBiofuel",
+            "Name": "液体バイオ燃料",
+            "Input": [
+                {
+                    "Id": "SolidBiofuel",
+                    "Number": 6
+                },
+                {
+                    "Id": "Water",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "LiquidBiofuel",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "LiquidBiofuelAlt1",
+            "Name": "液体バイオ燃料･容器取り出し",
+            "Input": [
+                {
+                    "Id": "PackagedLiquidBiofuel",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "LiquidBiofuel",
+                    "Number": 2
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 2,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "MagneticFieldGenerator",
+            "Name": "磁界発生装置",
+            "Input": [
+                {
+                    "Id": "VersatileFramework",
+                    "Number": 5
+                },
+                {
+                    "Id": "ElectromagneticControlRod",
+                    "Number": 2
+                },
+                {
+                    "Id": "Battery",
+                    "Number": 10
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "MagneticFieldGenerator",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 120,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "ModularEngine",
+            "Name": "モジュラーエンジン",
+            "Input": [
+                {
+                    "Id": "Motor",
+                    "Number": 2
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 15
+                },
+                {
+                    "Id": "SmartPlating",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "ModularEngine",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 60,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "ModularFrame",
+            "Name": "モジュラー・フレーム",
+            "Input": [
+                {
+                    "Id": "ReinforcedIronPlate",
+                    "Number": 3
+                },
+                {
+                    "Id": "IronRod",
+                    "Number": 12
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "ModularFrame",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 60,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "ModularFrameAlt1",
+            "Name": "代替: 鋼鉄のフレーム",
+            "Input": [
+                {
+                    "Id": "ReinforcedIronPlate",
+                    "Number": 2
+                },
+                {
+                    "Id": "SteelPipe",
+                    "Number": 10
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "ModularFrame",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 60,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "ModularFrameAlt2",
+            "Name": "代替: ネジ留めフレーム",
+            "Input": [
+                {
+                    "Id": "ReinforcedIronPlate",
+                    "Number": 3
+                },
+                {
+                    "Id": "Screw",
+                    "Number": 56
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "ModularFrame",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 24,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "Motor",
+            "Name": "モーター",
+            "Input": [
+                {
+                    "Id": "Rotor",
+                    "Number": 2
+                },
+                {
+                    "Id": "Stator",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Motor",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "MotorAlt1",
+            "Name": "代替: 精密モーター",
+            "Input": [
+                {
+                    "Id": "Rotor",
+                    "Number": 3
+                },
+                {
+                    "Id": "Stator",
+                    "Number": 3
+                },
+                {
+                    "Id": "CrystalOscillator",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Motor",
+                    "Number": 6
+                }
+            ],
+            "ProductTime": 48,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "MotorAlt2",
+            "Name": "代替: 電動モーター",
+            "Input": [
+                {
+                    "Id": "ElectromagneticControlRod",
+                    "Number": 1
+                },
+                {
+                    "Id": "Rotor",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Motor",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 16,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "NitricAcid",
+            "Name": "硝酸",
+            "Input": [
+                {
+                    "Id": "NitrogenGas",
+                    "Number": 12
+                },
+                {
+                    "Id": "Water",
+                    "Number": 3
+                },
+                {
+                    "Id": "IronPlate",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "NitricAcid",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Blender"
+        },
+        {
+            "Id": "NitricAcidAlt1",
+            "Name": "硝酸・容器取り出し",
+            "Input": [
+                {
+                    "Id": "PackagedNitricAcid",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "NitricAcid",
+                    "Number": 1
+                },
+                {
+                    "Id": "EmptyFluidTank",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 3,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "NitrogenGas",
+            "Name": "窒素ガス",
+            "Output": [
+                {
+                    "Id": "NitrogenGas",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "ResourceWellExtractor"
+        },
+        {
+            "Id": "NitrogenGasAlt1",
+            "Name": "窒素ガス・容器取り出し",
+            "Input": [
+                {
+                    "Id": "PackagedNitrogenGas",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "NitrogenGas",
+                    "Number": 4
+                },
+                {
+                    "Id": "EmptyFluidTank",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "Nobelisk",
+            "Name": "ノーベリスク",
+            "Input": [
+                {
+                    "Id": "BlackPowder",
+                    "Number": 5
+                },
+                {
+                    "Id": "SteelPipe",
+                    "Number": 10
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Nobelisk",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 20,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "NobeliskAlt1",
+            "Name": "代替: サイズミック・ノーべリスク",
+            "Input": [
+                {
+                    "Id": "BlackPowder",
+                    "Number": 8
+                },
+                {
+                    "Id": "SteelPipe",
+                    "Number": 8
+                },
+                {
+                    "Id": "CrystalOscillator",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Nobelisk",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 40,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "NonfissileUranium",
+            "Name": "非分裂性ウラン",
+            "Input": [
+                {
+                    "Id": "UraniumWaste",
+                    "Number": 15
+                },
+                {
+                    "Id": "Silica",
+                    "Number": 10
+                },
+                {
+                    "Id": "NitricAcid",
+                    "Number": 6
+                },
+                {
+                    "Id": "SulfuricAcid",
+                    "Number": 6
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "NonfissileUranium",
+                    "Number": 20
+                },
+                {
+                    "Id": "Water",
+                    "Number": 6
+                }
+            ],
+            "ProductTime": 24,
+            "Machine": "Blender"
+        },
+        {
+            "Id": "NonfissileUraniumAlt1",
+            "Name": "代替: 親物質性ウラン",
+            "Input": [
+                {
+                    "Id": "Uranium",
+                    "Number": 5
+                },
+                {
+                    "Id": "UraniumWaste",
+                    "Number": 5
+                },
+                {
+                    "Id": "NitricAcid",
+                    "Number": 3
+                },
+                {
+                    "Id": "SulfuricAcid",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "NonfissileUranium",
+                    "Number": 20
+                },
+                {
+                    "Id": "Water",
+                    "Number": 8
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Blender"
+        },
+        {
+            "Id": "NuclearPasta",
+            "Name": "原子核パスタ",
+            "Input": [
+                {
+                    "Id": "CopperPowder",
+                    "Number": 200
+                },
+                {
+                    "Id": "PressureConversionCube",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "NuclearPasta",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 120,
+            "Machine": "ParticleAccelerator"
+        },
+        {
+            "Id": "PackagedAluminaSolution",
+            "Name": "容器入りアルミナ溶液",
+            "Input": [
+                {
+                    "Id": "AluminaSolution",
+                    "Number": 2
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PackagedAluminaSolution",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "PackagedFuel",
+            "Name": "容器入り燃料",
+            "Input": [
+                {
+                    "Id": "Fuel",
+                    "Number": 2
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PackagedFuel",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 3,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "PackagedFuelAlt1",
+            "Name": "代替: 容器入り希釈燃料",
+            "Input": [
+                {
+                    "Id": "HeavyOilResidue",
+                    "Number": 1
+                },
+                {
+                    "Id": "PackagedWater",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PackagedFuel",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 2,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "PackagedHeavyOilResidue",
+            "Name": "容器入り廃重油",
+            "Input": [
+                {
+                    "Id": "HeavyOilResidue",
+                    "Number": 2
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PackagedHeavyOilResidue",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "PackagedLiquidBiofuel",
+            "Name": "容器入り液体バイオ燃料",
+            "Input": [
+                {
+                    "Id": "LiquidBiofuel",
+                    "Number": 2
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PackagedLiquidBiofuel",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 3,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "PackagedNitricAcid",
+            "Name": "容器入り硝酸",
+            "Input": [
+                {
+                    "Id": "NitricAcid",
+                    "Number": 1
+                },
+                {
+                    "Id": "EmptyFluidTank",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PackagedNitricAcid",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 2,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "PackagedNitrogenGas",
+            "Name": "容器入り窒素ガス",
+            "Input": [
+                {
+                    "Id": "NitrogenGas",
+                    "Number": 4
+                },
+                {
+                    "Id": "EmptyFluidTank",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PackagedNitrogenGas",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "PackagedOil",
+            "Name": "容器入り原油",
+            "Input": [
+                {
+                    "Id": "CrudeOil",
+                    "Number": 2
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PackagedOil",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "PackagedSulfuricAcid",
+            "Name": "容器入り硫酸",
+            "Input": [
+                {
+                    "Id": "SulfuricAcid",
+                    "Number": 2
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PackagedSulfuricAcid",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 3,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "PackagedTurbofuel",
+            "Name": "容器入りターボ燃料",
+            "Input": [
+                {
+                    "Id": "Turbofuel",
+                    "Number": 2
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PackagedTurbofuel",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "PackagedWater",
+            "Name": "容器入り水",
+            "Input": [
+                {
+                    "Id": "Water",
+                    "Number": 2
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PackagedWater",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 2,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "PetroleumCoke",
+            "Name": "石油コークス",
+            "Input": [
+                {
+                    "Id": "HeavyOilResidue",
+                    "Number": 4
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PetroleumCoke",
+                    "Number": 12
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "Plastic",
+            "Name": "プラスチック",
+            "Input": [
+                {
+                    "Id": "CrudeOil",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Plastic",
+                    "Number": 2
+                },
+                {
+                    "Id": "HeavyOilResidue",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "PlasticAlt1",
+            "Name": "残留プラスチック",
+            "Input": [
+                {
+                    "Id": "PolymerResin",
+                    "Number": 6
+                },
+                {
+                    "Id": "Water",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Plastic",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "PlasticAlt2",
+            "Name": "代替: リサイクル・プラスチック",
+            "Input": [
+                {
+                    "Id": "Rubber",
+                    "Number": 6
+                },
+                {
+                    "Id": "Fuel",
+                    "Number": 6
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Plastic",
+                    "Number": 12
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "PlutoniumFuelRod",
+            "Name": "プルトニウム燃料棒",
+            "Input": [
+                {
+                    "Id": "EncasedPlutoniumCell",
+                    "Number": 30
+                },
+                {
+                    "Id": "SteelBeam",
+                    "Number": 18
+                },
+                {
+                    "Id": "ElectromagneticControlRod",
+                    "Number": 6
+                },
+                {
+                    "Id": "HeatSink",
+                    "Number": 10
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PlutoniumFuelRod",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 240,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "PlutoniumFuelRodAlt1",
+            "Name": "代替: プルトニウム燃料ユニット",
+            "Input": [
+                {
+                    "Id": "EncasedPlutoniumCell",
+                    "Number": 20
+                },
+                {
+                    "Id": "PressureConversionCube",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PlutoniumFuelRod",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 120,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "PlutoniumPellet",
+            "Name": "プルトニウム・ペレット",
+            "Input": [
+                {
+                    "Id": "NonfissileUranium",
+                    "Number": 100
+                },
+                {
+                    "Id": "UraniumWaste",
+                    "Number": 25
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PlutoniumPellet",
+                    "Number": 30
+                }
+            ],
+            "ProductTime": 60,
+            "Machine": "ParticleAccelerator"
+        },
+        {
+            "Id": "PlutoniumWaste",
+            "Name": "原子力発電所 (プルトニウム燃料棒)",
+            "Input": [
+                {
+                    "Id": "PlutoniumFuelRod",
+                    "Number": 1
+                },
+                {
+                    "Id": "Water",
+                    "Number": 1200
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PlutoniumWaste",
+                    "Number": 10
+                }
+            ],
+            "ProductTime": 600,
+            "Machine": "NuclearPowerPlant"
+        },
+        {
+            "Id": "PolymerResinAlt1",
+            "Name": "代替: 合成樹脂",
+            "Input": [
+                {
+                    "Id": "CrudeOil",
+                    "Number": 6
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PolymerResin",
+                    "Number": 13
+                },
+                {
+                    "Id": "HeavyOilResidue",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "PortableMinerAlt1",
+            "Name": "代替: 自動採鉱機",
+            "Input": [
+                {
+                    "Id": "Motor",
+                    "Number": 1
+                },
+                {
+                    "Id": "SteelPipe",
+                    "Number": 4
+                },
+                {
+                    "Id": "IronRod",
+                    "Number": 4
+                },
+                {
+                    "Id": "IronPlate",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PortableMiner",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 60,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "PowerShardGreenPowerSlug",
+            "Name": "パワー・シャード(1)",
+            "Input": [
+                {
+                    "Id": "GreenPowerSlug",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PowerShard",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 10,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "PowerShardYellowPowerSlug",
+            "Name": "パワー・シャード(2)",
+            "Input": [
+                {
+                    "Id": "YellowPowerSlug",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PowerShard",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 15,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "PowerShardPurplePowerSlug",
+            "Name": "パワー・シャード(5)",
+            "Input": [
+                {
+                    "Id": "PurplePowerSlug",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PowerShard",
+                    "Number": 5
+                }
+            ],
+            "ProductTime": 20,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "PressureConversionCube",
+            "Name": "圧力変換キューブ",
+            "Input": [
+                {
+                    "Id": "FusedModularFrame",
+                    "Number": 1
+                },
+                {
+                    "Id": "RadioControlUnit",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "PressureConversionCube",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 60,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "QuartzCrystal",
+            "Name": "石英結晶",
+            "Input": [
+                {
+                    "Id": "RawQuartz",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "QuartzCrystal",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "QuartzCrystalAlt1",
+            "Name": "代替: 純石英結晶",
+            "Input": [
+                {
+                    "Id": "RawQuartz",
+                    "Number": 9
+                },
+                {
+                    "Id": "Water",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "QuartzCrystal",
+                    "Number": 7
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "Quickwire",
+            "Name": "クイックワイヤー",
+            "Input": [
+                {
+                    "Id": "CateriumIngot",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Quickwire",
+                    "Number": 5
+                }
+            ],
+            "ProductTime": 5,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "QuickwireAlt1",
+            "Name": "代替: 溶融クイックワイヤー",
+            "Input": [
+                {
+                    "Id": "CateriumIngot",
+                    "Number": 1
+                },
+                {
+                    "Id": "CopperIngot",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Quickwire",
+                    "Number": 12
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "RadioControlUnit",
+            "Name": "無線制御ユニット",
+            "Input": [
+                {
+                    "Id": "AluminumCasing",
+                    "Number": 32
+                },
+                {
+                    "Id": "CrystalOscillator",
+                    "Number": 1
+                },
+                {
+                    "Id": "Computer",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "RadioControlUnit",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 48,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "RadioControlUnitAlt1",
+            "Name": "代替: 無線制御システム",
+            "Input": [
+                {
+                    "Id": "CrystalOscillator",
+                    "Number": 1
+                },
+                {
+                    "Id": "CircuitBoard",
+                    "Number": 10
+                },
+                {
+                    "Id": "AluminumCasing",
+                    "Number": 60
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 30
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "RadioControlUnit",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 40,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "RadioControlUnitAlt2",
+            "Name": "代替: 無線接続システム",
+            "Input": [
+                {
+                    "Id": "HeatSink",
+                    "Number": 4
+                },
+                {
+                    "Id": "HighSpeedConnector",
+                    "Number": 2
+                },
+                {
+                    "Id": "QuartzCrystal",
+                    "Number": 12
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "RadioControlUnit",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 16,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "RawQuartzMk1",
+            "Name": "Miner Mk.1 (未加工石英)",
+            "Output": [
+                {
+                    "Id": "RawQuartz",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "MinerMk1"
+        },
+        {
+            "Id": "RawQuartzMk2",
+            "Name": "Miner Mk.2 (未加工石英)",
+            "Output": [
+                {
+                    "Id": "RawQuartz",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.5",
+            "Machine": "MinerMk2"
+        },
+        {
+            "Id": "RawQuartzMk3",
+            "Name": "Miner Mk.3 (未加工石英)",
+            "Output": [
+                {
+                    "Id": "RawQuartz",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.25",
+            "Machine": "MinerMk3"
+        },
+        {
+            "Id": "ReinforcedIronPlate",
+            "Name": "強化鉄板",
+            "Input": [
+                {
+                    "Id": "IronPlate",
+                    "Number": 6
+                },
+                {
+                    "Id": "Screw",
+                    "Number": 12
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "ReinforcedIronPlate",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "ReinforcedIronPlateAlt1",
+            "Name": "代替: 縫合鉄板",
+            "Input": [
+                {
+                    "Id": "IronPlate",
+                    "Number": 10
+                },
+                {
+                    "Id": "Wire",
+                    "Number": 20
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "ReinforcedIronPlate",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 32,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "ReinforcedIronPlateAlt2",
+            "Name": "代替: ネジ留め鉄板",
+            "Input": [
+                {
+                    "Id": "IronPlate",
+                    "Number": 18
+                },
+                {
+                    "Id": "Screw",
+                    "Number": 50
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "ReinforcedIronPlate",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "ReinforcedIronPlateAlt3",
+            "Name": "代替: 接着鉄板",
+            "Input": [
+                {
+                    "Id": "IronPlate",
+                    "Number": 3
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "ReinforcedIronPlate",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 16,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "RifleAmmo",
+            "Name": "ライフル弾薬",
+            "Input": [
+                {
+                    "Id": "Beacon",
+                    "Number": 1
+                },
+                {
+                    "Id": "SteelPipe",
+                    "Number": 10
+                },
+                {
+                    "Id": "BlackPowder",
+                    "Number": 10
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 10
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "RifleAmmo",
+                    "Number": 5
+                }
+            ],
+            "ProductTime": 20,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "Rotor",
+            "Name": "ローター",
+            "Input": [
+                {
+                    "Id": "IronRod",
+                    "Number": 5
+                },
+                {
+                    "Id": "Screw",
+                    "Number": 25
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Rotor",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 15,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "RotorAlt1",
+            "Name": "代替: 鋼鉄のローター",
+            "Input": [
+                {
+                    "Id": "SteelPipe",
+                    "Number": 2
+                },
+                {
+                    "Id": "Wire",
+                    "Number": 6
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Rotor",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "RotorAlt2",
+            "Name": "代替: 銅のローター",
+            "Input": [
+                {
+                    "Id": "CopperSheet",
+                    "Number": 6
+                },
+                {
+                    "Id": "Screw",
+                    "Number": 52
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Rotor",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 16,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "Rubber",
+            "Name": "ゴム",
+            "Input": [
+                {
+                    "Id": "CrudeOil",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Rubber",
+                    "Number": 2
+                },
+                {
+                    "Id": "HeavyOilResidue",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "RubberAlt1",
+            "Name": "残留ゴム",
+            "Input": [
+                {
+                    "Id": "PolymerResin",
+                    "Number": 4
+                },
+                {
+                    "Id": "Water",
+                    "Number": 4
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Rubber",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "RubberAlt2",
+            "Name": "代替: リサイクル・ゴム",
+            "Input": [
+                {
+                    "Id": "Plastic",
+                    "Number": 6
+                },
+                {
+                    "Id": "Fuel",
+                    "Number": 6
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Rubber",
+                    "Number": 12
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "SAMOreMk1",
+            "Name": "Miner Mk.1 (S.A.M.鉱石)",
+            "Output": [
+                {
+                    "Id": "SAMOre",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "MinerMk1"
+        },
+        {
+            "Id": "SAMOreMk2",
+            "Name": "Miner Mk.2 (S.A.M.鉱石)",
+            "Output": [
+                {
+                    "Id": "SAMOre",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.5",
+            "Machine": "MinerMk2"
+        },
+        {
+            "Id": "SAMOreMk3",
+            "Name": "Miner Mk.3 (S.A.M.鉱石)",
+            "Output": [
+                {
+                    "Id": "SAMOre",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.25",
+            "Machine": "MinerMk3"
+        },
+        {
+            "Id": "Screw",
+            "Name": "ネジ",
+            "Input": [
+                {
+                    "Id": "IronRod",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Screw",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "ScrewAlt1",
+            "Name": "代替: 鋳造ネジ",
+            "Input": [
+                {
+                    "Id": "IronIngot",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Screw",
+                    "Number": 20
+                }
+            ],
+            "ProductTime": 24,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "ScrewAlt2",
+            "Name": "代替: 鋼鉄のネジ",
+            "Input": [
+                {
+                    "Id": "SteelBeam",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Screw",
+                    "Number": 52
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "Silica",
+            "Name": "シリカ",
+            "Input": [
+                {
+                    "Id": "RawQuartz",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Silica",
+                    "Number": 5
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "SilicaAlt1",
+            "Name": "代替: 廉価シリカ",
+            "Input": [
+                {
+                    "Id": "RawQuartz",
+                    "Number": 3
+                },
+                {
+                    "Id": "Limestone",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Silica",
+                    "Number": 7
+                }
+            ],
+            "ProductTime": 16,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "SmartPlating",
+            "Name": "スマート･プレート",
+            "Input": [
+                {
+                    "Id": "ReinforcedIronPlate",
+                    "Number": 1
+                },
+                {
+                    "Id": "Rotor",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "SmartPlating",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 30,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "SmartPlatingAlt1",
+            "Name": "代替: プラスチック・スマート・プレート",
+            "Input": [
+                {
+                    "Id": "ReinforcedIronPlate",
+                    "Number": 1
+                },
+                {
+                    "Id": "Rotor",
+                    "Number": 1
+                },
+                {
+                    "Id": "Plastic",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "SmartPlating",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 24,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "SolidBiofuel",
+            "Name": "固体バイオ燃料",
+            "Input": [
+                {
+                    "Id": "Biomass",
+                    "Number": 8
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "SolidBiofuel",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "Stator",
+            "Name": "固定子",
+            "Input": [
+                {
+                    "Id": "SteelPipe",
+                    "Number": 3
+                },
+                {
+                    "Id": "Wire",
+                    "Number": 8
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Stator",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "StatorAlt1",
+            "Name": "代替: クイックワイヤー固定子",
+            "Input": [
+                {
+                    "Id": "SteelPipe",
+                    "Number": 4
+                },
+                {
+                    "Id": "Quickwire",
+                    "Number": 15
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Stator",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 15,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "SteelBeam",
+            "Name": "鋼梁",
+            "Input": [
+                {
+                    "Id": "SteelIngot",
+                    "Number": 4
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "SteelBeam",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "SteelIngot",
+            "Name": "鋼鉄のインゴット",
+            "Input": [
+                {
+                    "Id": "IronOre",
+                    "Number": 3
+                },
+                {
+                    "Id": "Coal",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "SteelIngot",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Foundry"
+        },
+        {
+            "Id": "SteelIngotAlt1",
+            "Name": "代替: 高密度鋼のインゴット",
+            "Input": [
+                {
+                    "Id": "IronIngot",
+                    "Number": 2
+                },
+                {
+                    "Id": "Coal",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "SteelIngot",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 3,
+            "Machine": "Foundry"
+        },
+        {
+            "Id": "SteelIngotAlt2",
+            "Name": "代替: 圧縮鋼のインゴット",
+            "Input": [
+                {
+                    "Id": "IronOre",
+                    "Number": 6
+                },
+                {
+                    "Id": "CompactedCoal",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "SteelIngot",
+                    "Number": 10
+                }
+            ],
+            "ProductTime": 16,
+            "Machine": "Foundry"
+        },
+        {
+            "Id": "SteelIngotAlt3",
+            "Name": "代替: コークス鋼のインゴット",
+            "Input": [
+                {
+                    "Id": "IronOre",
+                    "Number": 15
+                },
+                {
+                    "Id": "PetroleumCoke",
+                    "Number": 15
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "SteelIngot",
+                    "Number": 20
+                }
+            ],
+            "ProductTime": 12,
+            "Machine": "Foundry"
+        },
+        {
+            "Id": "SteelPipe",
+            "Name": "鋼鉄のパイプ",
+            "Input": [
+                {
+                    "Id": "SteelIngot",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "SteelPipe",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "SulfurMk1",
+            "Name": "Miner Mk.1 (硫黄)",
+            "Output": [
+                {
+                    "Id": "Sulfur",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "MinerMk1"
+        },
+        {
+            "Id": "SulfurMk2",
+            "Name": "Miner Mk.2 (硫黄)",
+            "Output": [
+                {
+                    "Id": "Sulfur",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.5",
+            "Machine": "MinerMk2"
+        },
+        {
+            "Id": "SulfurMk3",
+            "Name": "Miner Mk.3 (硫黄)",
+            "Output": [
+                {
+                    "Id": "Sulfur",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.25",
+            "Machine": "MinerMk3"
+        },
+        {
+            "Id": "SulfuricAcid",
+            "Name": "硫酸",
+            "Input": [
+                {
+                    "Id": "Sulfur",
+                    "Number": 5
+                },
+                {
+                    "Id": "Water",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "SulfuricAcid",
+                    "Number": 5
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "SulfuricAcidAlt1",
+            "Name": "硫酸・容器取り出し",
+            "Input": [
+                {
+                    "Id": "PackagedSulfuricAcid",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "SulfuricAcid",
+                    "Number": 1
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "Supercomputer",
+            "Name": "スーパーコンピューター",
+            "Input": [
+                {
+                    "Id": "Computer",
+                    "Number": 2
+                },
+                {
+                    "Id": "AILimiter",
+                    "Number": 2
+                },
+                {
+                    "Id": "HighSpeedConnector",
+                    "Number": 3
+                },
+                {
+                    "Id": "Plastic",
+                    "Number": 28
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Supercomputer",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 32,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "SupercomputerAlt1",
+            "Name": "代替: オーバークロック・スーパーコンピューター",
+            "Input": [
+                {
+                    "Id": "RadioControlUnit",
+                    "Number": 3
+                },
+                {
+                    "Id": "CoolingSystem",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Supercomputer",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 20,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "SupercomputerAlt2",
+            "Name": "代替: 超性能コンピューター",
+            "Input": [
+                {
+                    "Id": "Computer",
+                    "Number": 3
+                },
+                {
+                    "Id": "ElectromagneticControlRod",
+                    "Number": 2
+                },
+                {
+                    "Id": "Battery",
+                    "Number": 20
+                },
+                {
+                    "Id": "Wire",
+                    "Number": 45
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Supercomputer",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 50,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "ThermalPropulsionRocket",
+            "Name": "熱推進型ロケット",
+            "Input": [
+                {
+                    "Id": "ModularEngine",
+                    "Number": 5
+                },
+                {
+                    "Id": "TurboMotor",
+                    "Number": 2
+                },
+                {
+                    "Id": "CoolingSystem",
+                    "Number": 6
+                },
+                {
+                    "Id": "FusedModularFrame",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "ThermalPropulsionRocket",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 120,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "Turbofuel",
+            "Name": "ターボ燃料",
+            "Input": [
+                {
+                    "Id": "Fuel",
+                    "Number": 6
+                },
+                {
+                    "Id": "CompactedCoal",
+                    "Number": 4
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Turbofuel",
+                    "Number": 5
+                }
+            ],
+            "ProductTime": 16,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "TurbofuelAlt1",
+            "Name": "代替: ターボ燃料･容器取り出し",
+            "Input": [
+                {
+                    "Id": "PackagedTurbofuel",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Turbofuel",
+                    "Number": 2
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "TurbofuelAlt2",
+            "Name": "代替: ターボ重油",
+            "Input": [
+                {
+                    "Id": "HeavyOilResidue",
+                    "Number": 5
+                },
+                {
+                    "Id": "CompactedCoal",
+                    "Number": 4
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Turbofuel",
+                    "Number": 4
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Refinery"
+        },
+        {
+            "Id": "TurbofuelAlt3",
+            "Name": "代替: 混合ターボ燃料",
+            "Input": [
+                {
+                    "Id": "Fuel",
+                    "Number": 2
+                },
+                {
+                    "Id": "HeavyOilResidue",
+                    "Number": 4
+                },
+                {
+                    "Id": "Sulfur",
+                    "Number": 3
+                },
+                {
+                    "Id": "PetroleumCoke",
+                    "Number": 3
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Turbofuel",
+                    "Number": 6
+                }
+            ],
+            "ProductTime": 8,
+            "Machine": "Blender"
+        },
+        {
+            "Id": "TurboMotor",
+            "Name": "ターボ・モーター",
+            "Input": [
+                {
+                    "Id": "CoolingSystem",
+                    "Number": 4
+                },
+                {
+                    "Id": "RadioControlUnit",
+                    "Number": 2
+                },
+                {
+                    "Id": "Motor",
+                    "Number": 4
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 24
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "TurboMotor",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 32,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "TurboMotorAlt1",
+            "Name": "代替: ターボ電動モーター",
+            "Input": [
+                {
+                    "Id": "Motor",
+                    "Number": 7
+                },
+                {
+                    "Id": "RadioControlUnit",
+                    "Number": 9
+                },
+                {
+                    "Id": "ElectromagneticControlRod",
+                    "Number": 5
+                },
+                {
+                    "Id": "Rotor",
+                    "Number": 7
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "TurboMotor",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 64,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "TurboMotorAlt2",
+            "Name": "代替: ターボ・プレッシャー・モーター",
+            "Input": [
+                {
+                    "Id": "Motor",
+                    "Number": 4
+                },
+                {
+                    "Id": "PressureConversionCube",
+                    "Number": 1
+                },
+                {
+                    "Id": "PackagedNitrogenGas",
+                    "Number": 24
+                },
+                {
+                    "Id": "Stator",
+                    "Number": 8
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "TurboMotor",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 32,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "UraniumMk1",
+            "Name": "Miner Mk.1 (ウラン)",
+            "Output": [
+                {
+                    "Id": "Uranium",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "MinerMk1"
+        },
+        {
+            "Id": "UraniumMk2",
+            "Name": "Miner Mk.2 (ウラン)",
+            "Output": [
+                {
+                    "Id": "Uranium",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.5",
+            "Machine": "MinerMk2"
+        },
+        {
+            "Id": "UraniumMk3",
+            "Name": "Miner Mk.3 (ウラン)",
+            "Output": [
+                {
+                    "Id": "Uranium",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.25",
+            "Machine": "MinerMk3"
+        },
+        {
+            "Id": "UraniumFuelRod",
+            "Name": "ウラン燃料棒",
+            "Input": [
+                {
+                    "Id": "EncasedUraniumCell",
+                    "Number": 50
+                },
+                {
+                    "Id": "EncasedIndustrialBeam",
+                    "Number": 3
+                },
+                {
+                    "Id": "ElectromagneticControlRod",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "UraniumFuelRod",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 150,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "UraniumFuelRodAlt1",
+            "Name": "代替: ウラン燃料ユニット",
+            "Input": [
+                {
+                    "Id": "EncasedUraniumCell",
+                    "Number": 100
+                },
+                {
+                    "Id": "ElectromagneticControlRod",
+                    "Number": 10
+                },
+                {
+                    "Id": "CrystalOscillator",
+                    "Number": 3
+                },
+                {
+                    "Id": "Beacon",
+                    "Number": 6
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "UraniumFuelRod",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 300,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "UraniumWaste",
+            "Name": "原子力発電所 (ウラン燃料棒)",
+            "Input": [
+                {
+                    "Id": "UraniumFuelRod",
+                    "Number": 1
+                },
+                {
+                    "Id": "Water",
+                    "Number": 2400
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "UraniumWaste",
+                    "Number": 50
+                }
+            ],
+            "ProductTime": 300,
+            "Machine": "NuclearPowerPlant"
+        },
+        {
+            "Id": "VersatileFramework",
+            "Name": "多目的フレームワーク",
+            "Input": [
+                {
+                    "Id": "ModularFrame",
+                    "Number": 1
+                },
+                {
+                    "Id": "SteelBeam",
+                    "Number": 12
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "VersatileFramework",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 24,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "VersatileFrameworkAlt1",
+            "Name": "代替: フレキシブル・フレームワーク",
+            "Input": [
+                {
+                    "Id": "ModularFrame",
+                    "Number": 1
+                },
+                {
+                    "Id": "SteelBeam",
+                    "Number": 6
+                },
+                {
+                    "Id": "Rubber",
+                    "Number": 8
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "VersatileFramework",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 16,
+            "Machine": "Manufacturer"
+        },
+        {
+            "Id": "Water",
+            "Name": "揚水ポンプ",
+            "Output": [
+                {
+                    "Id": "Water",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.5",
+            "Machine": "WaterExtractor"
+        },
+        {
+            "Id": "WaterAlt1",
+            "Name": "代替: 水･容器取り出し",
+            "Input": [
+                {
+                    "Id": "PackagedWater",
+                    "Number": 2
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Water",
+                    "Number": 2
+                },
+                {
+                    "Id": "EmptyCanister",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "Packager"
+        },
+        {
+            "Id": "Wire",
+            "Name": "ワイヤー",
+            "Input": [
+                {
+                    "Id": "CopperIngot",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Wire",
+                    "Number": 2
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "WireAlt1",
+            "Name": "代替: 鉄のワイヤー",
+            "Input": [
+                {
+                    "Id": "IronIngot",
+                    "Number": 5
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Wire",
+                    "Number": 9
+                }
+            ],
+            "ProductTime": 24,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "WireAlt2",
+            "Name": "代替: カテリウム・ワイヤー",
+            "Input": [
+                {
+                    "Id": "CateriumIngot",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Wire",
+                    "Number": 8
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "Constructor"
+        },
+        {
+            "Id": "WireAlt3",
+            "Name": "代替: 溶融ワイヤー",
+            "Input": [
+                {
+                    "Id": "CopperIngot",
+                    "Number": 4
+                },
+                {
+                    "Id": "CateriumIngot",
+                    "Number": 1
+                }
+            ],
+            "Output": [
+                {
+                    "Id": "Wire",
+                    "Number": 30
+                }
+            ],
+            "ProductTime": 20,
+            "Machine": "Assembler"
+        },
+        {
+            "Id": "BiomassBurnerHUBWood",
+            "Name": "バイオマス・バーナー(HUB) (木)",
+            "Input": [
+                {
+                    "Id": "Wood",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 5,
+            "Machine": "BiomassBurnerHUB"
+        },
+        {
+            "Id": "BiomassBurnerHUBMycelia",
+            "Name": "バイオマス・バーナー(HUB) (菌糸)",
+            "Input": [
+                {
+                    "Id": "Mycelia",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 1,
+            "Machine": "BiomassBurnerHUB"
+        },
+        {
+            "Id": "BiomassBurnerHUBLeaves",
+            "Name": "バイオマス・バーナー(HUB) (草)",
+            "Input": [
+                {
+                    "Id": "Leaves",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.8",
+            "Machine": "BiomassBurnerHUB"
+        },
+        {
+            "Id": "BiomassBurnerHUBBiomass",
+            "Name": "バイオマス・バーナー(HUB) (バイオマス)",
+            "Input": [
+                {
+                    "Id": "Biomass",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 9,
+            "Machine": "BiomassBurnerHUB"
+        },
+        {
+            "Id": "BiomassBurnerHUBSolidBiofuel",
+            "Name": "バイオマス・バーナー(HUB) (固体バイオ燃料)",
+            "Input": [
+                {
+                    "Id": "SolidBiofuel",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "22.5",
+            "Machine": "BiomassBurnerHUB"
+        },
+        {
+            "Id": "BiomassBurnerHUBPackagedLiquidBiofuel",
+            "Name": "バイオマス・バーナー(HUB) (容器入り液体バイオ燃料)",
+            "Input": [
+                {
+                    "Id": "PackagedLiquidBiofuel",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "37.5",
+            "Machine": "BiomassBurnerHUB"
+        },
+        {
+            "Id": "BiomassBurnerHUBHogRemains",
+            "Name": "バイオマス・バーナー(HUB) (異星生物甲殻)",
+            "Input": [
+                {
+                    "Id": "HogRemains",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "12.5",
+            "Machine": "BiomassBurnerHUB"
+        },
+        {
+            "Id": "BiomassBurnerHUBPlasmaSpitterRemains",
+            "Name": "バイオマス・バーナー(HUB) (異星生物器官)",
+            "Input": [
+                {
+                    "Id": "PlasmaSpitterRemains",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "12.5",
+            "Machine": "BiomassBurnerHUB"
+        },
+        {
+            "Id": "BiomassBurnerWood",
+            "Name": "バイオマス・バーナー (木)",
+            "Input": [
+                {
+                    "Id": "Wood",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "3.3",
+            "Machine": "BiomassBurner"
+        },
+        {
+            "Id": "BiomassBurnerMycelia",
+            "Name": "バイオマス・バーナー (菌糸)",
+            "Input": [
+                {
+                    "Id": "Mycelia",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.7",
+            "Machine": "BiomassBurner"
+        },
+        {
+            "Id": "BiomassBurnerLeaves",
+            "Name": "バイオマス・バーナー (葉)",
+            "Input": [
+                {
+                    "Id": "Leaves",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "0.5",
+            "Machine": "BiomassBurner"
+        },
+        {
+            "Id": "BiomassBurnerBiomass",
+            "Name": "バイオマス・バーナー (バイオマス)",
+            "Input": [
+                {
+                    "Id": "Biomass",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 6,
+            "Machine": "BiomassBurner"
+        },
+        {
+            "Id": "BiomassBurnerSolidBiofuel",
+            "Name": "バイオマス・バーナー (固体バイオ燃料)",
+            "Input": [
+                {
+                    "Id": "SolidBiofuel",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 15,
+            "Machine": "BiomassBurner"
+        },
+        {
+            "Id": "BiomassBurnerPackagedLiquidBiofuel",
+            "Name": "バイオマス・バーナー (容器入り液体バイオ燃料)",
+            "Input": [
+                {
+                    "Id": "PackagedLiquidBiofuel",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 25,
+            "Machine": "BiomassBurner"
+        },
+        {
+            "Id": "BiomassBurnerHogRemains",
+            "Name": "バイオマス・バーナー (異星生物甲殻)",
+            "Input": [
+                {
+                    "Id": "HogRemains",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "8.3",
+            "Machine": "BiomassBurner"
+        },
+        {
+            "Id": "BiomassBurnerPlasmaSpitterRemains",
+            "Name": "バイオマス・バーナー (異星生物器官)",
+            "Input": [
+                {
+                    "Id": "PlasmaSpitterRemains",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "8.3",
+            "Machine": "BiomassBurner"
+        },
+        {
+            "Id": "CoalGeneratorCoal",
+            "Name": "石炭発電機 (石炭)",
+            "Input": [
+                {
+                    "Id": "Coal",
+                    "Number": 1
+                },
+                {
+                    "Id": "Water",
+                    "Number": 3
+                }
+            ],
+            "ProductTime": 4,
+            "Machine": "CoalGenerator"
+        },
+        {
+            "Id": "CoalGeneratorCompactedCoal",
+            "Name": "石炭発電機 (圧縮石炭)",
+            "Input": [
+                {
+                    "Id": "CompactedCoal",
+                    "Number": 1
+                },
+                {
+                    "Id": "Water",
+                    "Number": "6.3"
+                }
+            ],
+            "ProductTime": "8.4",
+            "Machine": "CoalGenerator"
+        },
+        {
+            "Id": "CoalGeneratorPetroleumCoke",
+            "Name": "石炭発電機 (石油コークス)",
+            "Input": [
+                {
+                    "Id": "PetroleumCoke",
+                    "Number": 1
+                },
+                {
+                    "Id": "Water",
+                    "Number": "1.8"
+                }
+            ],
+            "ProductTime": "2.4",
+            "Machine": "CoalGenerator"
+        },
+        {
+            "Id": "FuelGeneratorFuel",
+            "Name": "燃料式発電機 (燃料)",
+            "Input": [
+                {
+                    "Id": "Fuel",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 5,
+            "Machine": "FuelGenerator"
+        },
+        {
+            "Id": "FuelGeneratorTurbofuel",
+            "Name": "燃料式発電機 (ターボ燃料)",
+            "Input": [
+                {
+                    "Id": "Turbofuel",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": "13.33",
+            "Machine": "FuelGenerator"
+        },
+        {
+            "Id": "FuelGeneratorLiquidBiofuel",
+            "Name": "燃料式発電機 (液体バイオ燃料)",
+            "Input": [
+                {
+                    "Id": "LiquidBiofuel",
+                    "Number": 1
+                }
+            ],
+            "ProductTime": 5,
+            "Machine": "FuelGenerator"
+        }
+    ]
+}

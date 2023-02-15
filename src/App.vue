@@ -6,14 +6,15 @@
                 <span class="version">( {{ version }} )</span>
             </span>
             <a href="https://store.steampowered.com/app/526870/Satisfactory/" class="link-icon" title="Steamストア - Satisfactory" target="_blank">
-                <fa :icon="{ prefix: 'fab', iconName: 'steam' }" />
+                <fa :icon="['fab', 'steam']" />
             </a>
             <a href="https://twitter.com/kanamechanlover" class="link-icon" title="Twitter - @kanamechanlover" target="_blank">
-                <fa :icon="{ prefix: 'fab', iconName: 'twitter' }" />
+                <fa :icon="['fab', 'twitter']" />
             </a>
             <a href="https://github.com/kanamechanlover" class="link-icon" title="Github - kanamechanlover" target="_blank">
-                <fa :icon="{ prefix: 'fab', iconName: 'github' }" />
+                <fa :icon="['fab', 'github']" />
             </a>
+            <button class="config-edit-button" @click="showConfigEditor" title="設定エディタを開きます。">設定</button>
         </header>
         <div id="main">
             <div id="flow-tree-box">
@@ -23,55 +24,84 @@
                 <MaterialTable></MaterialTable>
             </div>
         </div>
+        <div id="config-editor-bg" v-if="showingConfigEditor">
+            <div id="config-editor-box">
+                <ConfigEditor @close="closeConfigEditor"></ConfigEditor>
+            </div>
+        </div>
+        <div id="loading" v-if="firstLoading">
+            <span>読み込み中...(あと {{ imageStore.loadingFileNumber }})</span>
+        </div>
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, Ref, toRefs, reactive, computed } from 'vue'
-import { MaterialTable } from './defines/types/material_table';
-import { useConfigStore } from './stores/config_store';
+<script setup lang="ts">
+import { ref, computed, onBeforeUnmount } from 'vue'
+import { useConfigStore } from './stores/config_store'
+import { useImageStore } from './stores/image_store'
+import Logger from '@/logics/logger'
 
-/** プロパティを定義 */
-const Props = {
-};
+// 子コンポーネント ---------------------------------------------
 
-/** 内部で扱うメンバ変数を定義 */
-interface Data {
-};
+import FlowTree from '@/components/FlowTree.vue'
+import MaterialTable from '@/components/MaterialTable.vue'
+import ConfigEditor from '@/components/config_editor/ConfigEditor.vue'
 
-/** テンプレート参照する定義 */
-interface Refs {
-    frame: Ref<HTMLElement|null>,
-}
+// 内部変数 -----------------------------------------------------
 
-export default defineComponent({
-    props: Props,
-    setup(props) {
-        const state = reactive<Data>({});
-        const configStore = useConfigStore();
-        const refs: Refs = {
-            frame: ref(null),
-        };
-        // computed
-        // this の代わりに state
-        const computes = {
-            version: computed((): string => {
-                return configStore.version;
-            })
-        };
-        // methods
-        // this の代わりに state
-        const methods = {};
-        return {
-            ...props,
-            ...toRefs(state),
-            ...refs,
-            ...computes,
-            ...methods,
-        };
-    },
-    components: { MaterialTable }
+/** 設定ストア */
+const configStore = useConfigStore();
+
+/** 画像ストア */
+const imageStore = useImageStore();
+
+/** デバッグ用：設定エディタ表示状況 */
+const showingConfigEditor = ref(false);
+
+/** 初回ロード中フラグ */
+const firstLoading = ref(true);
+
+// 内部関数 -----------------------------------------------------
+
+
+// Getters -----------------------------------------------------
+
+/** 設定バージョン */
+const version = computed((): string => {
+    return configStore.version;
 });
+
+// Actions -----------------------------------------------------
+
+const showConfigEditor = () => {
+    Logger.log('showed ConfigEditor.');
+    showingConfigEditor.value = true;
+};
+const closeConfigEditor = () => {
+    Logger.log('closed ConfigEditor.');
+    showingConfigEditor.value = false;
+};
+
+// サイクル -----------------------------------------------------
+
+// ページ離脱時のメモリ解放などの処理を登録
+// ただし、ページ更新時は発火されないので画像ストアで何とかする
+onBeforeUnmount(() => {
+    // 画像データをクリア
+    imageStore.clear();
+});
+
+// 監視 ---------------------------------------------------------
+
+// 画像ストアの変更を監視
+const unsub = imageStore.$subscribe((m, s) => {
+    // 読み込みが完了したら初回読み込み状態を解除する
+    if (firstLoading.value && s.loadingFileNum == 0) {
+        firstLoading.value = false;
+        unsub(); // この判定は初回のみ使う為、検知したら監視終了
+    }
+});
+
 </script>
 
 <style src="@/to_dark_theme.css" scoped />
@@ -144,6 +174,47 @@ a.link-icon svg.fa-twitter:hover {
 }
 a.link-icon svg.fa-github:hover {
     color: black;
+}
+button.config-edit-button {
+    padding: 0px 8px;
+    font-size: 0.8em;
+    background: var(--dark-bg-color);
+}
+button.config-edit-button:hover {
+    background: var(--dark-main-color);
+}
+
+#config-editor-bg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#config-editor-box {
+    opacity: 1;
+    width: 800px;
+    height: 90%;
+}
+
+#loading {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+}
+#loading span {
+    font-size: 2em;
 }
 
 </style>

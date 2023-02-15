@@ -12,6 +12,7 @@ export default defineConfig({
     extensions: [
       '.ts',
       '.js',
+      'vue',
     ],
     alias: {
       '@': path.join(__dirname, './src'),
