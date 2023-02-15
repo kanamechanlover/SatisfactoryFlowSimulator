@@ -78,6 +78,9 @@
                     <div class="label input-label">入力素材</div>
                     <div class="input-material-box" :class="'input' + inputIndex"
                         v-for="inputIndex of ConfigRecipe.InputMax" :key="'input' + inputIndex">
+                        <img v-if="machineInputPortPath(inputIndex - 1)"
+                            :src="machineInputPortPath(inputIndex - 1)"
+                            :title="machineInputPortName(inputIndex - 1)" />
                         <MaterialSelect v-if="machineInputPortNumber > inputIndex - 1"
                             :modelValue="materialInputId(inputIndex - 1)"
                             :type="machineInputType(inputIndex - 1)"
@@ -96,6 +99,9 @@
                     <div class="label output-label">出力素材</div>
                     <div class="output-material-box" :class="'output' + outputIndex"
                         v-for="outputIndex of ConfigRecipe.OutputMax" :key="'output' + outputIndex">
+                        <img v-if="machineOutputPortPath(outputIndex - 1)"
+                            :src="machineOutputPortPath(outputIndex - 1)"
+                            :title="machineOutputPortName(outputIndex - 1)" />
                         <MaterialSelect v-if="machineOutputPortNumber > outputIndex - 1"
                             :modelValue="materialOutputId(outputIndex - 1)"
                             :type="machineOutputType(outputIndex - 1)"
@@ -131,9 +137,9 @@ import { ref, computed } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
 import { useImageStore } from '@/stores/image_store';
 import {
-    ConfigMachine, ConfigMaterial, ConfigRecipe, ConfigRecipeMaterial, MachinePortType, MaterialState
+    ConfigMachine, ConfigMaterial, ConfigRecipe,
+    ConfigRecipeMaterial, MachinePortType,
 } from '@/defines/types/config'
-import { machine } from 'os';
 
 // 子コンポーネント ---------------------------------------------
 
@@ -330,6 +336,26 @@ const machineOutputTypeIsConveyor = computed(() => (index: number): boolean => {
 /** 設備の入力ポートがパイプか（枠外なら false） */
 const machineOutputTypeIsPipe = computed(() => (index: number): boolean => {
     return props.machine.outputNumber.portType(index) == MachinePortType.Pipe;
+});
+/** 設備入力ポートタイプの画像へのパスを取得 */
+const machineInputPortPath = computed(() => (index: number)  => {
+    const portType = machineInputType.value(index);
+    return imageStore.getData(portType);
+});
+/** 設備出力ポートタイプの画像へのパスを取得 */
+const machineOutputPortPath = computed(() => (index: number) => {
+    const portType = machineOutputType.value(index);
+    return imageStore.getData(portType);
+});
+/** 設備入出力ポートタイプの表示名を取得 */
+const machineInputPortName = computed(() => (index: number) => {
+    const portType = machineInputType.value(index);
+    return MachinePortType.getName(portType);
+});
+/** 設備入出力ポートタイプの表示名を取得 */
+const machineOutputPortName = computed(() => (index: number) => {
+    const portType = machineOutputType.value(index);
+    return MachinePortType.getName(portType);
 });
 
 /** レシピIDエラー */
@@ -792,10 +818,15 @@ defineExpose({toEditMode, toViewMode});
     grid-area: input4;
 }
 .edit-mode-box .grid .input-material-box > *:nth-child(1) {
+    width: 20px;
+    height: 20px;
+    mix-blend-mode: screen;
+}
+.edit-mode-box .grid .input-material-box > *:nth-child(2) {
     flex: 1;
     min-width: 0;
 }
-.edit-mode-box .grid .input-material-box > *:nth-child(2) {
+.edit-mode-box .grid .input-material-box > *:nth-child(3) {
     width: 4em;
 }
 .edit-mode-box .grid .output-label {
@@ -812,10 +843,15 @@ defineExpose({toEditMode, toViewMode});
     grid-area: output2;
 }
 .edit-mode-box .grid .output-material-box > *:nth-child(1) {
+    width: 20px;
+    height: 20px;
+    mix-blend-mode: screen;
+}
+.edit-mode-box .grid .output-material-box > *:nth-child(2) {
     flex: 1;
     min-width: 0;
 }
-.edit-mode-box .grid .output-material-box > *:nth-child(2) {
+.edit-mode-box .grid .output-material-box > *:nth-child(3) {
     width: 4em;
 }
 .edit-mode-box .grid .product-time-label {

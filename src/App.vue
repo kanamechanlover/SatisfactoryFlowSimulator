@@ -14,7 +14,7 @@
             <a href="https://github.com/kanamechanlover" class="link-icon" title="Github - kanamechanlover" target="_blank">
                 <fa :icon="['fab', 'github']" />
             </a>
-            <button class="config-edit-button" @click="showConfigEditor">設定</button>
+            <button class="config-edit-button" @click="showConfigEditor" title="設定エディタを開きます。">設定</button>
         </header>
         <div id="main">
             <div id="flow-tree-box">

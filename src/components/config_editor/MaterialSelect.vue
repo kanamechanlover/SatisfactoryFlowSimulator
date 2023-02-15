@@ -1,6 +1,6 @@
 <template>
     <div class="material-select-frame">
-        <img v-if="machinePortPath" :src="machinePortPath" :title="machinePortName" />
+        <img v-if="materialImagePath" :src="materialImagePath" :title="materialName" />
         <select :title="materialName" :selectedIndex="selectedIndex"
             @change="changeValue" :class="{ error: props.isError }">
             <option>-</option>
@@ -15,7 +15,7 @@
 import { computed, ref, watch, onMounted } from 'vue'
 import { useImageStore } from '@/stores/image_store';
 import { getEventValue } from '@/logics/event_data'
-import { MaterialState, ConfigMaterial, MachinePortType, ConfigMaterialList } from '@/defines/types/config';
+import { MaterialState, ConfigMaterial } from '@/defines/types/config';
 
 
 // 子コンポーネント ---------------------------------------------
@@ -80,16 +80,13 @@ const filteredMaterials = computed((): Array<ConfigMaterial> => {
         if (!(material.state in MaterialState)) return true;
         return MaterialState[material.state].Port === props.type;
     });
-})
+});
 
-/** 設備入出力ポートタイプの画像へのパスを取得 */
-const machinePortPath = computed(() => {
-    return imageStore.getData(props.type);
+/** 素材画像パス */
+const materialImagePath = computed((): string => {
+    return imageStore.getData(props.modelValue);
 });
-/** 設備入出力ポートタイプの表示名を取得 */
-const machinePortName = computed(() => {
-    return MachinePortType.getName(props.type);
-});
+
 /** 素材名 */
 const materialName = computed((): string => {
     const material = props.materials.find((material) => material.id == props.modelValue);
@@ -142,6 +139,7 @@ watch(() => props.modelValue, applyPropsSelect);
     display: flex;
     align-items: center;
     max-width: 100%;
+    gap: 4px;
 }
 select {
     border-radius: 4px;

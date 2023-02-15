@@ -13,7 +13,6 @@
 
 <script setup lang="ts">
 import { computed, ref, watch, onMounted } from 'vue'
-import { useConfigStore } from '@/stores/config_store'
 import { useImageStore } from '@/stores/image_store';
 import { getEventValue } from '@/logics/event_data'
 import { ConfigMachine } from '@/defines/types/config';
@@ -131,6 +130,7 @@ watch(() => props.modelValue, applyPropsSelect);
     display: flex;
     align-items: center;
     max-width: 100%;
+    gap: 4px;
 }
 select {
     border-radius: 4px;
