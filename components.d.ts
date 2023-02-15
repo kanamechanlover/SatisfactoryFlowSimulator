@@ -25,6 +25,5 @@ declare module '@vue/runtime-core' {
     MaterialSelect: typeof import('./src/components/config_editor/MaterialSelect.vue')['default']
     MaterialStateSelect: typeof import('./src/components/config_editor/MaterialStateSelect.vue')['default']
     MaterialTable: typeof import('./src/components/MaterialTable.vue')['default']
-    Sample: typeof import('./src/components/config_editor/sample.vue')['default']
   }
 }
