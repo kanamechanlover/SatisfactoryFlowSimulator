@@ -23,12 +23,10 @@ export class FlowPath extends Array<string> {
 export class Flow {
     /** 素材ID */
     public materialId: string = '';
-    /** 必要数 */
+    /** 必要数（/分） */
     public needs: number = 0.0;
     /** レシピID */
     public recipeId: string = '';
-    /** レシピのデフォルトの生産数 */
-    public recipeMaterialNeeds: Array<number> = [];
     /** レシピの生産数に対する必要数の倍率 */
     public needsRate: number = 0.0;
     /** レシピの素材リスト */
@@ -53,8 +51,8 @@ export class Flow {
         this.parentFlow = parent;
     }
     /**
-     * 指定の素材IDの製作フローを取得
-     * @param materialId 素材ID
+     * 必要素材の素材IDリストを取得
+     * @return 素材IDリスト
      */
     public get materialIds(): Array<string> {
         return this.materialFlows.map((flow) => flow.materialId);

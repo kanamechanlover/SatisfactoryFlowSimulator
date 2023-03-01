@@ -24,7 +24,7 @@
         </div>
         <hr />
         <div class="byproduct-box">
-            <h2>副産物生産数　集計</h2>
+            <h2>副産物生産数 集計</h2>
             <table>
                 <tr class="header">
                     <th>副産物名</th>

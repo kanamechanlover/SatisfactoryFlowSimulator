@@ -37,12 +37,12 @@ export class MaterialRow {
         const added = ((current) ? current : 0) + value;
         this.products.set(productMaterialId, added);
         // 総数を更新
-        const values: number[] = [...this.products.values()];
+        const values: Array<number> = [...this.products.values()];
         this.total = values.reduce((t,v) => t + v);
     }
 };
 
-/** 素材一覧テーブル */
+/** 集計結果テーブル */
 export class MaterialTable {
     private table: Map<string, MaterialRow>;
     public constructor() {

@@ -18,7 +18,7 @@
             </ConfigRecipeSearch>
         </div>
         <ConfigRecipeView v-for="index in recipeIndexList" :key="uniqueKey(index)" ref="view"
-            :index="index" :recipe="recipe(index)" :machine="machine(index)"
+            :index="index" :recipe="recipe(index)"
             :machines="machines" :materials="materials"
             :has-duplicate="hasDuplicateId(index)" @delete="deleteRecipe">
         </ConfigRecipeView>
@@ -188,7 +188,7 @@ const filterRecipeList = (list: Array<ConfigRecipeItem>, condition: SearchCondit
         const recipe = data.v as ConfigRecipe;
         // エラー持ちは強制表示
         const machine = machines.value.find((v) => v.id == recipe.machineId);
-        const hasError = !machine || recipe.existError(machine, materials.value);
+        const hasError = !machine || recipe.hasError(machine, materials.value);
         if (hasError) return true;
 
         // レシピ名検索

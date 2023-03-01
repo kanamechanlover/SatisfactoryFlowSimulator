@@ -252,19 +252,19 @@ const machineIconUrl = computed((): string => {
 
 /** 設備IDエラー */
 const idError = computed((): boolean => {
-    return props.machine.idError();
+    return props.machine.hasIdError();
 });
 /** 設備名エラー */
 const nameError = computed((): boolean => {
-    return props.machine.nameError();
+    return props.machine.hasNameError();
 });
 /** カテゴリIDエラー */
 const categoryError = computed((): boolean => {
-    return props.machine.categoryError();
+    return props.machine.hasCategoryError();
 });
 /** 開放されるティア数エラー */
 const tierError = computed((): boolean => {
-    return props.machine.tierError();
+    return props.machine.hasTierError();
 });
 /** 設備アイコンエラー */
 const iconError = computed((): boolean => {
@@ -272,7 +272,7 @@ const iconError = computed((): boolean => {
 })
 /** 何かしらエラーあり */
 const existError = computed((): boolean => {
-    return props.machine.existError();
+    return props.machine.hasError();
 });
 
 // Actions -----------------------------------------------------

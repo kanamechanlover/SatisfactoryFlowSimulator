@@ -55,7 +55,7 @@ const imageStore = useImageStore();
 // Getters -----------------------------------------------------
 
 /** 画像IDリスト */
-const imageIds = computed((): string[] => {
+const imageIds = computed((): Array<string> => {
     // A-Z(大文字小文字区別なし)ソート
     return sortCaseInsensitive(Object.keys(imageStore.imageDataList));
 });
