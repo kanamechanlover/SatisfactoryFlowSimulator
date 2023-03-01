@@ -83,6 +83,9 @@ import { getEventValue } from '@/logics/event_data'
 
 // 子コンポーネント ---------------------------------------------
 
+import MaterialSelect from '@/components/config_editor/MaterialSelect.vue';
+import MachineSelect from '@/components/config_editor/MachineSelect.vue';
+
 
 // 外部連携 -----------------------------------------------------
 

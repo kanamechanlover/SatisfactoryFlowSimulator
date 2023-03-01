@@ -38,7 +38,7 @@ import FlowView from '@/components/FlowView.vue'
 /** 設定ストア */
 const configStore = useConfigStore();
 
-/** 制作フローストア */
+/** 製作フローストア */
 const flowStore = useFlowStore();
 
 // 内部関数 -----------------------------------------------------
@@ -49,7 +49,7 @@ const flowStore = useFlowStore();
 const options = computed(() => {
     const productMaterialIds = configStore.productMaterialIds;
     const categoryIds = configStore.materialCategoryIds;
-    let options: string[] = [];
+    let options: Array<string> = [];
     categoryIds.forEach((categoryId: string) => {
         // 入力素材のあるレシピを持つ素材IDリストから対象カテゴリのものを取得
         const categoryMaterialIds = productMaterialIds.filter((materialId: string) => {
@@ -70,7 +70,7 @@ const isCategoryOption = computed(() => (option: string) => {
 const materialName = computed(() => (materialId: string) => {
     return configStore.materialName(materialId);
 });
-const currentProducts = computed((): string[] => {
+const currentProducts = computed((): Array<string> => {
     return flowStore.products;
 });
 

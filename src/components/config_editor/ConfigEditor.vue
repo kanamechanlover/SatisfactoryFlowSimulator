@@ -164,7 +164,7 @@ const isConfigUpdating = computed((): boolean => {
 
 /** 設定バージョンエラー */
 const versionError = computed((): boolean => {
-    return configStore.config.versionError();
+    return configStore.config.hasVersionError();
 });
 /** 設備カテゴリエラー */
 const hasMachineCategoriesError = computed((): boolean => {
@@ -176,7 +176,7 @@ const hasMaterialCategoriesError = computed((): boolean => {
 });
 /** 設備エラー */
 const hsdMachinesError = computed((): boolean => {
-    return configStore.config.hsdMachinesError();
+    return configStore.config.hasMachinesError();
 });
 /** 素材エラー */
 const hasMaterialsError = computed((): boolean => {
@@ -262,7 +262,7 @@ const onSelectedImportFile = () => {
 
 /** 設定エディタを閉じる */
 const closeWindow = () => {
-    if (configStore.config.existError()) {
+    if (configStore.config.hasError()) {
         // 設定のエラーが出ている場合は本当に閉じてよいか確認し、キャンセルされたら閉じない
         const confirmText = [
             '設定にエラーがまだ残っています。',

@@ -2,7 +2,7 @@
     <div id="frame">
         <header>
             <span class="title">
-                Satisfactory 制作フロー シミュレーター
+                Satisfactory 製作フロー シミュレーター
                 <span class="version">( {{ version }} )</span>
             </span>
             <a href="https://store.steampowered.com/app/526870/Satisfactory/" class="link-icon" title="Steamストア - Satisfactory" target="_blank">

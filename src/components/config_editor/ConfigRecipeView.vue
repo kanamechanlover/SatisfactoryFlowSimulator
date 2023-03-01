@@ -143,6 +143,8 @@ import {
 
 // 子コンポーネント ---------------------------------------------
 
+import MaterialSelect from '@/components/config_editor/MaterialSelect.vue';
+import MachineSelect from '@/components/config_editor/MachineSelect.vue';
 
 // 外部連携 -----------------------------------------------------
 
@@ -157,12 +159,6 @@ const props = defineProps({
     recipe: {
         type: ConfigRecipe,
         default: new ConfigRecipe(),
-        required: true,
-    },
-    /** レシピで現在指定している設備データ */
-    machine: {
-        type: ConfigMachine,
-        default: new ConfigMachine(),
         required: true,
     },
     /** 設備リスト */
@@ -238,6 +234,15 @@ const toPerMinute = (num: number): string => {
 
 // Getters -----------------------------------------------------
 
+/**
+ * レシピの設備データ取得
+ * @return 設備データ
+ */
+const machine = computed((): ConfigMachine => {
+    const v = props.machines.find((m) => m.id == props.recipe.machineId);
+    return (v) ? v : new ConfigMachine();
+});
+
 /** レシピ名 */
 const recipeId = computed((): string => {
     return props.recipe.id;
@@ -260,7 +265,7 @@ const machineImage = computed((): string => {
     const data = imageStore.getData(props.recipe.machineId);
     return (data) ? data : '';
 });
-/** 制作時間 */
+/** 製作時間 */
 const productTime = computed((): number => {
     return props.recipe.productTime;
 });
@@ -307,35 +312,35 @@ const materialTooltip = computed(() => (material: ConfigRecipeMaterial): string 
 
 /** 設備の入力ポート数 */
 const machineInputPortNumber = computed((): number => {
-    return props.machine.inputNumber.totalPortNumber();
+    return machine.value.inputNumber.totalPortNumber();
 });
 /** 設備の出力ポート数 */
 const machineOutputPortNumber = computed((): number => {
-    return props.machine.outputNumber.totalPortNumber();
+    return machine.value.outputNumber.totalPortNumber();
 });
 /** 設備の入力ポートタイプ */
 const machineInputType = computed(() => (index: number): string => {
-    return props.machine.inputNumber.portType(index);
+    return machine.value.inputNumber.getPortType(index);
 });
 /** 設備の入力ポートがコンベアか（枠外なら false） */
 const machineInputTypeIsConveyor = computed(() => (index: number): boolean => {
-    return props.machine.inputNumber.portType(index) == MachinePortType.Conveyor;
+    return machine.value.inputNumber.getPortType(index) == MachinePortType.Conveyor;
 });
 /** 設備の入力ポートがパイプか（枠外なら false） */
 const machineInputTypeIsPipe = computed(() => (index: number): boolean => {
-    return props.machine.inputNumber.portType(index) == MachinePortType.Pipe;
+    return machine.value.inputNumber.getPortType(index) == MachinePortType.Pipe;
 });
 /** 設備の出力ポートタイプ */
 const machineOutputType = computed(() => (index: number): string => {
-    return props.machine.outputNumber.portType(index);
+    return machine.value.outputNumber.getPortType(index);
 });
 /** 設備の出力ポートがコンベアか（枠外なら false） */
 const machineOutputTypeIsConveyor = computed(() => (index: number): boolean => {
-    return props.machine.outputNumber.portType(index) == MachinePortType.Conveyor;
+    return machine.value.outputNumber.getPortType(index) == MachinePortType.Conveyor;
 });
 /** 設備の入力ポートがパイプか（枠外なら false） */
 const machineOutputTypeIsPipe = computed(() => (index: number): boolean => {
-    return props.machine.outputNumber.portType(index) == MachinePortType.Pipe;
+    return machine.value.outputNumber.getPortType(index) == MachinePortType.Pipe;
 });
 /** 設備入力ポートタイプの画像へのパスを取得 */
 const machineInputPortPath = computed(() => (index: number)  => {
@@ -360,43 +365,43 @@ const machineOutputPortName = computed(() => (index: number) => {
 
 /** レシピIDエラー */
 const idError = computed((): boolean => {
-    return props.recipe.idError();
+    return props.recipe.hasIdError();
 });
 /** レシピ名エラー */
 const nameError = computed((): boolean => {
-    return props.recipe.nameError();
+    return props.recipe.hasNameError();
 });
 /** 入力素材エラー */
 const inputError = computed((): boolean => {
-    return props.recipe.inputError(props.machine, props.materials);
+    return props.recipe.hasInputError(machine.value, props.materials);
 });
 /** 入力素材数エラー */
 const inputNumberError = computed(() => (index: number): boolean => {
     if (index < 0 || index >= props.recipe.input.length) return true; // イレギュラー
     if (props.recipe.input[index] === undefined) return false; // 設備の口数以上ならエラー無し
-    return props.recipe.input[index].numberError();
+    return props.recipe.input[index].hasNumberError();
 });
 /** 出力素材エラー */
 const outputError = computed((): boolean => {
-    return props.recipe.outputError(props.machine, props.materials);
+    return props.recipe.hasOutputError(machine.value, props.materials);
 });
 /** 出力素材数エラー */
 const outputNumberError = computed(() => (index: number): boolean => {
     if (index < 0 || index >= props.recipe.output.length) return true; // イレギュラー
     if (props.recipe.output[index] === undefined) return false; // 設備の口数以上ならエラー無し
-    return props.recipe.output[index].numberError();
+    return props.recipe.output[index].hasNumberError();
 });
 /** 製作時間エラー */
 const productTimeError = computed((): boolean => {
-    return props.recipe.productTimeError();
+    return props.recipe.hasProductTimeError();
 });
 /** 対象の設備エラー */
 const machineIdError = computed((): boolean => {
-    return props.recipe.machineIdError();
+    return props.recipe.hasMachineIdError();
 });
 /** 何かしらエラーあり */
 const existError = computed((): boolean => {
-    return props.recipe.existError(props.machine, props.materials);
+    return props.recipe.hasError(machine.value, props.materials);
 });
 
 // Actions -----------------------------------------------------
@@ -456,14 +461,14 @@ const changeMachineId = (value: string) => {
         }
     }
     // 入力ポート数に変化があれば補正
-    const inputNumber = props.machine.inputNumber.totalPortNumber();
+    const inputNumber = machine.value.inputNumber.totalPortNumber();
     update(recipe.input, inputNumber, ConfigRecipe.InputMax);
     // 出力ポート数に変化があれば補正
-    const outputNumber = props.machine.outputNumber.totalPortNumber();
+    const outputNumber = machine.value.outputNumber.totalPortNumber();
     update(recipe.output, outputNumber, ConfigRecipe.OutputMax);
 
     // 入出力ポートのタイプも合わせる
-    recipe.relocateIOMaterial(props.machine, props.materials);
+    recipe.relocateIOMaterial(machine.value, props.materials);
 
     // ストア更新(失敗時の補正不要)
     applyRecipeData(recipe);
