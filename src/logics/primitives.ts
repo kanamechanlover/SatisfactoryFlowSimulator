@@ -19,7 +19,7 @@ export const CeilDigit = (value: number, digit: number): number => {
  * @note 比較値が文字列(String)でない場合は通常の昇順ソートと同じ
  * @note 配列内の要素によって型が異なる場合は動作保証対象外
  */
-export const sortCaseInsensitive = (array: any[], func: Function | null = null): any[] => {
+export const sortCaseInsensitive = (array: Array<any>, func: Function | null = null): Array<any> => {
     if (array.length < 2) return array; // ２つ以上要素が無いとソートできないのでそのまま返す
     const compare = (v1: any, v2: any): number => {
         if (v1 > v2) return 1;

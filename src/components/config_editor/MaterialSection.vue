@@ -11,7 +11,7 @@
                 <th>素材名</th>
                 <th class="icon"></th>
                 <th class="state">状態</th>
-                <th>カテゴリID</th>
+                <th>カテゴリ</th>
                 <th class="reference">参照数</th>
                 <th class="delete"></th>
             </tr>
@@ -60,7 +60,8 @@ import { ConfigMaterialList, CategoryList } from '@/defines/types/config'
 
 // 子コンポーネント ---------------------------------------------
 
-import CategorySelect from './CategorySelect.vue';
+import CategorySelect from '@/components/config_editor/CategorySelect.vue';
+import MaterialStateSelect from '@/components/config_editor/MaterialStateSelect.vue';
 
 // 外部連携 -----------------------------------------------------
 
@@ -103,19 +104,19 @@ const referenceMaterial = computed(() => {
 
 /** 素材IDエラー */
 const idError = computed(() => (index: number): boolean => {
-    return materials.value[index].idError();
+    return materials.value[index].hasIdError();
 });
 /** 素材名エラー */
 const nameError = computed(() => (index: number): boolean => {
-    return materials.value[index].nameError();
+    return materials.value[index].hasNameError();
 });
 /** 素材の状態エラー */
 const stateError = computed(() => (index: number): boolean => {
-    return materials.value[index].stateError();
+    return materials.value[index].hasStateError();
 });
 /** カテゴリIDエラー */
 const categoryError = computed(() => (index: number): boolean => {
-    return materials.value[index].categoryError();
+    return materials.value[index].hasCategoryError();
 });
 
 // Actions -----------------------------------------------------

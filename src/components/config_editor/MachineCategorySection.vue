@@ -95,12 +95,12 @@ const referenceMachineCategory = computed(() => {
 /** 設備カテゴリIDエラー */
 const idError = computed(() => (index: number): boolean => {
     if (index < 0 || index > categories.value.length) return true; // イレギュラー
-    return categories.value[index].idError();
+    return categories.value[index].hasIdError();
 });
 /** 設備カテゴリ名エラー */
 const nameError = computed(() => (index: number): boolean => {
     if (index < 0 || index > categories.value.length) return true; // イレギュラー
-    return categories.value[index].nameError();
+    return categories.value[index].hasNameError();
 });
 
 /** ID重複チェック */

@@ -58,7 +58,7 @@ import { CeilDigit } from '@/logics/primitives'
 
 /** プロパティを定義 */
 const props = defineProps({
-    /** 制作フローパス */
+    /** 製作フローパス */
     flowPath: {
         type: String,
         default: '',
@@ -72,13 +72,13 @@ const props = defineProps({
 /** 設定ストア */
 const configStore = useConfigStore();
 
-/** 制作フローストア */
+/** 製作フローストア */
 const flowStore = useFlowStore();
 
 /** 画像ストア */
 const imageStore = useImageStore();
 
-/** 制作フローパス */
+/** 製作フローパス */
 const flowPath = ref(new FlowPath(props.flowPath));
 
 // 内部関数 -----------------------------------------------------
@@ -153,7 +153,7 @@ const needs = computed((): number => {
 const needsInputType = computed((): string => {
     return (getFlow.value?.isRootFlow) ? 'number': 'text';
 });
-/** 入力素材の制作フロー */
+/** 入力素材の製作フロー */
 const materialFlows = computed((): Array<Flow> => {
     if (!getFlow.value?.materialFlows) return [];
     return getFlow.value?.materialFlows;
@@ -186,13 +186,13 @@ const materialFlowPath = (flow: Flow) => {
 /** 素材の必要数が変更された時のコールバック */
 const onChangedRecipe = (event: Event) => {
     if (!(event.target instanceof HTMLSelectElement)) return;
-    // 制作フローストア更新
+    // 製作フローストア更新
     flowStore.setRecipeId(new FlowPath(props.flowPath), event.target.value);
 };
 /** 素材の必要数が変更された時のコールバック */
 const onChangedMaterialNeeds = (event: Event) => {
     if (!(event.target instanceof HTMLInputElement)) return;
-    // 制作フローストア更新
+    // 製作フローストア更新
     flowStore.setNeeds(new FlowPath(props.flowPath), parseFloat(event.target.value));
 };
 

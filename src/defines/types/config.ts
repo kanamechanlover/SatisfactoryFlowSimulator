@@ -67,7 +67,7 @@ export const MaterialState: {[key:string]: MaterialStateData} = {
  * @param portType [in] 入出力ポートタイプ
  * @return 指定のポートタイプを持つ素材の状態名リスト
  */
-export const PortTypeFromMaterialState = (portType: string): string[] => {
+export const PortTypeFromMaterialState = (portType: string): Array<string> => {
     return Object.keys(MaterialState).filter((state: string) => {
         return MaterialState[state].Port == portType;
     });
@@ -118,9 +118,27 @@ export const MachineTier = class {
 };
 
 /**
- * 設備の素材搬入出力ポート
+ * 設定の共通インターフェース
+ * @note 各設定クラスに適用し、実体を定義する
  */
-export class ConfigMachinePort {
+export interface ConfigIF<T> {
+    /** 代入 */
+    assign(target: T): void;
+    /** シリアライズ */
+    serialize(): any;
+    /** デシリアライズ */
+    deserialize(data: any): void;
+    /** 複製 */
+    clone(): T;
+}
+
+
+/**
+ * 設備の素材搬入出力ポート
+ * - 設備ポート周りの参照（指定位置のポートタイプ等）の処理を独立させた。
+ * - 独立させたメリットはそれほど大きくない為、再設計時はIFにするなりして設備クラスに戻してよい。
+ */
+export class ConfigMachinePort implements ConfigIF<ConfigMachinePort> {
     /** 固形ポート数 */
     conveyor: number = 0;
     /** 液体ポート数 */
@@ -131,7 +149,7 @@ export class ConfigMachinePort {
         if (data) this.deserialize(data);
     };
     /** タイプ別取得 */
-    getWithType(type: string) {
+    getNumberWithType(type: string) {
         if (type == MachinePortType.Conveyor) return this.conveyor;
         if (type == MachinePortType.Pipe) return this.pipe;
         return 0;
@@ -147,27 +165,34 @@ export class ConfigMachinePort {
      * @param id [in] 設備ID
      * @returns 設備の入力ポートのタイプ（例：'Conveyor'）
      */
-    portType(index: number): string {
-        if (index < 0) return '';
-        if (index < this.conveyor) return MachinePortType.Conveyor;
-        if (index < this.conveyor + this.pipe) return MachinePortType.Pipe;
-        return '';
+    getPortType(index: number): string {
+        if (index < 0) return ''; // 範囲外なら空文字列を返却
+        let st = 0; // 下限位置
+        for (let i = 0; i < MachinePortType.Types.length; i++) {
+            const t = MachinePortType.Types[i];
+            const num = this.getNumberWithType(t);
+            if (index < st + num) {
+                return t; // ポートタイプを返却
+            }
+            st += num;
+        }
+        return ''; // 範囲外なら空文字列を返却
     };
     /** 全形状のポート数合計 */
     totalPortNumber(): number {
         return this.conveyor + this.pipe;
     };
     /** 固形ポート数のエラー */
-    conveyorError(): boolean {
+    hasConveyorError(): boolean {
         return this.conveyor < 0;
     };
     /** 液体ポート数のエラー */
-    pipeError(): boolean {
+    hasPipeError(): boolean {
         return this.pipe < 0;
     };
     /** エラーチェック */
-    existError(): boolean {
-        return this.conveyorError() || this.pipeError();
+    hasError(): boolean {
+        return this.hasConveyorError() || this.hasPipeError();
     };
     /** シリアライズ */
     serialize(): any {
@@ -192,7 +217,7 @@ export class ConfigMachinePort {
 /**
  * カテゴリ
  */
-export class ConfigCategory {
+export class ConfigCategory implements ConfigIF<ConfigCategory> {
     /** 設備ID */
     id: string = '';
     /** 設備名 */
@@ -211,16 +236,16 @@ export class ConfigCategory {
         this.name = target.name;
     };
     /** カテゴリIDエラー */
-    idError(): boolean {
+    hasIdError(): boolean {
         return !this.id;
     };
     /** カテゴリ名エラー */
-    nameError(): boolean {
+    hasNameError(): boolean {
         return !this.name;
     };
     /** エラーチェック */
-    existError(): boolean {
-        return (this.idError() || this.nameError());
+    hasError(): boolean {
+        return (this.hasIdError() || this.hasNameError());
     };
     /** シリアライズ */
     serialize(): any {
@@ -247,7 +272,7 @@ export type CategoryList = Array<ConfigCategory>;
 /**
  * 設備設定
  */
-export class ConfigMachine {
+export class ConfigMachine implements ConfigIF<ConfigMachine> {
     /** 設備ID */
     id: string = '';
     /** 設備名 */
@@ -281,29 +306,29 @@ export class ConfigMachine {
         this.tier = target.tier;
     };
     /** 設備IDエラー */
-    idError(): boolean {
+    hasIdError(): boolean {
         return !this.id;
     };
     /** 設備名エラー */
-    nameError(): boolean {
+    hasNameError(): boolean {
         return !this.name;
     };
     /** カテゴリIDエラー */
-    categoryError(): boolean {
+    hasCategoryError(): boolean {
         return !this.category;
     };
     /** 開放されるティア数エラー */
-    tierError(): boolean {
+    hasTierError(): boolean {
         return this.tier < -2;
     };
     /** エラーチェック */
-    existError(): boolean {
-        return (this.idError()
-            ||  this.nameError()
-            ||  this.categoryError()
-            ||  this.tierError()
-            ||  this.inputNumber.existError()
-            ||  this.outputNumber.existError());
+    hasError(): boolean {
+        return (this.hasIdError()
+            ||  this.hasNameError()
+            ||  this.hasCategoryError()
+            ||  this.hasTierError()
+            ||  this.inputNumber.hasError()
+            ||  this.outputNumber.hasError());
     };
     /** シリアライズ */
     serialize(): any {
@@ -340,7 +365,7 @@ export type ConfigMachineList = Array<ConfigMachine>;
 /**
  * 素材
  */
-export class ConfigMaterial {
+export class ConfigMaterial implements ConfigIF<ConfigMaterial> {
     /** 素材ID */
     id: string = '';
     /** 素材名 */
@@ -365,27 +390,27 @@ export class ConfigMaterial {
         this.category = target.category;
     };
     /** 素材IDエラー */
-    idError(): boolean {
+    hasIdError(): boolean {
         return !this.id;
     };
     /** 素材名エラー */
-    nameError(): boolean {
+    hasNameError(): boolean {
         return !this.name;
     };
     /** 素材の状態エラー */
-    stateError(): boolean {
+    hasStateError(): boolean {
         return !this.state;
     };
     /** カテゴリIDエラー */
-    categoryError(): boolean {
+    hasCategoryError(): boolean {
         return !this.category;
     };
     /** エラーチェック */
-    existError(): boolean {
-        return (this.idError()
-            ||  this.nameError()
-            ||  this.stateError()
-            ||  this.categoryError());
+    hasError(): boolean {
+        return (this.hasIdError()
+            ||  this.hasNameError()
+            ||  this.hasStateError()
+            ||  this.hasCategoryError());
     };
     /** シリアライズ */
     serialize(): any {
@@ -416,7 +441,7 @@ export type ConfigMaterialList = Array<ConfigMaterial>;
 /**
  * 入出力素材
  */
-export class ConfigRecipeMaterial {
+export class ConfigRecipeMaterial implements ConfigIF<ConfigRecipeMaterial> {
     /** 素材ID */
     id: string = '';
     /** 素材数 */
@@ -432,12 +457,12 @@ export class ConfigRecipeMaterial {
         this.number = target.number;
     };
     /** 素材数エラー */
-    numberError(): boolean {
+    hasNumberError(): boolean {
         return (this.number < 0 || (this.id != '' && this.number == 0) );
     };
     /** 素材数エラー */
-    existError(): boolean {
-        return this.numberError();
+    hasError(): boolean {
+        return this.hasNumberError();
     };
     /** シリアライズ */
     serialize(): any {
@@ -463,7 +488,7 @@ export type RecipeMaterialList = Array<ConfigRecipeMaterial>;
 /**
  * レシピ
  */
-export class ConfigRecipe {
+export class ConfigRecipe implements ConfigIF<ConfigRecipe> {
     /** 入力素材の最大数 */
     static InputMax = 4;
     /** 出力素材の最大数 */
@@ -510,11 +535,11 @@ export class ConfigRecipe {
         this.machineId = target.machineId;
     };
     /** レシピIDエラー */
-    idError(): boolean {
+    hasIdError(): boolean {
         return !this.id;
     };
     /** レシピ名エラー */
-    nameError(): boolean {
+    hasNameError(): boolean {
         return !this.name;
     };
     /**
@@ -522,7 +547,7 @@ export class ConfigRecipe {
      * @param machine [in] 設備データ
      * @param materials [in] 素材リスト
      */
-    inputError(machine: ConfigMachine, materials: Array<ConfigMaterial>): boolean {
+    hasInputError(machine: ConfigMachine, materials: Array<ConfigMaterial>): boolean {
         // 有効な入力素材を取得
         const validInput = this.input.map((v) => v);
         const existValidMaterial = (validInput.length > 0);
@@ -550,7 +575,7 @@ export class ConfigRecipe {
      * @param machine [in] 設備データ
      * @param materials [in] 素材リスト
      */
-    outputError(machine: ConfigMachine, materials: Array<ConfigMaterial>): boolean {
+    hasOutputError(machine: ConfigMachine, materials: Array<ConfigMaterial>): boolean {
         // 有効な入力素材を取得
         const validOutput = this.output.map((v) => v);
         const existValidMaterial = (validOutput.length > 0);
@@ -574,23 +599,23 @@ export class ConfigRecipe {
         return existValidMaterial && (overConveyorMaterialNum || overPipeMaterialNum);
     };
     /** 製作時間エラー */
-    productTimeError(): boolean {
+    hasProductTimeError(): boolean {
         return this.productTime <= 0; // 0 もありえないのでエラー
     };
     /** 対象の設備エラー */
-    machineIdError(): boolean {
+    hasMachineIdError(): boolean {
         return !this.machineId;
     };
     /** エラーチェック */
-    existError(machine: ConfigMachine, materials: Array<ConfigMaterial>): boolean {
-        return (this.idError()
-            || this.nameError()
-            || this.inputError(machine, materials)
-            || this.input.some((v) => v.existError())
-            || this.outputError(machine, materials)
-            || this.output.some((v) => v.existError())
-            || this.productTimeError()
-            || this.machineIdError());
+    hasError(machine: ConfigMachine, materials: Array<ConfigMaterial>): boolean {
+        return (this.hasIdError()
+            || this.hasNameError()
+            || this.hasInputError(machine, materials)
+            || this.input.some((v) => v.hasError())
+            || this.hasOutputError(machine, materials)
+            || this.output.some((v) => v.hasError())
+            || this.hasProductTimeError()
+            || this.hasMachineIdError());
     };
     /** シリアライズ */
     serialize(): any {
@@ -668,7 +693,7 @@ export class ConfigRecipe {
         // 設備のタイプ別ポート数取得（MachinePortType.Types の順）
         const portNumberByType = (machinePort: ConfigMachinePort): Array<number> => {
             return MachinePortType.Types.map((type: string): number => {
-                return machinePort.getWithType(type);
+                return machinePort.getNumberWithType(type);
             });
         }
         // 入力素材再配置
@@ -681,7 +706,7 @@ export class ConfigRecipe {
 export type ConfigRecipeList = Array<ConfigRecipe>;
 
 /** ルート */
-export class Config {
+export class Config implements ConfigIF<Config> {
     /** 設定のバージョン */
     version: string = '';
     /** 設備カテゴリ */
@@ -730,31 +755,31 @@ export class Config {
         });
     };
     /** バージョンエラー */
-    versionError(): boolean {
+    hasVersionError(): boolean {
         return !this.version;
     };
     /** 設備カテゴリエラー */
     hasMachineCategoriesError(): boolean {
-        return this.machineCategories.some((v) => v.existError());
+        return this.machineCategories.some((v) => v.hasError());
     };
     /** 素材カテゴリエラー */
     hasMaterialCategoriesError(): boolean {
-        return this.materialCategories.some((v) => v.existError());
+        return this.materialCategories.some((v) => v.hasError());
     };
     /** 設備エラー */
-    hsdMachinesError(): boolean {
-        return this.machines.some((v) => v.existError());
+    hasMachinesError(): boolean {
+        return this.machines.some((v) => v.hasError());
     };
     /** 素材エラー */
     hasMaterialsError(): boolean {
-        return this.materials.some((v) => v.existError());
+        return this.materials.some((v) => v.hasError());
     };
     /** レシピエラー */
     hasRecipesError(): boolean {
         return this.recipes.some((v) => {
             const machine = this.machines.find((m) => m.id == v.machineId);
             if (!machine) return true;
-            return v.existError(machine, this.materials);
+            return v.hasError(machine, this.materials);
         });
     };
     /** 設備カテゴリID重複 */
@@ -783,11 +808,11 @@ export class Config {
         return getDuplicates(ids);
     };
     /** エラーチェック */
-    existError(): boolean {
-        return (this.versionError()
+    hasError(): boolean {
+        return (this.hasVersionError()
             || this.hasMachineCategoriesError()
             || this.hasMaterialCategoriesError()
-            || this.hsdMachinesError()
+            || this.hasMachinesError()
             || this.hasMaterialsError()
             || this.hasRecipesError());
     };

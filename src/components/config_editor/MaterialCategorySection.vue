@@ -95,12 +95,12 @@ const referenceMaterialCategory = computed(() => {
 /** 素材カテゴリIDエラー */
 const idError = computed(() => (index: number): boolean => {
     if (index < 0 || index > categories.value.length) return true; // イレギュラー
-    return categories.value[index].idError();
+    return categories.value[index].hasIdError();
 });
 /** 素材カテゴリ名エラー */
 const nameError = computed(() => (index: number): boolean => {
     if (index < 0 || index > categories.value.length) return true; // イレギュラー
-    return categories.value[index].nameError();
+    return categories.value[index].hasNameError();
 });
 
 /** ID重複チェック */

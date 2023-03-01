@@ -16,7 +16,7 @@ export const useFlowStore = defineStore('flow', {
         /**
          * 製品IDリスト取得
          */
-        products(state): string[] {
+        products(state): Array<string> {
             if(!state.root.materialId) return [];
             return [state.root.materialId];
         },
@@ -59,7 +59,7 @@ export const useFlowStore = defineStore('flow', {
             // 必要数が未設定の場合はデフォルトの分間レートを設定
             const needsOfRecipe = outputs.find((v) => v !== undefined && v.id == flow.materialId)?.number;
             if (needsOfRecipe === undefined) return; // イレギュラー
-            const productTime = this.config.productTime(flow.recipeId);
+            const productTime = this.config.recipeProductTime(flow.recipeId);
             const toMinute = (v: number) => v * (60 / productTime);
             const makePerMinute = toMinute(needsOfRecipe);
             if (!flow.needs) {
@@ -151,9 +151,9 @@ export const useFlowStore = defineStore('flow', {
             this.updateFlow(flow, true);
         },
         /**
-         * 必要数を変更
+         * 必要数（/分）を変更
          * @param path [in] 変更する製作フローパス
-         * @param needs [in] 変更後の必要数
+         * @param needs [in] 変更後の必要数（/分）
          */
         setNeeds(path: FlowPath, needs: number) {
             // 対象の製作フロー取得
