@@ -78,7 +78,7 @@ class CategorisedRow {
 /** 設定ストア */
 const configStore = useConfigStore();
 
-/** 制作フローストア取得 */
+/** 製作フローストア取得 */
 const flowStore = useFlowStore();
 
 /** 画像ストア */
@@ -97,7 +97,7 @@ const update = () => {
     productTable.value.clear();
     byproductTable.value.clear();
     products.forEach((product: string) => {
-        // 制作フローから再帰的にテーブル情報取得する関数定義
+        // 製作フローから再帰的にテーブル情報取得する関数定義
         const collectMaterialNeeds = (flow: Flow) => {
             // 製品IDとその必要数を追加
             const materialId = flow.materialId;
@@ -131,7 +131,7 @@ const update = () => {
 };
 // 更新処理初回実行
 update();
-// 制作フローが更新されたら呼び出されるようにする
+// 製作フローが更新されたら呼び出されるようにする
 flowStore.$subscribe(update);
 
 // Getters -----------------------------------------------------

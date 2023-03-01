@@ -38,7 +38,7 @@ import FlowView from '@/components/FlowView.vue'
 /** 設定ストア */
 const configStore = useConfigStore();
 
-/** 制作フローストア */
+/** 製作フローストア */
 const flowStore = useFlowStore();
 
 // 内部関数 -----------------------------------------------------

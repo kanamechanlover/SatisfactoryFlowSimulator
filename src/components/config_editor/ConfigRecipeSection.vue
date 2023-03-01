@@ -1,7 +1,7 @@
 <template>
     <div class="config-recipe-section-frame">
         <p>
-            このセクションでは制作レシピを定義します。<br />
+            このセクションでは製作レシピを定義します。<br />
             <span class="accent"><fa :icon="['fas', 'pen-to-square']" /></span> ボタンで設定を変更できます。
             <span class="accent"><fa :icon="['fas', 'arrow-up-right-from-square']" /></span> ボタンで閲覧モードに戻せます。<br />
             各素材の数は１回の製造（消費）分の数を設定します。（製造時間と併せて毎分の素材消費・生産数を計算するのに使います）<br />

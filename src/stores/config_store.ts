@@ -291,9 +291,9 @@ export const useConfigStore = defineStore('config', {
         },
 
         /**
-         * レシピの制作時間取得
+         * レシピの製作時間取得
          * @param recipeId [in] レシピID
-         * @returns レシピの制作時間
+         * @returns レシピの製作時間
          */
         recipeProductTime(state) {
             return (recipeId: string): number => {
@@ -334,7 +334,7 @@ export const useConfigStore = defineStore('config', {
                     return recipe.name === materialName
                 });
                 if (foundRecipes.length > 0) return foundRecipes[0].id;
-                // 制作物IDが素材IDと同じものを探す
+                // 製作物IDが素材IDと同じものを探す
                 const recipes = this.recipesHasOutputMaterialId(materialId);
                 if (recipes.length == 1) return recipes[0].id;
                 // レシピが複数ある場合はさらにフィルタして１つにする

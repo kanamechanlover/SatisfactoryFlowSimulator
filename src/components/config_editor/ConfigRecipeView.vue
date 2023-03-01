@@ -265,7 +265,7 @@ const machineImage = computed((): string => {
     const data = imageStore.getData(props.recipe.machineId);
     return (data) ? data : '';
 });
-/** 制作時間 */
+/** 製作時間 */
 const productTime = computed((): number => {
     return props.recipe.productTime;
 });
