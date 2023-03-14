@@ -17,6 +17,9 @@
             <button class="config-edit-button" @click="showConfigEditor" title="設定エディタを開きます。">設定</button>
         </header>
         <div id="main">
+            <div id="product-tab-box">
+                <ProductTab></ProductTab>
+            </div>
             <div id="flow-tree-box">
                 <FlowTree></FlowTree>
             </div>
@@ -43,6 +46,7 @@ import Logger from '@/logics/logger'
 
 // 子コンポーネント ---------------------------------------------
 
+import ProductTab from '@/components/ProductTab.vue'
 import FlowTree from '@/components/FlowTree.vue'
 import MaterialTable from '@/components/MaterialTable.vue'
 import ConfigEditor from '@/components/config_editor/ConfigEditor.vue'
@@ -114,6 +118,7 @@ const unsub = imageStore.$subscribe((m, s) => {
     flex: 1;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
 }
 header {
     display: flex;
@@ -140,28 +145,26 @@ header .version {
     display: flex;
     overflow: hidden;
 }
+#product-tab-box {
+    width: 300px;
+    min-width: 200px;
+    display: flex;
+    border-right: 1px solid gray;
+}
 #flow-tree-box {
     flex: 1;
+    min-width: 400px;
+    display: flex;
     border-right: 1px solid gray;
-        background-image:
-            linear-gradient(
-                0deg, transparent 31px,
-                gray 32px),
-            linear-gradient(
-                90deg, transparent 31px,
-                gray 32px);
-        background-color: dimgray;
-        background-size: 32px 32px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    padding: 8px;
 }
 #total-data-box {
+    width: 300px;
+    min-width: 200px;
     background: var(--dark-bg-color);
     overflow-x: hidden;
     overflow-y: scroll;
     padding: 8px;
-    min-width: 120px;
+    min-width: 200px;
 }
 a.link-icon {
     color: white;

@@ -17,12 +17,14 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 // - 使用するアイコン
 import {
-    faCube, faDroplet, faPenToSquare, faArrowUpRightFromSquare, faWrench
+    faCube, faDroplet, faPenToSquare, faArrowUpRightFromSquare, faWrench,
+    faTrashCan
 } from '@fortawesome/free-solid-svg-icons'
 import {
     faTwitter, faGithub, faSteam
 } from '@fortawesome/free-brands-svg-icons'
-library.add(faCube, faDroplet, faPenToSquare, faArrowUpRightFromSquare, faWrench);
+library.add(faCube, faDroplet, faPenToSquare,
+    faArrowUpRightFromSquare, faWrench, faTrashCan);
 library.add(faTwitter, faGithub, faSteam);
 app.component('fa', FontAwesomeIcon);
 

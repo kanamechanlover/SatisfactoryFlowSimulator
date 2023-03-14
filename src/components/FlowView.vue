@@ -1,5 +1,5 @@
 <template>
-    <div class="frame">
+    <div class="frame-flow-view">
         <div class="main-box">
             <div class="machine-box">
                 <img :src="machineSvg" :title="`${machineName} ${needsRate}%`" />
@@ -35,7 +35,7 @@
         </div>
         <ul class="input-material-box">
             <li v-for="material in materialFlows" :key="material.materialId">
-                <FlowView :flow-path="materialFlowPath(material)"></FlowView>
+                <FlowView :flow-path="materialFlowPath(material)" :product-index="props.productIndex"></FlowView>
             </li>
         </ul>
     </div>
@@ -58,6 +58,11 @@ import { CeilDigit } from '@/logics/primitives'
 
 /** プロパティを定義 */
 const props = defineProps({
+    /** 製品インデックス */
+    productIndex: {
+        type: Number,
+        default: 0,
+    },
     /** 製作フローパス */
     flowPath: {
         type: String,
@@ -84,7 +89,7 @@ const flowPath = ref(new FlowPath(props.flowPath));
 // 内部関数 -----------------------------------------------------
 
 const getFlow = computed(() => {
-    return flowStore.flowOnPath(flowPath.value);
+    return flowStore.flowOnPath(props.productIndex, flowPath.value);
 });
 
 // Getters -----------------------------------------------------
@@ -187,13 +192,13 @@ const materialFlowPath = (flow: Flow) => {
 const onChangedRecipe = (event: Event) => {
     if (!(event.target instanceof HTMLSelectElement)) return;
     // 製作フローストア更新
-    flowStore.setRecipeId(new FlowPath(props.flowPath), event.target.value);
+    flowStore.setRecipeId(props.productIndex, new FlowPath(props.flowPath), event.target.value);
 };
 /** 素材の必要数が変更された時のコールバック */
 const onChangedMaterialNeeds = (event: Event) => {
     if (!(event.target instanceof HTMLInputElement)) return;
     // 製作フローストア更新
-    flowStore.setNeeds(new FlowPath(props.flowPath), parseFloat(event.target.value));
+    flowStore.setNeeds(props.productIndex, new FlowPath(props.flowPath), parseFloat(event.target.value));
 };
 
 // サイクル -----------------------------------------------------
@@ -204,11 +209,15 @@ const onChangedMaterialNeeds = (event: Event) => {
 <style src="@/to_dark_theme.css" scoped />
 
 <style scoped>
-.frame {
+input, select {
+    min-width: 5em;
+}
+.frame-flow-view {
     width: 100%;
     display: flex;
     flex-direction: column;
     color: white;
+    white-space: nowrap;
 }
 .main-box {
     display: flex;

@@ -1,19 +1,21 @@
 <template>
-    <div class="frame">
-        <div class="product-select-box">
+    <div class="frame-flow-tree">
+        <div class="product-select-box" v-if="productNumber">
+            <span>表示名：</span>
+            <input type="text" :value="productName(currentProductIndex)" @change="onChangedProductName" />
             <span>製品名：</span>
-            <select @change="onProductChange">
-                <option value>-- 製品選択 --</option>
+            <select ref="productSelect" @change="onChangedProductId">
+                <option value :selected="!productId">-- 製品選択 --</option>
                 <option v-for="option in options" :key="option"
                     :class="{category: isCategoryOption(option)}"
                     :disabled="isCategoryOption(option)"
-                    :value="option">
+                    :value="option" :selected="productId == option">
                     {{ (isCategoryOption(option)) ? option : materialName(option) }}
                 </option>
             </select>
         </div>
-        <div class="flow-view-box">
-            <FlowView v-if="currentProducts.length > 0"></FlowView>
+        <div class="flow-view-box" v-if="productNumber">
+            <FlowView v-if="isSpecifiedProductId" :product-index="currentProductIndex"></FlowView>
         </div>
     </div>
 </template>
@@ -24,6 +26,7 @@
 import { ref, computed } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
 import { useFlowStore } from '@/stores/flow_store'
+import { useImageStore } from '@/stores/image_store';
 
 // 子コンポーネント ---------------------------------------------
 
@@ -41,12 +44,36 @@ const configStore = useConfigStore();
 /** 製作フローストア */
 const flowStore = useFlowStore();
 
+/** 画像ストア */
+const imageStore = useImageStore();
+
 // 内部関数 -----------------------------------------------------
 
 
 // Getters -----------------------------------------------------
 
-const options = computed(() => {
+/** 製品数 */
+const productNumber = computed((): number => {
+    return flowStore.productNumber;
+});
+
+/** 製品（表示）名 */
+const productName = computed(() => (index: number): string => {
+    return flowStore.productName(index);
+});
+
+/** 現在選択中の製品インデックス */
+const currentProductIndex = computed((): number => {
+    return flowStore.currentProductIndex;
+});
+
+/** 現在選択中の製品インデックスの製品（素材）ID */
+const productId = computed((): string => {
+    return flowStore.productId(currentProductIndex.value);
+});
+
+/** 製品選択プルダウンの選択肢 */
+const options = computed((): Array<string> => {
     const productMaterialIds = configStore.productMaterialIds;
     const categoryIds = configStore.materialCategoryIds;
     let options: Array<string> = [];
@@ -64,21 +91,35 @@ const options = computed(() => {
     });
     return options;
 });
+
+/** 製品（素材）選択プルダウンのカテゴリ枠か */
 const isCategoryOption = computed(() => (option: string) => {
     return option.startsWith('■');
 });
+/** 素材名 */
 const materialName = computed(() => (materialId: string) => {
     return configStore.materialName(materialId);
 });
-const currentProducts = computed((): Array<string> => {
-    return flowStore.products;
-});
+/** 製品の素材IDが指定されているか */
+const isSpecifiedProductId = computed((): boolean => {
+    const materialId = flowStore.flowOnPath(flowStore.currentProductIndex)?.materialId;
+    return !!materialId;
+},);
 
 // Actions -----------------------------------------------------
 
-const onProductChange = (event: Event) => {
+/** 製品（表示）名変更時 */
+const onChangedProductName = (event: Event) => {
+    if (!(event.target instanceof HTMLInputElement)) return;
+    // 製品（表示）名更新
+    flowStore.setProductName(currentProductIndex.value, event.target.value);
+};
+
+/** 製品（素材）ID変更時 */
+const onChangedProductId = (event: Event) => {
     if (!(event.target instanceof HTMLSelectElement)) return;
-    flowStore.setMaterialId([], event.target.value);
+    // 製品（素材）ID更新
+    flowStore.setMaterialId(currentProductIndex.value, [], event.target.value);
 };
 
 // サイクル -----------------------------------------------------
@@ -89,17 +130,32 @@ const onProductChange = (event: Event) => {
 <style src="@/to_dark_theme.css" scoped />
 
 <style scoped>
-.frame {
+
+input, select {
+    min-width: 5em;
+}
+.frame-flow-tree {
     width: 100%;
     display: flex;
     flex-direction: column;
+    position: relative;
+    background: var(--dark-bg-color);
 }
 .product-select-box {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 32px;
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 8px;
+    padding: 8px;
 }
+.product-select-box span {
+    white-space: nowrap;
+}
+.product-select-box input,
 .product-select-box select {
     flex:1;
 }
@@ -109,4 +165,21 @@ const onProductChange = (event: Event) => {
     font-weight: bold;
     font-size: 1.2em;
 }
+.flow-view-box {
+    flex: 1;
+    margin-top: 40px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 8px;
+    background-image:
+        linear-gradient(
+            0deg, transparent 31px,
+            gray 32px),
+        linear-gradient(
+            90deg, transparent 31px,
+            gray 32px);
+    background-color: dimgray;
+    background-size: 32px 32px;
+}
+
 </style>

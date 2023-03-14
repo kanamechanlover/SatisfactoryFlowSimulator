@@ -3,6 +3,7 @@ input, select, button, div {
 }
 
 * {
+    box-sizing: border-box;
     --dark-bg-color: rgb(59,59,59);
     --dark-main-color: rgb(104, 104, 104);
     --dark-accent-color: rgb(133, 133, 133)
