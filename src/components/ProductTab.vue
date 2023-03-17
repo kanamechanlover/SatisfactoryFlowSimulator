@@ -89,7 +89,7 @@ const productMaterialName = computed(() => (index: number) => {
 /** 製品追加 */
 const addProduct = () => {
     // ストアに製品追加
-    flowStore.addProduct("製品X");
+    flowStore.addProduct();
     // 追加した製品を選択状態にする
     flowStore.setProductIndex(productNumber.value - 1);
 };
@@ -107,8 +107,6 @@ const changeProductIndex = (index: number) => {
 
 
 </script>
-
-<style src="@/to_dark_theme.css" scoped />
 
 <style scoped>
 .frame-product-tab {

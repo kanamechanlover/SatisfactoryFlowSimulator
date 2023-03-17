@@ -6,13 +6,15 @@
                 v-if="isShowSingleMode"
                 v-show="productImage(productIndexOnSingle - 1)"
                 :title="productMaterialName(productIndexOnSingle - 1)" />
-            <select @change="onChangeShowProduct" v-if="isShowSingleMode">
-                <option value="Total" :selected="isShowingTotal">総数</option>
-                <option v-for="(option, index) in showProductOptions" :key="index"
-                    :selected="index + 1 === productIndexOnSingle" :value="index">
-                    {{ option }}
-                </option>
-            </select>
+            <div class="select-wrapper">
+                <select @change="onChangeShowProduct" v-if="isShowSingleMode">
+                    <option value="Total" :selected="isShowingTotal">総数</option>
+                    <option v-for="(option, index) in showProductOptions" :key="index"
+                        :selected="index + 1 === productIndexOnSingle" :value="index">
+                        {{ option }}
+                    </option>
+                </select>
+            </div>
             <button @click="toggleShowMode">{{ showModeButtonText }}</button>
         </div>
         <div class="prodcut-box">
@@ -284,8 +286,6 @@ const onChangeShowProduct = (event: Event) => {
 
 </script>
 
-<style src="@/to_dark_theme.css" scoped />
-
 <style scoped>
 .frame-material-table {
     width: 100%;
@@ -301,15 +301,18 @@ const onChangeShowProduct = (event: Event) => {
     margin-bottom: 4px;
 }
 .show-mode-box .show-mode-text {
-    flex: 1;
     text-align: left;
 }
 .show-mode-box img {
     width: 1em;
     height: 1em;
 }
-.show-mode-box select {
+.show-mode-box .select-wrapper {
     flex: 1;
+}
+.show-mode-box select {
+    text-overflow: ellipsis;
+    width: 100%;
 }
 .show-mode-box button {
     font-size: 0.8em;

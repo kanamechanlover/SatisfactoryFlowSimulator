@@ -18,13 +18,15 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 // - 使用するアイコン
 import {
     faCube, faDroplet, faPenToSquare, faArrowUpRightFromSquare, faWrench,
-    faTrashCan
+    faTrashCan, faArrowLeft
 } from '@fortawesome/free-solid-svg-icons'
 import {
     faTwitter, faGithub, faSteam
 } from '@fortawesome/free-brands-svg-icons'
-library.add(faCube, faDroplet, faPenToSquare,
-    faArrowUpRightFromSquare, faWrench, faTrashCan);
+library.add(
+    faCube, faDroplet, faPenToSquare, faArrowUpRightFromSquare, faWrench,
+    faTrashCan, faArrowLeft
+);
 library.add(faTwitter, faGithub, faSteam);
 app.component('fa', FontAwesomeIcon);
 
@@ -33,9 +35,6 @@ import { useConfigStore } from '@/stores/config_store'
 const configStore = useConfigStore();
 import ConfigData from '@/defines/config/config.json'
 configStore.setup(ConfigData);
-
-// 共通のスタイルを指定
-import './style.css'
 
 import { useImageStore } from '@/stores/image_store'
 const imageStore = useImageStore();

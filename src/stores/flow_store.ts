@@ -52,6 +52,8 @@ export const useFlowStore = defineStore('flow', {
             summary: new Summary(),
             /** 設定ストア */
             config: useConfigStore(),
+            /** 次作成する製品のサフィックス */
+            nextProductNumber: 1,
         };
     },
     getters: {
@@ -152,8 +154,10 @@ export const useFlowStore = defineStore('flow', {
          * @param name [in] 製品名
          * @param id [in] 製品（素材）ID
          */
-        addProduct(name: string, id: string = '') {
-            this.products.push(new Production(name, id))
+        addProduct(name: string = '', id: string = '') {
+            let productName = (name != '') ? name : "製品" + this.nextProductNumber;
+            this.products.push(new Production(productName, id));
+            this.nextProductNumber++;
         },
         /**
          * 製品削除

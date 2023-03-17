@@ -206,8 +206,6 @@ const onChangedMaterialNeeds = (event: Event) => {
 
 </script>
 
-<style src="@/to_dark_theme.css" scoped />
-
 <style scoped>
 input, select {
     min-width: 5em;

@@ -2,10 +2,15 @@
     <div class="frame-flow-tree">
         <div class="product-select-box" v-if="productNumber">
             <span>表示名：</span>
-            <input type="text" :value="productName(currentProductIndex)" @change="onChangedProductName" />
+            <input type="text" :value="productName(currentProductIndex)"
+                @change="onChangedProductName" :title="tooltips.ProductShowNameInput" />
+            <button class="name-set-button" @click="setMaterialName"
+                    :title="tooltips.ProductNameSetButton">
+                <fa :icon="['fas', 'arrow-left']" />
+            </button>
             <span>製品名：</span>
             <img :src="productImage" v-if="productImage" />
-            <select ref="productSelect" @change="onChangedProductId">
+            <select ref="productSelect" @change="onChangedProductId" :title="tooltips.ProductNameSelect">
                 <option value :selected="!productId">-- 製品選択 --</option>
                 <option v-for="option in options" :key="option"
                     :class="{category: isCategoryOption(option)}"
@@ -36,6 +41,13 @@ import FlowView from '@/components/FlowView.vue'
 // 外部連携 -----------------------------------------------------
 
 // 内部定義 -----------------------------------------------------
+
+// ツールチップ文言一覧
+const tooltips = {
+    ProductShowNameInput: '製品を表す任意の表示名を指定します。製品一覧の表示に影響します。',
+    ProductNameSetButton: '現在選択中の製品名を表示名に指定します。',
+    ProductNameSelect: 'シミュレートする製品を選択します。',
+} as const;
 
 // 内部変数 -----------------------------------------------------
 
@@ -120,6 +132,12 @@ const onChangedProductName = (event: Event) => {
     // 製品（表示）名更新
     flowStore.setProductName(currentProductIndex.value, event.target.value);
 };
+/** 製品（表示）名に製品（素材）名を設定する */
+const setMaterialName = () => {
+    if (productId.value == '') return; // 製品が選択されていない場合は何もしない
+    const newName = configStore.materialName(productId.value);
+    flowStore.setProductName(currentProductIndex.value, newName);
+};
 
 /** 製品（素材）ID変更時 */
 const onChangedProductId = (event: Event) => {
@@ -132,8 +150,6 @@ const onChangedProductId = (event: Event) => {
 
 
 </script>
-
-<style src="@/to_dark_theme.css" scoped />
 
 <style scoped>
 
@@ -160,6 +176,9 @@ input, select {
 }
 .product-select-box span {
     white-space: nowrap;
+}
+.product-select-box button {
+    padding: 0px 4px;
 }
 .product-select-box img {
     width: 1em;

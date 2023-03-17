@@ -139,7 +139,8 @@ const unsub = imageStore.$subscribe((m, s) => {
 
 </script>
 
-<style src="@/to_dark_theme.css" scoped />
+<style src="@/style.css" />
+<style src="@/to_dark_theme.css" />
 
 <style scoped>
 * {
