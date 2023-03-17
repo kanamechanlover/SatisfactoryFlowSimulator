@@ -24,14 +24,23 @@
                 <FlowTree></FlowTree>
             </div>
             <div id="total-data-box">
-                <MaterialTable></MaterialTable>
+                <!--<Teleport to="#material-table-box">-->
+                    <MaterialTable></MaterialTable>
+                <!--</Teleport>-->
             </div>
         </div>
-        <div id="config-editor-bg" v-if="showingConfigEditor">
+        <div id="modal-bg" v-if="showingConfigEditor">
             <div id="config-editor-box">
                 <ConfigEditor @close="closeConfigEditor"></ConfigEditor>
             </div>
         </div>
+        <!--
+        <div id="modal-bg" v-if="showingMaterialTableAll">
+            <div id="material-table-box">
+                <-- 集計結果の表示モードが「一覧表示」の時ここに teleport させる --
+            </div>
+        </div>
+        -->
         <div id="loading" v-if="firstLoading">
             <span>読み込み中...(あと {{ imageStore.loadingFileNumber }})</span>
         </div>
@@ -39,9 +48,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onBeforeUnmount } from 'vue'
+import { ref, computed, onBeforeUnmount, onMounted, nextTick } from 'vue'
 import { useConfigStore } from './stores/config_store'
 import { useImageStore } from './stores/image_store'
+import { useFlowStore } from './stores/flow_store'
 import Logger from '@/logics/logger'
 
 // 子コンポーネント ---------------------------------------------
@@ -59,11 +69,17 @@ const configStore = useConfigStore();
 /** 画像ストア */
 const imageStore = useImageStore();
 
+/** 製作フローストア */
+const flowStore = useFlowStore();
+
 /** デバッグ用：設定エディタ表示状況 */
 const showingConfigEditor = ref(false);
 
 /** 初回ロード中フラグ */
 const firstLoading = ref(true);
+
+/** 要素がマウントされたか（teleport 要素のエラー解消） */
+const isMounted = ref(false);
 
 // 内部関数 -----------------------------------------------------
 
@@ -75,12 +91,19 @@ const version = computed((): string => {
     return configStore.version;
 });
 
+/** 集計結果の表示モードが「一覧表示」か */
+const showingMaterialTableAll = computed((): boolean => {
+    return flowStore.isAllShowMode;
+});
+
 // Actions -----------------------------------------------------
 
+/** 設定エディタ表示 */
 const showConfigEditor = () => {
     Logger.log('showed ConfigEditor.');
     showingConfigEditor.value = true;
 };
+/** 設定エディタ非表示 */
 const closeConfigEditor = () => {
     Logger.log('closed ConfigEditor.');
     showingConfigEditor.value = false;
@@ -93,6 +116,14 @@ const closeConfigEditor = () => {
 onBeforeUnmount(() => {
     // 画像データをクリア
     imageStore.clear();
+});
+
+// マウント完了時
+onMounted(() => {
+    // 1 tick 待って表示
+    nextTick(() => {
+        isMounted.value = true;
+    });
 });
 
 // 監視 ---------------------------------------------------------
@@ -153,7 +184,7 @@ header .version {
 }
 #flow-tree-box {
     flex: 1;
-    min-width: 400px;
+    min-width: 480px;
     display: flex;
     border-right: 1px solid gray;
 }
@@ -187,7 +218,7 @@ button.config-edit-button:hover {
     background: var(--dark-main-color);
 }
 
-#config-editor-bg {
+#modal-bg {
     width: 100%;
     height: 100%;
     position: absolute;
@@ -201,6 +232,12 @@ button.config-edit-button:hover {
 #config-editor-box {
     opacity: 1;
     width: 800px;
+    height: 90%;
+}
+
+#material-table-box {
+    opacity: 1;
+    width: 80%;
     height: 90%;
 }
 

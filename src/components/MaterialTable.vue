@@ -1,17 +1,22 @@
 <template>
     <div class="frame-material-table">
         <div class="show-mode-box">
-            <span>表示製品</span>
+            <span class="show-mode-text">{{ showModeText }}</span>
+            <img :src="productImage(productIndexOnSingle - 1)"
+                v-if="isShowSingleMode"
+                v-show="productImage(productIndexOnSingle - 1)"
+                :title="productMaterialName(productIndexOnSingle - 1)" />
             <select @change="onChangeShowProduct" v-if="isShowSingleMode">
-                <option value="Total" :selected="productIndexOnSingle == 'Total'">総数</option>
+                <option value="Total" :selected="isShowingTotal">総数</option>
                 <option v-for="(option, index) in showProductOptions" :key="index"
-                    :selected="index.toString() === productIndexOnSingle" :value="index">
+                    :selected="index + 1 === productIndexOnSingle" :value="index">
                     {{ option }}
                 </option>
             </select>
-            <button>{{ showModeButtonText }}</button>
+            <button @click="toggleShowMode">{{ showModeButtonText }}</button>
         </div>
         <div class="prodcut-box">
+            <hr />
             <h2>必要素材 集計</h2>
             <table>
                 <tr class="header" v-if="isShowSingleMode">
@@ -72,7 +77,7 @@
 
 import { ref, computed } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
-import { useFlowStore } from '@/stores/flow_store'
+import { MaterialTableShowMode, useFlowStore } from '@/stores/flow_store'
 import { useImageStore } from '@/stores/image_store'
 import { CeilDigit } from '@/logics/primitives'
 
@@ -93,19 +98,17 @@ class CategorisedRow {
     }
 };
 
-/** 表示モード（値はボタンの表示テキスト） */
-const ShowMode = {
-    /** 一覧表示 */
-    All: {
-        Id: 'All',
-        Button: '個別表示に戻す',
-    },
-    /** 個別表示 */
-    Single: {
-        Id: 'Single',
-        Button: '一覧',
-    },
-} as const;
+/** 表示モードテキスト */
+const ShowModeText = {
+    [MaterialTableShowMode.All]: "一覧表示",
+    [MaterialTableShowMode.Single]: "個別表示",
+} as {[key: string]: string};
+
+/** 表示モード切り替えボタンのテキスト */
+const ShowModeButtonText = {
+    [MaterialTableShowMode.All]: "個別表示に戻る",
+    [MaterialTableShowMode.Single]: "一覧",
+} as {[key: string]: string};
 
 // 内部変数 -----------------------------------------------------
 
@@ -118,11 +121,8 @@ const flowStore = useFlowStore();
 /** 画像ストア */
 const imageStore = useImageStore();
 
-/** 一覧表示モードフラグ（true: 一覧表示 */
-const showMode = ref(ShowMode.Single.Id as string);
-
-/** 個別表示モード時に表示する製品インデックス（総数の時は "Total"）*/
-const productIndexOnSingle = ref('Total');
+/** 個別表示モード時に表示する製品インデックス（0 は総数）*/
+const productIndexOnSingle = ref(0);
 
 // 内部関数 -----------------------------------------------------
 
@@ -130,19 +130,19 @@ const productIndexOnSingle = ref('Total');
 
 /** 個別表示モードか */
 const isShowSingleMode = computed((): boolean => {
-    return showMode.value == ShowMode.Single.Id;
+    return flowStore.isSingleShowMode;
 });
 /** 一覧表示モードか */
 const isShowAllMode = computed((): boolean => {
-    return showMode.value == ShowMode.All.Id;
+    return flowStore.isAllShowMode;
 });
-/** 表示モード切り替えボタンの表示テキスト */
+/** 表示モードのテキスト */
+const showModeText = computed((): string => {
+    return ShowModeText[flowStore.materialTableShowMode];
+});
+/** 表示モード切り替えボタンのテキスト */
 const showModeButtonText = computed((): string => {
-    if (isShowAllMode.value)
-        return ShowMode.All.Button;
-    if (isShowSingleMode.value)
-        return ShowMode.Single.Button;
-    return "";
+    return ShowModeButtonText[flowStore.materialTableShowMode];
 });
 /** 製品（素材）名リスト */
 const showProductOptions = computed(() => {
@@ -154,25 +154,35 @@ const showProductOptions = computed(() => {
 const showingProductIndexes = computed((): Array<number> => {
     if (isShowAllMode.value) {
         // 一覧表示モード時は、総数を含めた全ての製品を表示
-        return [...Array(productNumber.value).keys()];
+        return [...Array(productNumber.value + 1).keys()];
     }
     if (isShowSingleMode.value) {
         // 個別表示モード時は、現在選択中の製品のみ表示
-        if (productIndexOnSingle.value == "Total")
-            return [0];
-        else
-            return [Number(productIndexOnSingle.value)];
+        return [productIndexOnSingle.value];
     }
     return [];
 });
-/** 製品（素材）名 */
-const productName = computed(() => (index: number): string => {
-    return flowStore.productName(index);
+/** 総数表示中か */
+const isShowingTotal = computed((): boolean => {
+    return productIndexOnSingle.value == 0;
 });
 
-/** 製品リスト */
-const productIds = computed((): Array<string> => {
-    return flowStore.productIds;
+/** 製品（素材）ID */
+const productId = computed(() => (index: number): string => {
+    return flowStore.productId(index);
+});
+/** 製品（素材）画像 */
+const productImage = computed(() => (index: number): string => {
+    return imageStore.getData(productId.value(index));
+});
+/** 製品（素材）名 */
+const productMaterialName = computed(() => (index: number): string => {
+    return configStore.materialName(productId.value(index));
+});
+
+/** 製品名 */
+const productName = computed(() => (index: number): string => {
+    return flowStore.productName(index);
 });
 /** 製品数 */
 const productNumber = computed((): number => {
@@ -186,7 +196,14 @@ const productMaterialIds = computed((): Array<string> => {
 
 /** 副産物IDリスト */
 const byproductMaterialIds = computed((): Array<string> => {
-    return flowStore.byproductTable.getAllMaterials();
+    const materialIds = flowStore.byproductTable.getAllMaterials();
+    // 表示数が 0 のものは除外
+    const existMaterialIds = materialIds.filter((materialId: string) => {
+        return showingProductIndexes.value.some((index: number) => {
+            return flowStore.byproductTable.getNumber(materialId, index) > 0;
+        });
+    });
+    return existMaterialIds;
 });
 
 /** カテゴリ分けしたテーブル */
@@ -198,10 +215,16 @@ const categorisedTable = computed((): Array<CategorisedRow> => {
         const materialIds = productMaterialIds.value.filter((materialId: string) => {
             return configStore.materialCategory(materialId) == categoryId;
         });
+        // 表示数が 0 のものは除外
+        const existMaterialIds = materialIds.filter((materialId: string) => {
+            return showingProductIndexes.value.some((index: number) => {
+                return flowStore.productTable.getNumber(materialId, index) > 0;
+            });
+        });
         // カテゴリに素材が１つでもあればテーブルに追加
-        if (materialIds.length > 0) {
+        if (existMaterialIds.length > 0) {
             table.push(new CategorisedRow(categoryId, true));
-            table = table.concat(materialIds.map((materialId: string) => new CategorisedRow(materialId, false)));
+            table = table.concat(existMaterialIds.map((materialId: string) => new CategorisedRow(materialId, false)));
         }
     });
     return table;
@@ -240,23 +263,24 @@ const materialCategoryName = computed(() => (materialId: string): string => {
 
 // Actions -----------------------------------------------------
 
-/** 一覧表示モードへ */
-const toShowAllMode = () => {
-    showMode.value = ShowMode.All.Id;
-};
-/** 個別表示モードへ */
-const toNormalMode = () => {
-    showMode.value = ShowMode.Single.Id;
+/** 表示モード切り替え */
+const toggleShowMode = () => {
+    if (flowStore.isAllShowMode) {
+        flowStore.toSingleShowMode();
+    }
+    else {
+        flowStore.toAllShowMode();
+    }
 };
 
 /** 個別表示時に表示する製品（素材）変更 */
 const onChangeShowProduct = (event: Event) => {
     if (!(event.target instanceof HTMLSelectElement)) return;
-
+    const target = event.target as HTMLSelectElement;
+    productIndexOnSingle.value = target.selectedIndex;
 }
 
 // サイクル -----------------------------------------------------
-
 
 </script>
 
@@ -267,6 +291,7 @@ const onChangeShowProduct = (event: Event) => {
     width: 100%;
     color: white;
     white-space: nowrap;
+    line-height: 1em;
 }
 
 .show-mode-box {
@@ -275,7 +300,13 @@ const onChangeShowProduct = (event: Event) => {
     gap: 4px;
     margin-bottom: 4px;
 }
-.show-mode-box span {
+.show-mode-box .show-mode-text {
+    flex: 1;
+    text-align: left;
+}
+.show-mode-box img {
+    width: 1em;
+    height: 1em;
 }
 .show-mode-box select {
     flex: 1;
@@ -295,6 +326,7 @@ const onChangeShowProduct = (event: Event) => {
 }
 h2 {
     margin: 0px;
+    line-height: 1.2em;
 }
 table {
     width: 100%;

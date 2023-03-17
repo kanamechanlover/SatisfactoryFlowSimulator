@@ -118,6 +118,7 @@ const changeProductIndex = (index: number) => {
     gap: 4px;
     overflow-x: hidden;
     overflow-y: scroll;
+    background: var(--dark-deep-color);
 }
 
 .product-tab-add-box {

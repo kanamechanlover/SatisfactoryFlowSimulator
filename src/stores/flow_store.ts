@@ -18,13 +18,26 @@ class Production {
     };
 };
 
+/** 集計結果の表示モード */
+export const MaterialTableShowMode = {
+    /** 一覧表示 */
+    All: 'All',
+    /** 個別表示 */
+    Single: 'Single',
+} as const;
+
 /** 集計情報クラス */
 class Summary {
+    /** 素材集計結果 */
     productTable: MaterialTable;
+    /** 副産物集計結果 */
     byproductTable: MaterialTable;
+    /** 収集結果の表示モード */
+    materialTableShowMode: string;
     constructor() {
         this.productTable = new MaterialTable();
         this.byproductTable = new MaterialTable();
+        this.materialTableShowMode = MaterialTableShowMode.Single;
     }
 };
 
@@ -119,6 +132,18 @@ export const useFlowStore = defineStore('flow', {
         /** 副産物集計テーブルを取得 */
         byproductTable(state) {
             return state.summary.byproductTable;
+        },
+        /** 集計結果の表示モードが「一覧表示」か */
+        isAllShowMode(state): boolean {
+            return state.summary.materialTableShowMode == MaterialTableShowMode.All;
+        },
+        /** 集計結果の表示モードが「個別表示」か */
+        isSingleShowMode(state): boolean {
+            return state.summary.materialTableShowMode == MaterialTableShowMode.Single;
+        },
+        /** 集計結果の表示モード */
+        materialTableShowMode(state): string {
+            return state.summary.materialTableShowMode;
         },
     },
     actions: {
@@ -343,6 +368,14 @@ export const useFlowStore = defineStore('flow', {
                     if (flow) collectMaterialNeeds(flow);
                 });
             });
+        },
+        /** 集計結果の表示モードを「一覧表示」に切り替え */
+        toAllShowMode() {
+            this.summary.materialTableShowMode = MaterialTableShowMode.All;
+        },
+        /** 集計結果の表示モードを「個別表示」に切り替え */
+        toSingleShowMode() {
+            this.summary.materialTableShowMode = MaterialTableShowMode.Single;
         },
     }
 });

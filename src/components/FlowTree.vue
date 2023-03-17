@@ -4,6 +4,7 @@
             <span>表示名：</span>
             <input type="text" :value="productName(currentProductIndex)" @change="onChangedProductName" />
             <span>製品名：</span>
+            <img :src="productImage" v-if="productImage" />
             <select ref="productSelect" @change="onChangedProductId">
                 <option value :selected="!productId">-- 製品選択 --</option>
                 <option v-for="option in options" :key="option"
@@ -70,6 +71,11 @@ const currentProductIndex = computed((): number => {
 /** 現在選択中の製品インデックスの製品（素材）ID */
 const productId = computed((): string => {
     return flowStore.productId(currentProductIndex.value);
+});
+
+/** 製品（素材）画像 */
+const productImage = computed((): string => {
+    return imageStore.getData(productId.value);
 });
 
 /** 製品選択プルダウンの選択肢 */
@@ -145,15 +151,19 @@ input, select {
     position: absolute;
     left: 0px;
     top: 0px;
-    width: 100%;
+    width: calc(100% - 15px); /* 100% だとスクロールバー分ずれる為 */
     height: 32px;
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px;
+    padding: 0px 8px;
 }
 .product-select-box span {
     white-space: nowrap;
+}
+.product-select-box img {
+    width: 1em;
+    height: 1em;
 }
 .product-select-box input,
 .product-select-box select {
@@ -167,7 +177,7 @@ input, select {
 }
 .flow-view-box {
     flex: 1;
-    margin-top: 40px;
+    margin-top: 32px;
     overflow-x: hidden;
     overflow-y: scroll;
     padding: 8px;

@@ -30,14 +30,13 @@ export class MaterialTable {
     /**
      * 指定素材の指定位置（列）にある製品の値を取得
      * @param materialId 素材ID（行のキーとなっている文字列）
-     * @param index 製品インデックス
+     * @param index 製品インデックス(0 は総数列、1~ 製品)
      * @returns 数量
      */
     public getNumber(materialId: string, index: number): number {
-        if (!this.table.has(materialId)) return 0; // 存在しない素材IDの場合は 0
+        //if (!this.table.has(materialId)) return 0; // 存在しない素材IDの場合は 0
         const row = this.table.get(materialId);
-        const n = (row) ? row[index + 1] : 0;
-        return (n) ? n : 0;
+        return (row) ? row[index] : 0;
     };
     /**
      * ヘッダ追加
