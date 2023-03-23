@@ -14,6 +14,8 @@
     --dark-main-color: rgb(104, 104, 104);
     /* ダークテーマ用強調カラー */
     --dark-accent-color: rgb(133, 133, 133);
+    /* ダークテーマ用ライトカラー */
+    --dark-light-color: floralwhite;
     /* ダークテーマ用テキストカラー */
     --dark-text-color: white;
 }

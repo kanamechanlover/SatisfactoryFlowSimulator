@@ -2,75 +2,94 @@
     <div class="frame-material-table">
         <div class="show-mode-box">
             <span class="show-mode-text">{{ showModeText }}</span>
-            <img :src="productImage(productIndexOnSingle - 1)"
-                v-if="isShowSingleMode"
-                v-show="productImage(productIndexOnSingle - 1)"
-                :title="productMaterialName(productIndexOnSingle - 1)" />
-            <div class="select-wrapper">
-                <select @change="onChangeShowProduct" v-if="isShowSingleMode">
-                    <option value="Total" :selected="isShowingTotal">総数</option>
-                    <option v-for="(option, index) in showProductOptions" :key="index"
-                        :selected="index + 1 === productIndexOnSingle" :value="index">
-                        {{ option }}
-                    </option>
-                </select>
-            </div>
             <button @click="toggleShowMode">{{ showModeButtonText }}</button>
         </div>
-        <div class="prodcut-box">
-            <hr />
-            <h2>必要素材 集計</h2>
-            <table>
-                <tr class="header" v-if="isShowSingleMode">
-                    <th>素材名</th>
-                    <th>必要数(/分)</th>
-                </tr>
-                <tr class="header" v-if="isShowAllMode">
-                    <th rowspan="2">素材名</th>
-                    <th :colspan="productNumber + 1">必要数(/分)</th>
-                </tr>
-                <tr class="header" v-if="isShowAllMode">
-                    <th>総数</th>
-                    <th v-for="(_, index) in productNumber" :key="index">
-                        {{ productName(index) }}
-                    </th>
-                </tr>
-                <tr v-for="row in categorisedTable" :key="row.id">
-                    <td class="material-name-cell" :class="{category: row.isCategoryRow}"
-                            :colspan="(row.isCategoryRow) ? 2 : 1">
-                        <div class="material-name-box">
-                            <img :src="materialImg(row.id)" v-if="!row.isCategoryRow" />
-                            <span>
-                                {{ (row.isCategoryRow) ? materialCategoryName(row.id) : materialName(row.id) }}
-                            </span>
-                        </div>
-                    </td>
-                    <td class="material-needs-cell" v-for="(_, index) in ((row.isCategoryRow) ? [] : showingProductIndexes)" :key="index">
-                        {{ productTableNumber(row.id, index) }}
-                    </td>
-                </tr>
-            </table>
+        <div class="select-wrapper" v-if="isShowSingleMode">
+            <img :src="productImage(productIndexOnSingle - 1)"
+                v-show="productImage(productIndexOnSingle - 1)"
+                :title="productMaterialName(productIndexOnSingle - 1)" />
+            <select @change="onChangeShowProduct">
+                <option value="Total" :selected="isShowingTotal">総数</option>
+                <option v-for="(option, index) in showProductOptions" :key="index"
+                    :selected="index + 1 === productIndexOnSingle" :value="index">
+                    {{ option }}
+                </option>
+            </select>
         </div>
-        <hr />
-        <div class="byproduct-box">
-            <h2>副産物生産数 集計</h2>
-            <table>
-                <tr class="header">
-                    <th>副産物名</th>
-                    <th>生産数(/分)</th>
-                </tr>
-                <tr v-for="materialId in byproductMaterialIds" :key="materialId">
-                    <td class="material-name-cell">
-                        <div class="material-name-box">
-                            <img :src="materialImg(materialId)" />
-                            <span>{{ materialName(materialId) }}</span>
-                        </div>
-                    </td>
-                    <td class="material-needs-cell" v-for="(_, index) in showingProductIndexes" :key="index">
-                        {{ byproductTableNumber(materialId, index) }}
-                    </td>
-                </tr>
-            </table>
+        <div class="tables">
+            <div class="prodcut-box">
+                <hr />
+                <h2>必要素材 集計</h2>
+                <table>
+                    <tr class="header" v-if="isShowSingleMode">
+                        <th class="material-name-column">素材名</th>
+                        <th>必要数(/分)</th>
+                    </tr>
+                    <tr class="header" v-if="isShowAllMode">
+                        <th rowspan="2" class="material-name-column">素材名</th>
+                        <th :colspan="productNumber + 1">必要数(/分)</th>
+                    </tr>
+                    <tr class="header" v-if="isShowAllMode">
+                        <th>総数</th>
+                        <th v-for="(_, index) in productNumber" :key="index">
+                            <div class="product-name-header">
+                                <img :src="productImg(index)" v-if="productImg(index)" />
+                                <span>{{ productName(index) }}</span>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr v-for="row in categorisedTable" :key="((row.isCategoryRow) ? 'Category' : '') + row.id">
+                        <td class="material-name-cell" :class="{category: row.isCategoryRow}"
+                                :colspan="productColspanNum(row.isCategoryRow)">
+                            <div class="material-name-box">
+                                <img :src="materialImg(row.id)" v-if="!row.isCategoryRow && materialImg(row.id)" />
+                                <span>
+                                    {{ (row.isCategoryRow) ? materialCategoryName(row.id) : materialName(row.id) }}
+                                </span>
+                            </div>
+                        </td>
+                        <td class="material-needs-cell" :class="{'not-use': !isUseProductCell(row.id, index)}"
+                                v-for="(_, index) in ((row.isCategoryRow) ? [] : showingProductIndexes)" :key="index">
+                            {{ productTableNumber(row.id, index) }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <hr />
+            <div class="byproduct-box">
+                <h2>副産物生産数 集計</h2>
+                <table>
+                    <tr class="header" v-if="isShowSingleMode">
+                        <th class="material-name-column">副産物名</th>
+                        <th>必要数(/分)</th>
+                    </tr>
+                    <tr class="header" v-if="isShowAllMode">
+                        <th rowspan="2" class="material-name-column">副産物名</th>
+                        <th :colspan="productNumber + 1">必要数(/分)</th>
+                    </tr>
+                    <tr class="header" v-if="isShowAllMode">
+                        <th>総数</th>
+                        <th v-for="(_, index) in productNumber" :key="index">
+                            <div class="product-name-header">
+                                <img :src="productImg(index)" v-if="productImg(index)" />
+                                <span>{{ productName(index) }}</span>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr v-for="materialId in byproductMaterialIds" :key="materialId">
+                        <td class="material-name-cell">
+                            <div class="material-name-box">
+                                <img :src="materialImg(materialId)" v-if="materialImg(materialId)" />
+                                <span>{{ materialName(materialId) }}</span>
+                            </div>
+                        </td>
+                        <td class="material-needs-cell" :class="{'not-use': !isUseByproductCell(materialId, index)}"
+                                v-for="(_, index) in showingProductIndexes" :key="index">
+                            {{ byproductTableNumber(materialId, index) }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </template>
@@ -112,6 +131,9 @@ const ShowModeButtonText = {
     [MaterialTableShowMode.Single]: "一覧",
 } as {[key: string]: string};
 
+/** 不使用セルの代替テキスト */
+const NotUseCellText = "-";
+
 // 内部変数 -----------------------------------------------------
 
 /** 設定ストア */
@@ -127,6 +149,17 @@ const imageStore = useImageStore();
 const productIndexOnSingle = ref(0);
 
 // 内部関数 -----------------------------------------------------
+
+/**
+ * 値を小数点以下6桁までの文字列に丸める
+ * @param value [in] 元の値
+ * @return 丸めた値の文字列
+ */
+const CielDigitToString = (value: number): string => {
+    const ceiledValue = CeilDigit(value, 6);
+    const isMinimalError = ceiledValue - Math.floor(ceiledValue) <= 0.000001; // 0.000001 以下はさらに丸める
+    return (isMinimalError) ? Math.floor(ceiledValue).toString() : ceiledValue.toString();
+};
 
 // Getters -----------------------------------------------------
 
@@ -190,6 +223,19 @@ const productName = computed(() => (index: number): string => {
 const productNumber = computed((): number => {
     return flowStore.productNumber;
 });
+/** 製品列数（総数列含む） */
+const productColspanNum = computed(() => (isCategoryRow: boolean): number => {
+    const isSingle = isShowSingleMode.value;
+    const isAll = isShowAllMode.value;
+    const productNum = productNumber.value;
+    // カテゴリ行でなければ結合しない
+    if (!isCategoryRow) return 1;
+    // カテゴリ行なら表示モードによって分岐
+    if (isSingle) return 2; // 個別表示なら常に2セル結合
+    else if (isAll) return productNum + 2; // 一覧表示なら製品数＋総数＋素材名
+    // イレギュラー
+    return 1;
+})
 
 /** 素材IDリスト */
 const productMaterialIds = computed((): Array<string> => {
@@ -238,19 +284,68 @@ const materialImg = computed(() => (materialId: string) => {
     return imageStore.getData(materialId);
 });
 
-/** 素材テーブルセルの値取得 */
-const productTableNumber = computed(() => (materialId: string, index: number): string => {
-    const value = flowStore.productTable.getNumber(materialId, index);
-    const ceiledValue = CeilDigit(value, 6);
-    const isMinimalError = ceiledValue - Math.floor(ceiledValue) <= 0.000001; // 0.000001 以下はさらに丸める
-    return (isMinimalError) ? Math.floor(ceiledValue).toString() : ceiledValue.toString();
+/** 製品画像 */
+const productImg = computed(() => (index: number): string => {
+    if (index < 0 && index < productNumber.value) return '';
+    const productId = flowStore.productId(index);
+    return imageStore.getData(productId);
 });
-/** 副産物テーブルセルの値取得 */
+
+/**
+ * 素材テーブルセルが使用値か
+ * @param materialId [in] 素材ID
+ * @param index [in] 製品インデックス
+ * @retval true : 使用セル
+ * @retval false : 不使用セル
+ */
+const isUseProductCell = computed(() => (materialId: string, index: number): boolean => {
+    const value = productTableNumber.value(materialId, index);
+    return value != NotUseCellText;
+});
+
+/**
+ * 副産物テーブルセルが使用値か
+ * @param materialId [in] 素材ID
+ * @param index [in] 製品インデックス
+ * @retval true : 使用セル
+ * @retval false : 不使用セル
+ */
+const isUseByproductCell = computed(() => (materialId: string, index: number): boolean => {
+    const value = byproductTableNumber.value(materialId, index);
+    return value != NotUseCellText;
+});
+
+/**
+ * 素材テーブルセルの値取得
+ * @param materialId [in] 素材ID
+ * @param index [in] 製品インデックス
+ * @retval NotUseCellText : 不使用セル
+ */
+const productTableNumber = computed(() => (materialId: string, index: number): string => {
+    // インデックスが総数以外で、製品名の指定が無い場合は代替テキストを表示
+    if (index > 0 && !flowStore.isSpecifiedProductId(index - 1)) return NotUseCellText;
+    // セルの値を取得
+    const value = flowStore.productTable.getNumber(materialId, index);
+    // 値が 0 の場合は関係のない値の為代替テキストを表示
+    if (!value) return NotUseCellText;
+    // 小数点以下 6 桁までに丸める
+    return CielDigitToString(value);
+});
+/** 
+ * 副産物テーブルセルの値取得
+ * @param materialId [in] 素材ID
+ * @param index [in] 製品インデックス
+ * @retval NotUseCellText : 不使用セル
+ */
 const byproductTableNumber = computed(() => (materialId: string, index: number): string => {
+    // インデックスが総数以外で、製品名の指定が無い場合は代替テキストを表示
+    if (index > 0 && !flowStore.isSpecifiedProductId(index - 1)) return NotUseCellText;
+    // セルの値を取得
     const value = flowStore.byproductTable.getNumber(materialId, index);
-    const ceiledValue = CeilDigit(value, 6);
-    const isMinimalError = ceiledValue - Math.floor(ceiledValue) <= 0.000001; // 0.000001 以下はさらに丸める
-    return (isMinimalError) ? Math.floor(ceiledValue).toString() : ceiledValue.toString();
+    // 値が 0 の場合は関係のない値の為代替テキストを表示
+    if (!value) return NotUseCellText;
+    // 小数点以下 6 桁までに丸める
+    return CielDigitToString(value);
 });
 
 /** 素材名取得 */
@@ -289,9 +384,12 @@ const onChangeShowProduct = (event: Event) => {
 <style scoped>
 .frame-material-table {
     width: 100%;
+    height: 100%;
     color: white;
     white-space: nowrap;
     line-height: 1em;
+    display: flex;
+    flex-direction: column;
 }
 
 .show-mode-box {
@@ -301,18 +399,8 @@ const onChangeShowProduct = (event: Event) => {
     margin-bottom: 4px;
 }
 .show-mode-box .show-mode-text {
-    text-align: left;
-}
-.show-mode-box img {
-    width: 1em;
-    height: 1em;
-}
-.show-mode-box .select-wrapper {
     flex: 1;
-}
-.show-mode-box select {
-    text-overflow: ellipsis;
-    width: 100%;
+    text-align: left;
 }
 .show-mode-box button {
     font-size: 0.8em;
@@ -322,6 +410,28 @@ const onChangeShowProduct = (event: Event) => {
     background: var(--dark-main-color);
     border: 1px solid transparent;
     padding: 0px 4px;
+}
+
+.select-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+.select-wrapper img {
+    width: 1em;
+    height: 1em;
+}
+.select-wrapper select {
+    flex: 1;
+}
+
+.tables {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 .product-box {
@@ -343,16 +453,32 @@ th {
     background: orange;
     border-radius: 4px;
     padding: 4px 8px;
+    text-align: center;
 }
-th:nth-child(1) {
+th.material-name-column {
     text-align: left;
+    min-width: 50px;
 }
-th:nth-child(2) {
-    width: 7em;
+.product-name-header {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+.product-name-header img {
+    width: 1.8em;
+    height: 1.8em;
+}
+.product-name-header span {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 td {
     padding: 4px 8px;
     border-radius: 4px;
+    overflow: hidden;
 }
 td div {
     display: flex;
@@ -361,8 +487,6 @@ td div {
 }
 td.material-name-cell {
     font-weight: bold;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 td.material-name-cell:not(.category) {
     color: black;
@@ -374,7 +498,11 @@ td.material-name-cell:not(.category) div {
 
 td.material-needs-cell {
     color: black;
-    background: white;
+    background: var(--dark-light-color);
+}
+td.material-needs-cell.not-use {
+    background: var(--dark-main-color);
+    color: white;
 }
 td div.material-name-box {
     width: 100%;
@@ -386,6 +514,10 @@ td div.material-name-box {
 td div.material-name-box img {
     width: 1em;
     height: 1em;
+}
+td div.material-name-box span {
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 hr {
   border: 0; 

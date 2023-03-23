@@ -23,24 +23,23 @@
             <div id="flow-tree-box">
                 <FlowTree></FlowTree>
             </div>
-            <div id="total-data-box">
-                <!--<Teleport to="#material-table-box">-->
+            <div id="total-data-box" ref="materialTableSingleBox">
+                <!-- 集計結果の表示モードが「個別表示」の時ここに teleport させる -->
+                <teleport v-if="materialTableToSelector" :to="materialTableToSelector">
                     <MaterialTable></MaterialTable>
-                <!--</Teleport>-->
+                </teleport>
             </div>
         </div>
-        <div id="modal-bg" v-if="showingConfigEditor">
+        <div class="modal-bg" :class="{show: showingConfigEditor}">
             <div id="config-editor-box">
                 <ConfigEditor @close="closeConfigEditor"></ConfigEditor>
             </div>
         </div>
-        <!--
-        <div id="modal-bg" v-if="showingMaterialTableAll">
-            <div id="material-table-box">
-                <-- 集計結果の表示モードが「一覧表示」の時ここに teleport させる --
+        <div class="modal-bg" :class="{show: showingMaterialTableAll}">
+            <div id="material-table-box" ref="materialTableAllBox">
+                <!-- 集計結果の表示モードが「一覧表示」の時ここに teleport させる -->
             </div>
         </div>
-        -->
         <div id="loading" v-if="firstLoading">
             <span>読み込み中...(あと {{ imageStore.loadingFileNumber }})</span>
         </div>
@@ -48,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onBeforeUnmount, onMounted, nextTick } from 'vue'
+import { ref, computed, onBeforeUnmount, onMounted } from 'vue'
 import { useConfigStore } from './stores/config_store'
 import { useImageStore } from './stores/image_store'
 import { useFlowStore } from './stores/flow_store'
@@ -60,6 +59,16 @@ import ProductTab from '@/components/ProductTab.vue'
 import FlowTree from '@/components/FlowTree.vue'
 import MaterialTable from '@/components/MaterialTable.vue'
 import ConfigEditor from '@/components/config_editor/ConfigEditor.vue'
+
+// 内部定義
+
+/** 集計結果の表示先セレクタ */
+const MaterialTableSelector = {
+    All:'#material-table-box', // 一覧表示時
+    Single: '#total-data-box', // 個別表示時
+}
+
+
 
 // 内部変数 -----------------------------------------------------
 
@@ -78,8 +87,9 @@ const showingConfigEditor = ref(false);
 /** 初回ロード中フラグ */
 const firstLoading = ref(true);
 
-/** 要素がマウントされたか（teleport 要素のエラー解消） */
-const isMounted = ref(false);
+/** 収集結果テーブルのテレポート先要素 */
+const materialTableSingleBox = ref<HTMLDivElement|null>(null)
+const materialTableAllBox = ref<HTMLDivElement|null>(null)
 
 // 内部関数 -----------------------------------------------------
 
@@ -94,6 +104,18 @@ const version = computed((): string => {
 /** 集計結果の表示モードが「一覧表示」か */
 const showingMaterialTableAll = computed((): boolean => {
     return flowStore.isAllShowMode;
+});
+
+/** 集計結果の表示先セレクタ */
+const materialTableToSelector = computed((): HTMLElement|string => {
+    // 一覧表示モード
+    if (flowStore.isAllShowMode && materialTableAllBox.value)
+        return materialTableAllBox.value;
+    // 個別表示モード
+    if (flowStore.isSingleShowMode && materialTableSingleBox.value)
+        return materialTableSingleBox.value;
+    // 未初期化 or イレギュラー
+    return '';
 });
 
 // Actions -----------------------------------------------------
@@ -118,14 +140,6 @@ onBeforeUnmount(() => {
     imageStore.clear();
 });
 
-// マウント完了時
-onMounted(() => {
-    // 1 tick 待って表示
-    nextTick(() => {
-        isMounted.value = true;
-    });
-});
-
 // 監視 ---------------------------------------------------------
 
 // 画像ストアの変更を監視
@@ -135,6 +149,12 @@ const unsub = imageStore.$subscribe((m, s) => {
         firstLoading.value = false;
         unsub(); // この判定は初回のみ使う為、検知したら監視終了
     }
+});
+
+onMounted(() => {
+    // 集計結果テーブルのテレポート先取得
+    materialTableSingleBox.value = document.querySelector(MaterialTableSelector.Single);
+    materialTableAllBox.value = document.querySelector(MaterialTableSelector.All);
 });
 
 </script>
@@ -194,7 +214,6 @@ header .version {
     min-width: 200px;
     background: var(--dark-bg-color);
     overflow-x: hidden;
-    overflow-y: scroll;
     padding: 8px;
     min-width: 200px;
 }
@@ -219,7 +238,7 @@ button.config-edit-button:hover {
     background: var(--dark-main-color);
 }
 
-#modal-bg {
+.modal-bg {
     width: 100%;
     height: 100%;
     position: absolute;
@@ -229,17 +248,24 @@ button.config-edit-button:hover {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    visibility: hidden;
+}
+.modal-bg.show
+{
+    visibility: visible;
 }
 #config-editor-box {
-    opacity: 1;
     width: 800px;
     height: 90%;
 }
 
 #material-table-box {
-    opacity: 1;
     width: 80%;
     height: 90%;
+    background: var(--dark-bg-color);
+    border: 1px solid var(--dark-accent-color);
+    border-radius: 8px;
+    padding: 8px 8px 16px 8px;
 }
 
 #loading {

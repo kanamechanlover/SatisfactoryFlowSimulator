@@ -31,7 +31,7 @@ export class MaterialTable {
      * 指定素材の指定位置（列）にある製品の値を取得
      * @param materialId 素材ID（行のキーとなっている文字列）
      * @param index 製品インデックス(0 は総数列、1~ 製品)
-     * @returns 数量
+     * @returns 数量（存在しない素材IDの場合は 0）
      */
     public getNumber(materialId: string, index: number): number {
         //if (!this.table.has(materialId)) return 0; // 存在しない素材IDの場合は 0

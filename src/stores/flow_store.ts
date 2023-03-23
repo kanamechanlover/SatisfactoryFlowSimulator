@@ -124,6 +124,7 @@ export const useFlowStore = defineStore('flow', {
         /** 指定位置の製品の素材IDが指定されているか */
         isSpecifiedProductId(state) {
             return (index: number): boolean => {
+                if (index < 0 || index >= state.products.length) return false; // オーバーフロー
                 return state.products[index].flow.materialId != '';
             };
         },
