@@ -43,11 +43,6 @@ import { useImageStore } from '@/stores/image_store'
 const imageStore = useImageStore();
 // 初期化、初回読み込み
 imageStore.initialize();
-import DefaultImageUrls from '@/defines/config/assets.json'
-for(const key in DefaultImageUrls) {
-    const path = (DefaultImageUrls as {[key: string]: string})[key];
-    imageStore.add(key, path);
-}
 
 // 最後にマウント
 app.mount('#app');

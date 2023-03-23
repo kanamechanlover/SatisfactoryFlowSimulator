@@ -151,7 +151,10 @@ const unsub = imageStore.$subscribe((m, s) => {
     }
 });
 
-onMounted(() => {
+onMounted(async () => {
+    // デフォルトの画像データ読み込み
+    await imageStore.loadDefaultImages();
+
     // 集計結果テーブルのテレポート先取得
     materialTableSingleBox.value = document.querySelector(MaterialTableSelector.Single);
     materialTableAllBox.value = document.querySelector(MaterialTableSelector.All);

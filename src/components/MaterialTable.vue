@@ -121,8 +121,8 @@ class CategorisedRow {
 
 /** 表示モードテキスト */
 const ShowModeText = {
-    [MaterialTableShowMode.All]: "一覧表示",
-    [MaterialTableShowMode.Single]: "個別表示",
+    [MaterialTableShowMode.All]: "集計結果（一覧表示）",
+    [MaterialTableShowMode.Single]: "集計結果（個別表示）",
 } as {[key: string]: string};
 
 /** 表示モード切り替えボタンのテキスト */
