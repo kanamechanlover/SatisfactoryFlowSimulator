@@ -1,101 +1,75 @@
-/** 素材毎に扱う情報 */
-export class MaterialRow {
-    /** 素材の総数 */
-    private total: number;
-    /** 製品毎の合計値 */
-    private products: Map<string, number>;
-    public constructor() {
-        this.total = 0;
-        this.products = new Map<string, number>();
-    }
-    /** 
-     * 素材の総数を取得
-     * @return 総数
-     */
-    public getTotal(): number {
-        return this.total;
-    }
-    /**
-     * 製品毎の合計値を取得
-     * @param productMaterialId [in] 製品ID
-     * @return 製品毎の合計値
-     */
-    public getProductTotal(productMaterialId: string): number {
-        const value = this.products.get(productMaterialId);
-        return (value) ? value : 0;
-    }
-    /**
-     * 製品の値に加算
-     * @param productMaterialId 製品ID
-     * @param value 加算値
-     */
-    public addProductTotal(productMaterialId: string, value: number) {
-        // 現在の値を取得
-        const hasProduct = this.products.has(productMaterialId);
-        const current = (hasProduct) ? this.products.get(productMaterialId) : 0;
-        // 加算して再格納
-        const added = ((current) ? current : 0) + value;
-        this.products.set(productMaterialId, added);
-        // 総数を更新
-        const values: Array<number> = [...this.products.values()];
-        this.total = values.reduce((t,v) => t + v);
-    }
-};
-
 /** 集計結果テーブル */
 export class MaterialTable {
-    private table: Map<string, MaterialRow>;
+    /** テーブルのヘッダ名リスト */
+    private headers: Array<string>;
+    /** 素材IDを行ヘッダとする集計結果テーブル */
+    private table: Map<string, Array<number>>;
     public constructor() {
-        this.table = new Map<string, MaterialRow>();
-    }
+        this.headers = [];
+        this.table = new Map<string, Array<number>>();
+    };
     /** テーブルをクリア */
     public clear() {
+        this.headers = [];
         this.table.clear();
-    }
+    };
     /**
-     * 素材ID一覧取得
-     * @return 素材Id一覧
+     * テーブルのヘッダ名リストを取得
+     * @return ヘッダ名リスト
      */
-    public get materials() : Array<string> {
+    public getHeaderNames(): Array<string> {
+        return this.headers;
+    };
+    /**
+     * テーブル上の素材IDリスト
+     * @returns 素材IDリスト
+     */
+    public getAllMaterials(): Array<string> {
         return [...this.table.keys()];
     };
     /**
-     * 総数を取得
-     * @param materialId 素材ID
-     * @return 総数
+     * 指定素材の指定位置（列）にある製品の値を取得
+     * @param materialId 素材ID（行のキーとなっている文字列）
+     * @param index 製品インデックス(0 は総数列、1~ 製品)
+     * @returns 数量（存在しない素材IDの場合は 0）
      */
-    public getTotal(materialId: string): number {
+    public getNumber(materialId: string, index: number): number {
+        //if (!this.table.has(materialId)) return 0; // 存在しない素材IDの場合は 0
         const row = this.table.get(materialId);
-        if (!row) return 0;
-        return row.getTotal();
-    }
+        return (row) ? row[index] : 0;
+    };
     /**
-     * 総数を取得
-     * @param materialId 素材ID
-     * @param product 製品ID
-     * @return 総数
+     * ヘッダ追加
+     * @param headerName [in] ヘッダ名
      */
-    public getProductTotal(materialId: string, product: string): number {
-        const row = this.table.get(materialId);
-        if (!row) return 0;
-        return row.getProductTotal(product);
-    }
+    public addHeader(headerName: string) {
+        // ヘッダ追加
+        this.headers.push(headerName);
+        // テーブルの値にも列追加
+        this.table.forEach((v) => {
+            v.push(0);
+        });
+    };
     /**
      * テーブルに追加（既に値があれば加算）
      * @param materialId 素材ID
-     * @param product 製品ID
+     * @param index 製品インデックス
      * @param value 加算値
      */
-    public add(materialId: string, product: string, value: number) {
+    public addNumber(materialId: string, index: number, value: number) {
+        // キーとしている素材IDがまだ無ければ作っておく
         if (!this.table.has(materialId)) {
-            // まだ無ければ作る
-            this.table.set(materialId, new MaterialRow());
+            this.table.set(materialId, (new Array<number>(this.headers.length)).fill(0));
         }
         // 対象の行を取得
-        let row = this.table.get(materialId);
-        if (!row) return;
+        let columns = this.table.get(materialId);
+        if (!columns) return;
         // 値を更新
-        row.addProductTotal(product, value);
-        this.table.set(materialId, row);
+        const current = columns[index + 1];
+        // 加算して再格納
+        const added = ((current) ? current : 0) + value;
+        columns[index + 1] = added;
+        // 総数を更新
+        columns[0] = columns[0] + value;
     }
 }

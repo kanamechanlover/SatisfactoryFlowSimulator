@@ -17,16 +17,27 @@
             <button class="config-edit-button" @click="showConfigEditor" title="設定エディタを開きます。">設定</button>
         </header>
         <div id="main">
+            <div id="product-tab-box">
+                <ProductTab></ProductTab>
+            </div>
             <div id="flow-tree-box">
                 <FlowTree></FlowTree>
             </div>
-            <div id="total-data-box">
-                <MaterialTable></MaterialTable>
+            <div id="total-data-box" ref="materialTableSingleBox">
+                <!-- 集計結果の表示モードが「個別表示」の時ここに teleport させる -->
+                <teleport v-if="materialTableToSelector" :to="materialTableToSelector">
+                    <MaterialTable></MaterialTable>
+                </teleport>
             </div>
         </div>
-        <div id="config-editor-bg" v-if="showingConfigEditor">
+        <div class="modal-bg" :class="{show: showingConfigEditor}">
             <div id="config-editor-box">
                 <ConfigEditor @close="closeConfigEditor"></ConfigEditor>
+            </div>
+        </div>
+        <div class="modal-bg" :class="{show: showingMaterialTableAll}">
+            <div id="material-table-box" ref="materialTableAllBox">
+                <!-- 集計結果の表示モードが「一覧表示」の時ここに teleport させる -->
             </div>
         </div>
         <div id="loading" v-if="firstLoading">
@@ -36,16 +47,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onBeforeUnmount } from 'vue'
+import { ref, computed, onBeforeUnmount, onMounted } from 'vue'
 import { useConfigStore } from './stores/config_store'
 import { useImageStore } from './stores/image_store'
+import { useFlowStore } from './stores/flow_store'
 import Logger from '@/logics/logger'
 
 // 子コンポーネント ---------------------------------------------
 
+import ProductTab from '@/components/ProductTab.vue'
 import FlowTree from '@/components/FlowTree.vue'
 import MaterialTable from '@/components/MaterialTable.vue'
 import ConfigEditor from '@/components/config_editor/ConfigEditor.vue'
+
+// 内部定義
+
+/** 集計結果の表示先セレクタ */
+const MaterialTableSelector = {
+    All:'#material-table-box', // 一覧表示時
+    Single: '#total-data-box', // 個別表示時
+}
+
+
 
 // 内部変数 -----------------------------------------------------
 
@@ -55,11 +78,18 @@ const configStore = useConfigStore();
 /** 画像ストア */
 const imageStore = useImageStore();
 
+/** 製作フローストア */
+const flowStore = useFlowStore();
+
 /** デバッグ用：設定エディタ表示状況 */
 const showingConfigEditor = ref(false);
 
 /** 初回ロード中フラグ */
 const firstLoading = ref(true);
+
+/** 収集結果テーブルのテレポート先要素 */
+const materialTableSingleBox = ref<HTMLDivElement|null>(null)
+const materialTableAllBox = ref<HTMLDivElement|null>(null)
 
 // 内部関数 -----------------------------------------------------
 
@@ -71,12 +101,31 @@ const version = computed((): string => {
     return configStore.version;
 });
 
+/** 集計結果の表示モードが「一覧表示」か */
+const showingMaterialTableAll = computed((): boolean => {
+    return flowStore.isAllShowMode;
+});
+
+/** 集計結果の表示先セレクタ */
+const materialTableToSelector = computed((): HTMLElement|string => {
+    // 一覧表示モード
+    if (flowStore.isAllShowMode && materialTableAllBox.value)
+        return materialTableAllBox.value;
+    // 個別表示モード
+    if (flowStore.isSingleShowMode && materialTableSingleBox.value)
+        return materialTableSingleBox.value;
+    // 未初期化 or イレギュラー
+    return '';
+});
+
 // Actions -----------------------------------------------------
 
+/** 設定エディタ表示 */
 const showConfigEditor = () => {
     Logger.log('showed ConfigEditor.');
     showingConfigEditor.value = true;
 };
+/** 設定エディタ非表示 */
 const closeConfigEditor = () => {
     Logger.log('closed ConfigEditor.');
     showingConfigEditor.value = false;
@@ -102,9 +151,19 @@ const unsub = imageStore.$subscribe((m, s) => {
     }
 });
 
+onMounted(async () => {
+    // デフォルトの画像データ読み込み
+    await imageStore.loadDefaultImages();
+
+    // 集計結果テーブルのテレポート先取得
+    materialTableSingleBox.value = document.querySelector(MaterialTableSelector.Single);
+    materialTableAllBox.value = document.querySelector(MaterialTableSelector.All);
+});
+
 </script>
 
-<style src="@/to_dark_theme.css" scoped />
+<style src="@/style.css" />
+<style src="@/to_dark_theme.css" />
 
 <style scoped>
 * {
@@ -114,6 +173,7 @@ const unsub = imageStore.$subscribe((m, s) => {
     flex: 1;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
 }
 header {
     display: flex;
@@ -140,28 +200,27 @@ header .version {
     display: flex;
     overflow: hidden;
 }
+#product-tab-box {
+    /* コンパクト表示時は小さくしたいのでここでは設定しない 
+    width: 300px;
+    min-width: 200px;
+    */
+    display: flex;
+    border-right: 1px solid gray;
+}
 #flow-tree-box {
     flex: 1;
+    min-width: 480px;
+    display: flex;
     border-right: 1px solid gray;
-        background-image:
-            linear-gradient(
-                0deg, transparent 31px,
-                gray 32px),
-            linear-gradient(
-                90deg, transparent 31px,
-                gray 32px);
-        background-color: dimgray;
-        background-size: 32px 32px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    padding: 8px;
 }
 #total-data-box {
+    width: 300px;
+    min-width: 200px;
     background: var(--dark-bg-color);
     overflow-x: hidden;
-    overflow-y: scroll;
     padding: 8px;
-    min-width: 120px;
+    min-width: 200px;
 }
 a.link-icon {
     color: white;
@@ -184,7 +243,7 @@ button.config-edit-button:hover {
     background: var(--dark-main-color);
 }
 
-#config-editor-bg {
+.modal-bg {
     width: 100%;
     height: 100%;
     position: absolute;
@@ -194,11 +253,24 @@ button.config-edit-button:hover {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    visibility: hidden;
+}
+.modal-bg.show
+{
+    visibility: visible;
 }
 #config-editor-box {
-    opacity: 1;
     width: 800px;
     height: 90%;
+}
+
+#material-table-box {
+    width: 80%;
+    height: 90%;
+    background: var(--dark-bg-color);
+    border: 1px solid var(--dark-accent-color);
+    border-radius: 8px;
+    padding: 8px 8px 16px 8px;
 }
 
 #loading {
