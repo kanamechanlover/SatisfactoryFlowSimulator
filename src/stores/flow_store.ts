@@ -32,7 +32,7 @@ class Summary {
     productTable: MaterialTable;
     /** 副産物集計結果 */
     byproductTable: MaterialTable;
-    /** 収集結果の表示モード */
+    /** 集計結果の表示モード */
     materialTableShowMode: string;
     constructor() {
         this.productTable = new MaterialTable();
@@ -96,6 +96,16 @@ export const useFlowStore = defineStore('flow', {
          */
         currentProductIndex(state): number {
             return state.selectingProductIndex;
+        },
+        /**
+         * 指定インデックスの製品の生産量
+         * @param index [in] 製品インデックス
+         */
+        productNeeds(state) {
+            return (index: number): number => {
+                const flow = this.flowOnPath(index);
+                return (flow) ? flow.needs : 0;
+            };
         },
         /**
          * 指定パスにある製作フロー取得

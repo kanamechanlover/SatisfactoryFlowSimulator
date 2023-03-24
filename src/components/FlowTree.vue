@@ -23,6 +23,7 @@
         <div class="flow-view-box" v-if="productNumber">
             <FlowView v-if="isSpecifiedProductId" :product-index="currentProductIndex"></FlowView>
         </div>
+        <div v-show="constructingFlow" class="constructing">製作フロー構築中</div>
     </div>
 </template>
 
@@ -59,6 +60,9 @@ const flowStore = useFlowStore();
 
 /** 画像ストア */
 const imageStore = useImageStore();
+
+/** 構築中フラグ */
+const constructingFlow = ref(false);
 
 // 内部関数 -----------------------------------------------------
 
@@ -139,11 +143,19 @@ const setMaterialName = () => {
     flowStore.setProductName(currentProductIndex.value, newName);
 };
 
-/** 製品（素材）ID変更時 */
+/** 製品（素材）ID変更時　※重い処理になる為、非同期で実行する */
 const onChangedProductId = (event: Event) => {
     if (!(event.target instanceof HTMLSelectElement)) return;
-    // 製品（素材）ID更新
-    flowStore.setMaterialId(currentProductIndex.value, [], event.target.value);
+    // 構築中フラグを立てる
+    constructingFlow.value = true;
+    // 画面更新の為に次の Tick にて実施
+    const target = event.target as HTMLSelectElement;
+    setTimeout(() => {
+        // 製品（素材）ID更新
+        flowStore.setMaterialId(currentProductIndex.value, [], target.value);
+        // 構築が終了したらフラグを落とす
+        constructingFlow.value = false;
+    }, 0);
 };
 
 // サイクル -----------------------------------------------------
@@ -162,6 +174,7 @@ input, select {
     flex-direction: column;
     position: relative;
     background: var(--dark-bg-color);
+    position: relative;
 }
 .product-select-box {
     position: absolute;
@@ -209,6 +222,24 @@ input, select {
             gray 32px);
     background-color: dimgray;
     background-size: 32px 32px;
+}
+
+.constructing {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 0.8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+.constructing > * {
+    opacity: 1;
 }
 
 </style>

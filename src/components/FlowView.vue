@@ -49,7 +49,7 @@ import { useConfigStore } from '@/stores/config_store'
 import { useImageStore } from '@/stores/image_store'
 import { FlowPath, Flow } from '@/defines/types/flow'
 import { ConfigRecipe } from '@/defines/types/config'
-import { CeilDigit } from '@/logics/primitives'
+import { RoundDigit } from '@/logics/primitives'
 
 // 子コンポーネント ---------------------------------------------
 
@@ -91,6 +91,17 @@ const flowPath = ref(new FlowPath(props.flowPath));
 const getFlow = computed(() => {
     return flowStore.flowOnPath(props.productIndex, flowPath.value);
 });
+
+/**
+ * 値を小数点以下6桁までの文字列に丸める
+ * @param value [in] 元の値
+ * @return 丸めた値の文字列
+ */
+ const CielDigitToString = (value: number): string => {
+    const ceiledValue = RoundDigit(value, 6);
+    const isMinimalError = ceiledValue - Math.floor(ceiledValue) <= 0.000001; // 0.000001 以下はさらに丸める
+    return (isMinimalError) ? Math.floor(ceiledValue).toString() : ceiledValue.toString();
+};
 
 // Getters -----------------------------------------------------
 
@@ -150,9 +161,9 @@ const isRootFlow = computed((): boolean => {
     return getFlow.value?.isRootFlow;
 });
 /** 必要数 */
-const needs = computed((): number => {
-    if (!getFlow.value?.needs) return 0;
-    return CeilDigit(getFlow.value?.needs, 6);
+const needs = computed((): string => {
+    if (!getFlow.value?.needs) return "0";
+    return CielDigitToString(getFlow.value?.needs);
 });
 /** 必要数の入力タイプ（ルートフローだけ数値として入力可能） */
 const needsInputType = computed((): string => {
@@ -173,7 +184,7 @@ const byproductName = computed((): string => {
 /** 副産物の生産数 */
 const byproductNeeds = computed((): string => {
     if (!getFlow.value?.byproductNeeds) return '';
-    return CeilDigit(getFlow.value?.byproductNeeds, 6).toString();
+    return CielDigitToString(getFlow.value?.byproductNeeds);
 });
 /** 副産物の画像 */
 const byproductImg = computed((): string => {

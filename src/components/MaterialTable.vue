@@ -15,11 +15,13 @@
                     {{ option }}
                 </option>
             </select>
+            <span v-if="!isShowingTotal">{{ productNeeds }} /分</span>
         </div>
         <div class="tables">
             <div class="prodcut-box">
                 <hr />
                 <h2>必要素材 集計</h2>
+                <hr />
                 <table>
                     <tr class="header" v-if="isShowSingleMode">
                         <th class="material-name-column">素材名</th>
@@ -31,10 +33,14 @@
                     </tr>
                     <tr class="header" v-if="isShowAllMode">
                         <th>総数</th>
-                        <th v-for="(_, index) in productNumber" :key="index">
+                        <th v-for="(_, index) in productNumber" :key="index"
+                                :title="productHeaderTipText(index)">
                             <div class="product-name-header">
                                 <img :src="productImg(index)" v-if="productImg(index)" />
-                                <span>{{ productName(index) }}</span>
+                                <span class="text-container">
+                                    <span class="name">{{ productName(index) }}</span>
+                                    <span class="needs">{{ productNeedsAt(index) }} /分</span>
+                                </span>
                             </div>
                         </th>
                     </tr>
@@ -55,9 +61,10 @@
                     </tr>
                 </table>
             </div>
-            <hr />
             <div class="byproduct-box">
+                <hr />
                 <h2>副産物生産数 集計</h2>
+                <hr />
                 <table>
                     <tr class="header" v-if="isShowSingleMode">
                         <th class="material-name-column">副産物名</th>
@@ -69,10 +76,14 @@
                     </tr>
                     <tr class="header" v-if="isShowAllMode">
                         <th>総数</th>
-                        <th v-for="(_, index) in productNumber" :key="index">
+                        <th v-for="(_, index) in productNumber" :key="index"
+                                :title="productHeaderTipText(index)">
                             <div class="product-name-header">
                                 <img :src="productImg(index)" v-if="productImg(index)" />
-                                <span>{{ productName(index) }}</span>
+                                <span class="text-container">
+                                    <span class="name">{{ productName(index) }}</span>
+                                    <span class="needs">{{ productNeedsAt(index) }} /分</span>
+                                </span>
                             </div>
                         </th>
                     </tr>
@@ -100,7 +111,7 @@ import { ref, computed } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
 import { MaterialTableShowMode, useFlowStore } from '@/stores/flow_store'
 import { useImageStore } from '@/stores/image_store'
-import { CeilDigit } from '@/logics/primitives'
+import { RoundDigit } from '@/logics/primitives'
 
 // 子コンポーネント ---------------------------------------------
 
@@ -134,6 +145,9 @@ const ShowModeButtonText = {
 /** 不使用セルの代替テキスト */
 const NotUseCellText = "-";
 
+/** 表示する小数点以下の桁数 */
+const UnderDigitNumber = 6;
+
 // 内部変数 -----------------------------------------------------
 
 /** 設定ストア */
@@ -156,7 +170,7 @@ const productIndexOnSingle = ref(0);
  * @return 丸めた値の文字列
  */
 const CielDigitToString = (value: number): string => {
-    const ceiledValue = CeilDigit(value, 6);
+    const ceiledValue = RoundDigit(value, 6);
     const isMinimalError = ceiledValue - Math.floor(ceiledValue) <= 0.000001; // 0.000001 以下はさらに丸める
     return (isMinimalError) ? Math.floor(ceiledValue).toString() : ceiledValue.toString();
 };
@@ -236,6 +250,18 @@ const productColspanNum = computed(() => (isCategoryRow: boolean): number => {
     // イレギュラー
     return 1;
 })
+
+/** 一覧表示時の製品ヘッダのツールチップ */
+const productHeaderTipText = computed(() => (index: number): string => {
+    const name1 = productName.value(index);
+    const name2 = productMaterialName.value(index);
+    const needs = productNeedsAt.value(index);
+    return [
+        '製品名: ' + name1,
+        '製品（素材）名: ' + ((name2) ? name2 : '指定無し'),
+        '生産量: ' + needs + '/分',
+    ].join('\n');
+});
 
 /** 素材IDリスト */
 const productMaterialIds = computed((): Array<string> => {
@@ -329,7 +355,7 @@ const productTableNumber = computed(() => (materialId: string, index: number): s
     // 値が 0 の場合は関係のない値の為代替テキストを表示
     if (!value) return NotUseCellText;
     // 小数点以下 6 桁までに丸める
-    return CielDigitToString(value);
+    return RoundDigit(value, UnderDigitNumber).toString();
 });
 /** 
  * 副産物テーブルセルの値取得
@@ -345,7 +371,7 @@ const byproductTableNumber = computed(() => (materialId: string, index: number):
     // 値が 0 の場合は関係のない値の為代替テキストを表示
     if (!value) return NotUseCellText;
     // 小数点以下 6 桁までに丸める
-    return CielDigitToString(value);
+    return RoundDigit(value, 6).toString();
 });
 
 /** 素材名取得 */
@@ -356,6 +382,21 @@ const materialName = computed(() => (materialId: string): string => {
 /** 素材のカテゴリ名取得 */
 const materialCategoryName = computed(() => (materialId: string): string => {
     return configStore.materialCategoryName(materialId);
+});
+
+/**
+ * 製品生産量取得
+ */
+const productNeeds = computed((): string => {
+    return productNeedsAt.value(productIndexOnSingle.value - 1);
+});
+/**
+ * 製品生産量取得
+ * @param index [in] 製品インデックス
+ */
+const productNeedsAt = computed(() => (index: number): string => {
+    const needs = flowStore.productNeeds(index);
+    return RoundDigit(needs, UnderDigitNumber).toString();
 });
 
 // Actions -----------------------------------------------------
@@ -387,7 +428,7 @@ const onChangeShowProduct = (event: Event) => {
     height: 100%;
     color: white;
     white-space: nowrap;
-    line-height: 1em;
+    line-height: 1.2em;
     display: flex;
     flex-direction: column;
 }
@@ -401,6 +442,7 @@ const onChangeShowProduct = (event: Event) => {
 .show-mode-box .show-mode-text {
     flex: 1;
     text-align: left;
+    font-weight: bold;
 }
 .show-mode-box button {
     font-size: 0.8em;
@@ -425,6 +467,9 @@ const onChangeShowProduct = (event: Event) => {
 .select-wrapper select {
     flex: 1;
 }
+.select-wrapper span {
+    font-size: 0.8em;
+}
 
 .tables {
     flex: 1;
@@ -439,7 +484,6 @@ const onChangeShowProduct = (event: Event) => {
 }
 h2 {
     margin: 0px;
-    line-height: 1.2em;
 }
 table {
     width: 100%;
@@ -471,14 +515,26 @@ th.material-name-column {
     width: 1.8em;
     height: 1.8em;
 }
-.product-name-header span {
+.product-name-header .text-container {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+.product-name-header .text-container .name {
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.product-name-header .text-container .needs {
+    overflow: hidden;
+    color: var(--dark-bg-color);
+    font-size: 0.9em;
 }
 td {
     padding: 4px 8px;
     border-radius: 4px;
     overflow: hidden;
+    line-height: 1.1em;
 }
 td div {
     display: flex;

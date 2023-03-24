@@ -18,11 +18,11 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 // - Solid スタイルのアイコン登録
 import {
     faCube, faDroplet, faPenToSquare, faArrowUpRightFromSquare, faWrench,
-    faTrashCan, faArrowLeft
+    faTrashCan, faArrowLeft, faArrowRight,
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
     faCube, faDroplet, faPenToSquare, faArrowUpRightFromSquare, faWrench,
-    faTrashCan, faArrowLeft
+    faTrashCan, faArrowLeft, faArrowRight,
 );
 // - Bland スタイルのアイコン
 import {

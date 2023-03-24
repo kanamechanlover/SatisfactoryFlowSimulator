@@ -1,7 +1,16 @@
 <template>
-    <div class="frame-product-tab">
+    <div class="frame-product-tab" :class="{compact: compactShowMode}">
         <div class="product-tab-add-box">
-            <button @click="addProduct" :title="tooltips.AddProduct">＋製品追加</button>
+            <button v-show="!compactShowMode" class="add-button"
+                    @click="addProduct" :title="tooltips.AddProduct">
+                ＋製品追加
+            </button>
+            <button class="show-mode-button" :class="{compact: compactShowMode}"
+                    @click="toggleShowMode" :title="tooltips.ToggleShowMode">
+                <fa v-show="!compactShowMode" :icon="['fas', 'arrow-left']" />
+                |
+                <fa v-show="compactShowMode" :icon="['fas', 'arrow-right']" />
+            </button>
         </div>
         <div class="product-tab-item-box">
             <div class="product-tab-item" v-for="index in productNumber" :key="index"
@@ -12,8 +21,8 @@
                 <span class="tab-img" :title="productMaterialName(index - 1)">
                     <img :src="productMaterialImage(index - 1)" v-if="productMaterialImage(index - 1)" />
                 </span>
-                <span class="tab-name">{{ productName(index - 1) }}</span>
-                <button @click="removeProduct(index - 1)" :title="tooltips.RemoveProduct">
+                <span class="tab-name" v-if="!compactShowMode">{{ productName(index - 1) }}</span>
+                <button v-if="!compactShowMode" @click="removeProduct(index - 1)" :title="tooltips.RemoveProduct">
                     <fa :icon="['fas', 'trash-can']" />
                 </button>
             </div>
@@ -37,6 +46,7 @@ import { useImageStore } from '@/stores/image_store';
 
 // ツールチップ文言一覧
 const tooltips = {
+    ToggleShowMode: '通常表示とコンパクト表示を切り替えます。',
     AddProduct: 'シミュレートする製品の製作フローを増やします。',
     RemoveProduct: 'シミュレートする製品を削除します。',
 } as const;
@@ -51,6 +61,9 @@ const flowStore = useFlowStore();
 
 /** 画像ストア */
 const imageStore = useImageStore();
+
+/** 表示モード（true: コンパクト表示, false: 通常表示） */
+const compactShowMode = ref(false);
 
 // 内部関数 -----------------------------------------------------
 
@@ -102,6 +115,11 @@ const changeProductIndex = (index: number) => {
     flowStore.setProductIndex(index);
 };
 
+/** 表示モード切り替え */
+const toggleShowMode = () => {
+    compactShowMode.value = !compactShowMode.value;
+};
+
 
 // サイクル -----------------------------------------------------
 
@@ -110,21 +128,25 @@ const changeProductIndex = (index: number) => {
 
 <style scoped>
 .frame-product-tab {
-    width: 100%;
+    width: 300px;
+    min-width: 200px;
     display: flex;
     flex-direction: column;
     gap: 4px;
-    overflow-x: hidden;
-    overflow-y: scroll;
+    overflow: hidden;
     background: var(--dark-deep-color);
+}
+.frame-product-tab.compact {
+    width: auto;
+    min-width: initial;
 }
 
 .product-tab-add-box {
     padding: 4px;
     display: flex;
+    gap: 4px;
 }
 .product-tab-add-box button {
-    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -133,6 +155,13 @@ const changeProductIndex = (index: number) => {
     border: 2px solid transparent;
     font-weight: bold;
     padding: 0px 4px;
+    height: 1.5em;
+}
+.product-tab-add-box button.add-button {
+    flex: 1;
+}
+.product-tab-add-box button.show-mode-button.compact {
+    flex: 1;
 }
 .product-tab-add-box button:hover {
     background: var(--dark-accent-color);
@@ -143,6 +172,9 @@ const changeProductIndex = (index: number) => {
     flex-direction: column;
     gap: 4px;
     padding: 4px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
 }
 .product-tab-item {
     padding: 4px;

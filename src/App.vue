@@ -201,8 +201,10 @@ header .version {
     overflow: hidden;
 }
 #product-tab-box {
+    /* コンパクト表示時は小さくしたいのでここでは設定しない 
     width: 300px;
     min-width: 200px;
+    */
     display: flex;
     border-right: 1px solid gray;
 }
