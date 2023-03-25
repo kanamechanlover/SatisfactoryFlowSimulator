@@ -6,7 +6,8 @@
 
 ## 使い方
 
-本ツールのページ(https://kanamechanlover.github.io/SatisfactoryFlowSimulator/)を開き、上部の製品選択プルダウンから製品を選択することで、  
+本ツールのページ(https://kanamechanlover.github.io/SatisfactoryFlowSimulator/ )を開き、  
+上部の製品選択プルダウンから製品を選択することで、  
 各素材の製作工程で設備の稼働率や必要になる素材等を確認できる。
 
 ![製品の選択](./designs/for_readme/selecting_product.png)

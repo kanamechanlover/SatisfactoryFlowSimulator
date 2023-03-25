@@ -2,13 +2,12 @@
 $dirPath = Convert-Path .
 $targetPath = "$dirPath\public"
 $outputPath = "./src/defines/config/assets.json"
-$data = New-Object 'System.Collections.Generic.Dictionary[String,String]'
+$data = New-Object 'System.Collections.Generic.List[string]'
 $files = Get-ChildItem -path "$targetPath" -file -recurse -include @("*.png", "*.svg")
 foreach ($file in $files) {
-    $key = ($file.Name.Split("."))[0]
     $value = $file.FullName
     $value = $value.Replace("$targetPath", "")
     $value = $value.Replace("\", "/")
-    $data.Add($key, ".$value")
+    $data.Add(".$value")
 }
 $data | ConvertTo-Json | Out-File $outputPath -Encoding utf8

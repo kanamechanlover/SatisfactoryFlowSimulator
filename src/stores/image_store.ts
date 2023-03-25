@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import { hasObjectUrls, readObjectUrls, writeObjectUrls, removeObjectUrls } from '@/logics/local_strage';
+/** デフォルトで読み込むファイルリスト */
+import DefaultImageUrls from '@/defines/config/assets.json'
 
 /** 画像データ */
 export class ImageData {
@@ -11,8 +13,15 @@ export class ImageData {
     /** カスタマイズフラグ */
     customized: boolean = false;
 };
-
 export type ImageDataList = { [key: string]: ImageData };
+
+/** パスからファイル名（拡張子なし）を抽出 */
+const getFileNameFromPath = (path: string) => {
+    let name = path;
+    name = name.split('/').slice(-1)[0];
+    name = name.split('.')[0];
+    return name;
+};
 
 export const useImageStore = defineStore('image', {
     state: () => {
@@ -135,23 +144,25 @@ export const useImageStore = defineStore('image', {
             }
         },
         /**
-         * 単体読み込み
-         * @param imageId [in] 画像ID
-         * @param path [in] ルートからの相対パス
+         * デフォルトの画像リスト読み込み
          */
-        add(imageId: string, path: string) {
-            // 読み込み処理開始
-            this.axiosInstance.get(path).then((res) => {
-                // オブジェクトURL作成（データはキャッシュ上に配置される）
-                const objectUrl = URL.createObjectURL(res.data);
-                this.onSuccessful(imageId, path, objectUrl);
-            }).catch(() => {
-                // 失敗時は失敗したファイルリストに追加
-                this.failedFileList.push(imageId);
-                this.loadingFileNum--;
-            });
-            // 読み込み中ファイル数を増やす
-            this.loadingFileNum++;
+        async loadDefaultImages() {
+            // 画像リストから一括読み込み
+            const loadImageAsync = async (path: string): Promise<[string, Blob]> => {
+                const response = await this.axiosInstance.get(path);
+                return [path, response.data];
+            };
+            const defaultImageBlobs = await Promise.all(DefaultImageUrls.map(loadImageAsync));
+            // 読み込む数だけ読み込み中ファイル数に追加
+            this.loadingFileNum += DefaultImageUrls.length;
+            // オブジェクト URL に変換して保持
+            for (const data of defaultImageBlobs) {
+                const path = data[0];
+                const blob = data[1];
+                const imageId = getFileNameFromPath(path);
+                const objUrl = URL.createObjectURL(blob);
+                this.onSuccessful(imageId, path, objUrl);
+            }
         },
         /**
          * ローカルファイルを読込
@@ -162,7 +173,7 @@ export const useImageStore = defineStore('image', {
             const files = Array.from(fileList);
             files.forEach((file: File) => {
                 const path = file.name;
-                const imageId = path.split('.').slice(0, -1).join('.');
+                const imageId = getFileNameFromPath(path);
                 const reader = new FileReader();
                 reader.onload = () => {
                     this.onSuccessful(imageId, path, reader.result as string, true);
@@ -172,9 +183,9 @@ export const useImageStore = defineStore('image', {
                     this.loadingFileNum--;
                 };
                 reader.readAsDataURL(file);
+                // 読み込み中ファイル数を増やす
                 this.loadingFileNum++;
             })
-            // 読み込み中ファイル数を増やす
         },
         /**
          * クリア（ページ離脱時にも呼ぶこと）

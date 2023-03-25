@@ -1,5 +1,5 @@
 <template>
-    <div class="frame">
+    <div class="frame-flow-view">
         <div class="main-box">
             <div class="machine-box">
                 <img :src="machineSvg" :title="`${machineName} ${needsRate}%`" />
@@ -35,7 +35,7 @@
         </div>
         <ul class="input-material-box">
             <li v-for="material in materialFlows" :key="material.materialId">
-                <FlowView :flow-path="materialFlowPath(material)"></FlowView>
+                <FlowView :flow-path="materialFlowPath(material)" :product-index="props.productIndex"></FlowView>
             </li>
         </ul>
     </div>
@@ -49,7 +49,7 @@ import { useConfigStore } from '@/stores/config_store'
 import { useImageStore } from '@/stores/image_store'
 import { FlowPath, Flow } from '@/defines/types/flow'
 import { ConfigRecipe } from '@/defines/types/config'
-import { CeilDigit } from '@/logics/primitives'
+import { RoundDigit } from '@/logics/primitives'
 
 // 子コンポーネント ---------------------------------------------
 
@@ -58,6 +58,11 @@ import { CeilDigit } from '@/logics/primitives'
 
 /** プロパティを定義 */
 const props = defineProps({
+    /** 製品インデックス */
+    productIndex: {
+        type: Number,
+        default: 0,
+    },
     /** 製作フローパス */
     flowPath: {
         type: String,
@@ -84,8 +89,19 @@ const flowPath = ref(new FlowPath(props.flowPath));
 // 内部関数 -----------------------------------------------------
 
 const getFlow = computed(() => {
-    return flowStore.flowOnPath(flowPath.value);
+    return flowStore.flowOnPath(props.productIndex, flowPath.value);
 });
+
+/**
+ * 値を小数点以下6桁までの文字列に丸める
+ * @param value [in] 元の値
+ * @return 丸めた値の文字列
+ */
+ const CielDigitToString = (value: number): string => {
+    const ceiledValue = RoundDigit(value, 6);
+    const isMinimalError = ceiledValue - Math.floor(ceiledValue) <= 0.000001; // 0.000001 以下はさらに丸める
+    return (isMinimalError) ? Math.floor(ceiledValue).toString() : ceiledValue.toString();
+};
 
 // Getters -----------------------------------------------------
 
@@ -145,9 +161,9 @@ const isRootFlow = computed((): boolean => {
     return getFlow.value?.isRootFlow;
 });
 /** 必要数 */
-const needs = computed((): number => {
-    if (!getFlow.value?.needs) return 0;
-    return CeilDigit(getFlow.value?.needs, 6);
+const needs = computed((): string => {
+    if (!getFlow.value?.needs) return "0";
+    return CielDigitToString(getFlow.value?.needs);
 });
 /** 必要数の入力タイプ（ルートフローだけ数値として入力可能） */
 const needsInputType = computed((): string => {
@@ -168,7 +184,7 @@ const byproductName = computed((): string => {
 /** 副産物の生産数 */
 const byproductNeeds = computed((): string => {
     if (!getFlow.value?.byproductNeeds) return '';
-    return CeilDigit(getFlow.value?.byproductNeeds, 6).toString();
+    return CielDigitToString(getFlow.value?.byproductNeeds);
 });
 /** 副産物の画像 */
 const byproductImg = computed((): string => {
@@ -187,13 +203,13 @@ const materialFlowPath = (flow: Flow) => {
 const onChangedRecipe = (event: Event) => {
     if (!(event.target instanceof HTMLSelectElement)) return;
     // 製作フローストア更新
-    flowStore.setRecipeId(new FlowPath(props.flowPath), event.target.value);
+    flowStore.setRecipeId(props.productIndex, new FlowPath(props.flowPath), event.target.value);
 };
 /** 素材の必要数が変更された時のコールバック */
 const onChangedMaterialNeeds = (event: Event) => {
     if (!(event.target instanceof HTMLInputElement)) return;
     // 製作フローストア更新
-    flowStore.setNeeds(new FlowPath(props.flowPath), parseFloat(event.target.value));
+    flowStore.setNeeds(props.productIndex, new FlowPath(props.flowPath), parseFloat(event.target.value));
 };
 
 // サイクル -----------------------------------------------------
@@ -201,14 +217,16 @@ const onChangedMaterialNeeds = (event: Event) => {
 
 </script>
 
-<style src="@/to_dark_theme.css" scoped />
-
 <style scoped>
-.frame {
+input, select {
+    min-width: 5em;
+}
+.frame-flow-view {
     width: 100%;
     display: flex;
     flex-direction: column;
     color: white;
+    white-space: nowrap;
 }
 .main-box {
     display: flex;

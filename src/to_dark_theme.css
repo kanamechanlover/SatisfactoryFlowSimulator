@@ -1,9 +1,39 @@
-input, select, button, div {
-    color-scheme: dark;
+/*
+ * ダークテーマもどき設定
+ * 
+ * ユーザのブラウザのテーマに関わらず、ダークモード的な表示にする。
+ */
+
+/* ダークテーマ用変数 */
+* {
+    /* ダークテーマ用背景色1 */
+    --dark-bg-color: rgb(59, 59, 59);
+    /* ダークテーマ用背景色2（より濃い黒） */
+    --dark-deep-color: rgb(3b, 3b, 3b);
+    /* ダークテーマ用ベースカラー */
+    --dark-main-color: rgb(104, 104, 104);
+    /* ダークテーマ用強調カラー */
+    --dark-accent-color: rgb(133, 133, 133);
+    /* ダークテーマ用ライトカラー */
+    --dark-light-color: floralwhite;
+    /* ダークテーマ用テキストカラー */
+    --dark-text-color: white;
 }
 
-* {
-    --dark-bg-color: rgb(59,59,59);
-    --dark-main-color: rgb(104, 104, 104);
-    --dark-accent-color: rgb(133, 133, 133)
+/* フォームをダークテーマっぽくする */
+input, button, select {
+    background: var(--dark-bg-color);
+    color: var(--dark-text-color);
+    border: 1px solid var(--dark-accent-color);
+    border-radius: 4px;
+}
+input[type="button"]:hover,
+button:hover {
+    background: var(--dark-main-color);
+}
+
+/* div をダークテーマっぽくする */
+div.dark {
+    background: var(--dark-bg-color);
+    color: var(--dark-text-color);
 }

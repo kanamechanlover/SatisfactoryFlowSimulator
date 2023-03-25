@@ -7,8 +7,10 @@ export const objectToMapForString = (object:Object):Map<String, String> =>
     new Map<string, string>(Object.entries(object));
 
 /** 小数点以下を指定の桁で切り上げる */
-export const CeilDigit = (value: number, digit: number): number => {
-    return Math.ceil(value * 10**digit) / 10**digit;
+export const RoundDigit = (value: number, digit: number): number => {
+    const factor = 10 ** digit;
+    const roundedValue = Math.round(value * factor) / factor;
+    return Number(roundedValue.toFixed(digit)); // toFixed で 18.00、Number で 18
 }
 
 /**
