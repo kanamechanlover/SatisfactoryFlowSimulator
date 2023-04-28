@@ -422,10 +422,9 @@ export const useFlowStore = defineStore('flow', {
         /**
          * レシピ一括設定削除
          * @param materialid [in] 素材ID
-         * @param recipeId [in] レシピID
          * @note 無ければ何もしない
          */
-        removeBatchRecipe(materialId: string, recipeId: string) {
+        removeBatchRecipe(materialId: string) {
             this.batchRecipeMap.delete(materialId);
         },
     }

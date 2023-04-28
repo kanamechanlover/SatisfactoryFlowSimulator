@@ -37,6 +37,11 @@ const props = defineProps({
     }
 });
 
+const emits = defineEmits<{
+    (e: 'opened'): void, // ドロップダウンが開いた
+    (e: 'closed'): void, // ドロップダウンが開いた
+}>();
+
 // 内部定義 -----------------------------------------------------
 
 
@@ -139,12 +144,16 @@ const open = () => {
     nextTick(updateDropdownPosition);
     // コンポーネント外クリック時のイベント追加
     document.addEventListener('click', onClickedOutside);
+    // 通知
+    emits('opened');
 }
 /** ドロップダウンを開く */
 const close = () => {
     isOpenedDropdown.value = false;
     // コンポーネント外クリック時のイベント削除
     document.removeEventListener('click', onClickedOutside);
+    // 通知
+    emits('closed');
 }
 
 /**
@@ -156,6 +165,10 @@ const onClickedOutside = (e: MouseEvent) => {
     if (frame.value.contains(e.target)) return;
     close();
 };
+
+// 公開設定 -----------------------------------------------------
+
+defineExpose({toggle, open, close});
 
 
 // サイクル -----------------------------------------------------

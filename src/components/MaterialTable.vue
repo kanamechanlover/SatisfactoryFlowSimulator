@@ -56,10 +56,12 @@
                                     {{ materialName(row.id) }}
                                 </span>
                                 <span v-if="isMaterialBatchedSetRecipe(row.id) && !row.isCategoryRow"
-                                        class="batch-recipe-icon" :title="tooltips.BatchRecipeIcon + recipeName(batchRecipeId(row.id))">
+                                        class="batch-recipe-icon" @click="onClickBatchRecipeIcon(row.id)"
+                                        :title="tooltips.BatchRecipeIcon + recipeName(batchRecipeId(row.id))">
                                     <fa :icon="['fas', 'clipboard']"></fa>
                                 </span>
-                                <CustomDropdown v-if="!row.isCategoryRow && recipeIdsForMaterial(row.id).length > 1" :limit-element="tableBox">
+                                <CustomDropdown v-if="!row.isCategoryRow && recipeIdsForMaterial(row.id).length > 1"
+                                        :limit-element="tableBox" ref="batchRecipeDropdowns">
                                     <template #toggle>
                                         <span class="batch-recipe-button" :title="tooltips.BatchRecipeButton">
                                             <fa :icon="['fas', 'clipboard']"></fa>
@@ -67,8 +69,9 @@
                                     </template>
                                     <div class="batch-recipe-dropdown-container">
                                         <div v-for="recipeId in recipeIdsForMaterial(row.id)" :key="recipeId"
-                                                class="option" @click="onChangeBatchRecipe(row.id, recipeId)">
-                                            {{ recipeName(recipeId) }}
+                                                class="option" @click="onChangeBatchRecipe(row.id, recipeId); ">
+                                            <span class="default-recipe-icon" v-if="isDefaultRecipe(row.id, recipeId)">基</span>
+                                            <span>{{ recipeName(recipeId) }}</span>
                                         </div>
                                     </div>
                                 </CustomDropdown>
@@ -137,6 +140,7 @@ import { RoundDigit } from '@/logics/primitives'
 // 子コンポーネント ---------------------------------------------
 
 import CustomDropdown from '@/components/generic/CustomDropdown.vue'
+import { config } from 'process'
 
 // 内部定義 -----------------------------------------------------
 
@@ -168,7 +172,7 @@ const ShowModeButtonText = {
 const tooltips = {
     ShowModeToAll: '表示モードを「一覧表示」に切り替えます。',
     ShowModeToSingle: '表示モードを「個別表示」に切り替えます。',
-    BatchRecipeIcon: 'レシピ一括設定が有効になっている素材です。現在のレシピ：',
+    BatchRecipeIcon: 'レシピ一括設定が有効になっている素材です。\nクリックすると無効になります。\n現在のレシピ：',
     BatchRecipeButton: 'この素材のレシピを一括で設定します。',
 } as const;
 
@@ -198,7 +202,11 @@ const imageStore = useImageStore();
 /** 個別表示モード時に表示する製品インデックス（0 は総数）*/
 const productIndexOnSingle = ref(0);
 
+/** ドロップダウンの制限領域に使用する要素 */
 const tableBox = ref<HTMLElement|undefined>(undefined);
+
+/** ドロップダウンコンポーネント */
+const batchRecipeDropdowns = ref<Array<HTMLElement>|undefined>(undefined);
 
 // 内部関数 -----------------------------------------------------
 
@@ -470,6 +478,16 @@ const recipeName = computed(() => (recipeId: string): string => {
     return configStore.recipeName(recipeId);
 });
 
+/**
+ * 指定素材のデフォルトレシピか
+ * @param materialId [in] 素材ID
+ * @param recipeId [in] レシピID
+ * @return デフォルトレシピなら true
+ */
+const isDefaultRecipe = computed(() => (materialId: string, recipeId: string) => {
+    return configStore.defaultRecipeId(materialId) == recipeId;
+});
+
 // Actions -----------------------------------------------------
 
 /** 表示モード切り替え */
@@ -495,8 +513,34 @@ const onChangeShowProduct = (event: Event) => {
  * @param recipeId [in] レシピID
  */
 const onChangeBatchRecipe = (materialId: string, recipeId: string) => {
-    console.log(materialId + '(' + recipeId + ')')
-    flowStore.addBatchRecipe(materialId, recipeId);
+    // 一括設定
+    console.log('Batch');
+    //flowStore.batchRecipeChange(materialId, recipeId); // TODO: 一括設定処理
+    if (isDefaultRecipe.value(materialId, recipeId)) {
+        // デフォルトレシピに変更された場合は追加では無く削除する
+        console.log('Remove ' + materialId + ' because it\'s the default recipe.')
+        flowStore.removeBatchRecipe(materialId);
+    }
+    else {
+        // 一括設定リストに追加
+        console.log('Add ' + materialId + '(' + recipeId + ')')
+        flowStore.addBatchRecipe(materialId, recipeId);
+    }
+    console.log(flowStore.batchRecipeMap);
+    // ドロップダウンを閉じる
+    // Note: 開いているものだけ閉じたかったが、実装が少し複雑になるので全部閉じる
+    batchRecipeDropdowns.value?.forEach((dropdown: any) => {
+        dropdown.close();
+    });
+};
+
+/**
+ * レシピ一括設定の解除
+ * @param materialId [in] 素材ID
+ */
+const onClickBatchRecipeIcon = (materialId: string) => {
+    console.log('Remove ' + materialId);
+    flowStore.removeBatchRecipe(materialId);
     console.log(flowStore.batchRecipeMap);
 };
 
@@ -659,8 +703,18 @@ td div.material-name-box span.material-name {
     text-align: left;
 }
 td div.material-name-box .batch-recipe-icon {
-    color: var(--dark-main-color);
-    mix-blend-mode: screen;
+    color: var(--dark-text-color);
+    position: relative;
+}
+td div.material-name-box .batch-recipe-icon:hover::before {
+    content: "x";
+    font-size: 1.2em;
+    color: red;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    font-weight: bold;
+    transform: translateX(-50%) translateY(-50%);
 }
 td div.material-name-box .batch-recipe-button {
     font-size: 0.8em;
@@ -697,7 +751,14 @@ td div.material-name-box .batch-recipe-dropdown-container .option {
 td div.material-name-box .batch-recipe-dropdown-container .option:hover {
     background: orange;
 }
-
+td div.material-name-box .batch-recipe-dropdown-container .option .default-recipe-icon {
+    font-size: 0.9em;
+    border: 1px solid var(--dark-text-color);
+    border-radius: 4px;
+    padding: 4px 2px 2px 2px;
+    margin-right: 4px;
+    line-height: 0.8em;
+}
 
 hr {
   border: 0;
