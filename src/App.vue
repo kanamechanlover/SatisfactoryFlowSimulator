@@ -64,7 +64,7 @@ import ConfigEditor from '@/components/config_editor/ConfigEditor.vue'
 
 /** 集計結果の表示先セレクタ */
 const MaterialTableSelector = {
-    All:'#material-table-box', // 一覧表示時
+    All: '#material-table-box', // 一覧表示時
     Single: '#total-data-box', // 個別表示時
 }
 
@@ -201,7 +201,7 @@ header .version {
     overflow: hidden;
 }
 #product-tab-box {
-    /* コンパクト表示時は小さくしたいのでここでは設定しない 
+    /* コンパクト表示時は小さくしたいのでここでは設定しない
     width: 300px;
     min-width: 200px;
     */

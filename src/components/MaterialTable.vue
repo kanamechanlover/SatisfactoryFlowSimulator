@@ -513,9 +513,6 @@ const onChangeShowProduct = (event: Event) => {
  * @param recipeId [in] レシピID
  */
 const onChangeBatchRecipe = (materialId: string, recipeId: string) => {
-    // 一括設定
-    console.log('Batch');
-    //flowStore.batchRecipeChange(materialId, recipeId); // TODO: 一括設定処理
     if (isDefaultRecipe.value(materialId, recipeId)) {
         // デフォルトレシピに変更された場合は追加では無く削除する
         console.log('Remove ' + materialId + ' because it\'s the default recipe.')
@@ -527,6 +524,10 @@ const onChangeBatchRecipe = (materialId: string, recipeId: string) => {
         flowStore.addBatchRecipe(materialId, recipeId);
     }
     console.log(flowStore.batchRecipeMap);
+    // 一括設定
+    console.log('Batch');
+    flowStore.batchRecipeChange(materialId);
+
     // ドロップダウンを閉じる
     // Note: 開いているものだけ閉じたかったが、実装が少し複雑になるので全部閉じる
     batchRecipeDropdowns.value?.forEach((dropdown: any) => {

@@ -63,7 +63,7 @@ export const useFlowStore = defineStore('flow', {
         productNumber(state): number {
             return state.products.length;
         },
-        /** 
+        /**
          * 指定位置の製品（表示）名取得
          * @param productIndex [in] 製品インデックス
          * @return 製品（表示）名
@@ -75,7 +75,7 @@ export const useFlowStore = defineStore('flow', {
                 return (product) ? product.name : '';
             };
         },
-        /** 
+        /**
          * 指定位置の製品（表示）名取得
          * @param productIndex [in] 製品インデックス
          * @return 製品（表示）名
@@ -334,6 +334,18 @@ export const useFlowStore = defineStore('flow', {
             };
             flow.byproductNeeds = (flow.byproductId) ? byproductNeeds() : 0;
 
+            // レシピ一括設定のレシピIDの取得処理
+            const getRecipe = (materialId: string): string => {
+                // レシピ一括設定に指定されていればそのレシピIDを使用する
+                if (this.batchRecipeMap.has(materialId)) {
+                    const batchedRecipeId = this.batchRecipeMap.get(materialId);
+                    if (!batchedRecipeId) return ''; // イレギュラー（undefined を除外する為）
+                    return batchedRecipeId;
+                }
+                // 指定が無ければデフォルトのレシピIDを返す
+                return this.config.defaultRecipeId(materialId);
+            };
+
             // レシピの素材リスト
             if (changedRecipe) {
                 // レシピの変更が有れば素材リストの製作フローを作り直す
@@ -343,7 +355,7 @@ export const useFlowStore = defineStore('flow', {
                     if (needs === undefined) return; // イレギュラー
                     const materialFlow = new Flow(flow);
                     materialFlow.materialId = input.id;
-                    materialFlow.recipeId = this.config.defaultRecipeId(input.id);
+                    materialFlow.recipeId = getRecipe(input.id);
                     materialFlow.needs = toMinute(needs * flow.needsRate);
                     materialFlow.path = flow.path.concat([input.id]);
                     flow.materialFlows.push(materialFlow);
@@ -412,7 +424,7 @@ export const useFlowStore = defineStore('flow', {
         },
         /**
          * レシピ一括設定追加
-         * @param materialid [in] 素材ID
+         * @param materialId [in] 素材ID
          * @param recipeId [in] レシピID
          * @note 既に設定されていればレシピID更新
          */
@@ -421,11 +433,42 @@ export const useFlowStore = defineStore('flow', {
         },
         /**
          * レシピ一括設定削除
-         * @param materialid [in] 素材ID
+         * @param materialId [in] 素材ID
          * @note 無ければ何もしない
          */
         removeBatchRecipe(materialId: string) {
             this.batchRecipeMap.delete(materialId);
+        },
+        /**
+         * レシピ一括変更
+         * @param materialId [in] 素材ID
+         */
+        batchRecipeChange(materialId: string) {
+            // 変更後のレシピ取得（レシピが無い場合はデフォルトレシピへの変更とする）
+            const tempRecipeId = this.batchRecipeMap.get(materialId);
+            const recipeId = (tempRecipeId) ? tempRecipeId : this.config.defaultRecipeId(materialId);
+            // 製品毎に再帰的に変更
+            this.products.forEach((product: Production) => {
+                const batch = (flow: Flow) => {
+                    // 入力素材を順次チェック
+                    flow.materialFlows.forEach((materialFlow: Flow) => {
+                        // 対象の素材のレシピが変更後のレシピと異なる場合だけ変更
+                        if (materialFlow.materialId == materialId && materialFlow.recipeId != recipeId) {
+                            // 対象の製作フローのレシピを変更
+                            materialFlow.recipeId = recipeId;
+                            // 変更による影響を反映
+                            this.updateFlow(materialFlow, true);
+                            // 再帰的に次の子は見ない
+                            return;
+                        }
+                        // 再帰的に次の子へ
+                        batch(materialFlow);
+                    });
+                };
+                batch(product.flow);
+            });
+            // 集計結果にも反映
+            this.updateTable();
         },
     }
 });
