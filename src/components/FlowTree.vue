@@ -202,7 +202,7 @@ input, select {
     flex:1;
 }
 .product-select-box select option.category {
-    background: orange;
+    background: var(--symbolic-color);
     color: black;
     font-weight: bold;
     font-size: 1.2em;

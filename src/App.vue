@@ -178,10 +178,10 @@ onMounted(async () => {
 header {
     display: flex;
     align-items: center;
-    background-color: orange;
+    background-color: var(--symbolic-color);
     padding: 4px 8px;
     font-weight: bold;
-    color: maroon;
+    color: var(--accent-color);
     overflow-y: hidden;
     border-bottom: 1px solid var(--dark-bg-color);
     gap: 4px;

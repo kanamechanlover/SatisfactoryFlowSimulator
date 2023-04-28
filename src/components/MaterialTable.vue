@@ -620,7 +620,7 @@ table {
     table-layout: fixed;
 }
 th {
-    background: orange;
+    background: var(--symbolic-color);
     border-radius: 4px;
     padding: 4px 8px;
     text-align: center;
@@ -671,7 +671,7 @@ td.material-name-cell {
 }
 td.material-name-cell:not(.category) {
     color: black;
-    background: burlywood;
+    background: var(--symbolic-pale-color);
 }
 
 td.material-needs-cell {
@@ -749,7 +749,7 @@ td div.material-name-box .batch-recipe-dropdown-container .option {
     opacity: 1;
 }
 td div.material-name-box .batch-recipe-dropdown-container .option:hover {
-    background: orange;
+    background: var(--symbolic-color);
 }
 td div.material-name-box .batch-recipe-dropdown-container .option .default-recipe-icon {
     font-size: 0.9em;
@@ -763,9 +763,9 @@ td div.material-name-box .batch-recipe-dropdown-container .option .default-recip
 hr {
   border: 0;
   height: 1px;
-  background-image: -webkit-linear-gradient(left, transparent, orange, transparent);
-  background-image: -moz-linear-gradient(left, transparent, orange, transparent);
-  background-image: -ms-linear-gradient(left, transparent, orange, transparent);
-  background-image: -o-linear-gradient(left, transparent, orange, transparent); 
+  background-image: -webkit-linear-gradient(left, transparent, var(--symbolic-color), transparent);
+  background-image: -moz-linear-gradient(left, transparent, var(--symbolic-color), transparent);
+  background-image: -ms-linear-gradient(left, transparent, var(--symbolic-color), transparent);
+  background-image: -o-linear-gradient(left, transparent, var(--symbolic-color), transparent);
 }
 </style>

@@ -230,7 +230,7 @@ input, select {
 }
 .main-box {
     display: flex;
-    background: orange;
+    background: var(--symbolic-color);
     border: 1px solid wheat;
     border-radius: 8px;
     padding: 4px;
@@ -262,7 +262,7 @@ input, select {
     font-weight: bold;
     color: white;
     line-height: 1em;
-    background: orange;
+    background: var(--symbolic-color);
     border-radius: 4px;
     padding: 0px 1px;
 }
@@ -299,7 +299,7 @@ input, select {
 .main-box .info-box .material-box .material-name {
     font-weight: bold;
     background: white;
-    color: orange;
+    color: var(--symbolic-color);
     border-radius: 4px;
     padding: 4px;
 }
@@ -339,7 +339,7 @@ input, select {
     font-size: 1em;
 }
 .main-box .info-box .recipe-box select option {
-    background: orange;
+    background: var(--symbolic-color);
 }
 .main-box .info-box .recipe-box select option:hover {
     background-color: linear-gradient(bisque, bisque);

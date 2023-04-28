@@ -334,7 +334,7 @@ const changeVersion = (event: Event) => {
     transform: translateY(-50%);
 }
 .header .close-button:hover {
-    background: orange;
+    background: var(--symbolic-color);
 }
 
 .main {
