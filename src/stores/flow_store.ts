@@ -54,6 +54,8 @@ export const useFlowStore = defineStore('flow', {
             config: useConfigStore(),
             /** 次作成する製品のサフィックス */
             nextProductNumber: 1,
+            /** レシピ一括設定素材マップ */
+            batchRecipeMap: new Map<string, string>(),
         };
     },
     getters: {
@@ -157,6 +159,22 @@ export const useFlowStore = defineStore('flow', {
         /** 集計結果の表示モード */
         materialTableShowMode(state): string {
             return state.summary.materialTableShowMode;
+        },
+        hasBatchRecipe(state) {
+            return (materialId: string): boolean => {
+                return state.batchRecipeMap.has(materialId);
+            };
+        },
+        /**
+         * レシピ一括設定素材のレシピIDを取得
+         * @param materialId [in] 素材ID
+         * @return レシピID（レシピ一括設定素材マップに無ければ空文字列）
+         */
+        batchRecipeId(state) {
+            return (materialId: string): string => {
+                const recipeId = state.batchRecipeMap.get(materialId);
+                return (recipeId) ? recipeId : "";
+            };
         },
     },
     actions: {
@@ -315,7 +333,7 @@ export const useFlowStore = defineStore('flow', {
                 return (needs) ? toMinute(needs) * flow.needsRate : 0;
             };
             flow.byproductNeeds = (flow.byproductId) ? byproductNeeds() : 0;
-    
+
             // レシピの素材リスト
             if (changedRecipe) {
                 // レシピの変更が有れば素材リストの製作フローを作り直す
@@ -391,6 +409,24 @@ export const useFlowStore = defineStore('flow', {
         /** 集計結果の表示モードを「個別表示」に切り替え */
         toSingleShowMode() {
             this.summary.materialTableShowMode = MaterialTableShowMode.Single;
+        },
+        /**
+         * レシピ一括設定追加
+         * @param materialid [in] 素材ID
+         * @param recipeId [in] レシピID
+         * @note 既に設定されていればレシピID更新
+         */
+        addBatchRecipe(materialId: string, recipeId: string) {
+            this.batchRecipeMap.set(materialId, recipeId);
+        },
+        /**
+         * レシピ一括設定削除
+         * @param materialid [in] 素材ID
+         * @param recipeId [in] レシピID
+         * @note 無ければ何もしない
+         */
+        removeBatchRecipe(materialId: string, recipeId: string) {
+            this.batchRecipeMap.delete(materialId);
         },
     }
 });

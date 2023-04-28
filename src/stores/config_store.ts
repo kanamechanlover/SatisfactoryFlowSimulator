@@ -252,6 +252,18 @@ export const useConfigStore = defineStore('config', {
         },
 
         /**
+         * レシピ名取得
+         * @param recipeId [in] レシピID
+         * @returns レシピ名（IDが無ければ空文字列）
+         */
+        recipeName(state) {
+            return (recipeId: string): string => {
+                const recipe = state.config.recipes.find((recipe) => recipe.id == recipeId);
+                return (recipe) ? recipe.name : '';
+            };
+        },
+
+        /**
          * レシピを使用可能な設備IDを取得
          * @param recipeId [in] レシピId
          * @returns レシピを使用可能な設備ID

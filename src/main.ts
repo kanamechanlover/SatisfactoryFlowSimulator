@@ -18,11 +18,11 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 // - Solid スタイルのアイコン登録
 import {
     faCube, faDroplet, faPenToSquare, faArrowUpRightFromSquare, faWrench,
-    faTrashCan, faArrowLeft, faArrowRight,
+    faTrashCan, faArrowLeft, faArrowRight, faClipboard,
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
     faCube, faDroplet, faPenToSquare, faArrowUpRightFromSquare, faWrench,
-    faTrashCan, faArrowLeft, faArrowRight,
+    faTrashCan, faArrowLeft, faArrowRight, faClipboard,
 );
 // - Bland スタイルのアイコン
 import {
@@ -43,6 +43,10 @@ import { useImageStore } from '@/stores/image_store'
 const imageStore = useImageStore();
 // 初期化、初回読み込み
 imageStore.initialize();
+
+// スクロールバーの幅を計算しておく
+import { calcScrollbarWidth } from './logics/primitives';
+calcScrollbarWidth();
 
 // 最後にマウント
 app.mount('#app');

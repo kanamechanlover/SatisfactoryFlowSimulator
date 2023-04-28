@@ -2,7 +2,7 @@
     <div class="frame-material-table">
         <div class="show-mode-box">
             <span class="show-mode-text">{{ showModeText }}</span>
-            <button @click="toggleShowMode">{{ showModeButtonText }}</button>
+            <button @click="toggleShowMode" :title="showModeButtonTooltip">{{ showModeButtonText }}</button>
         </div>
         <div class="select-wrapper" v-if="isShowSingleMode">
             <img :src="productImage(productIndexOnSingle - 1)"
@@ -17,7 +17,7 @@
             </select>
             <span v-if="!isShowingTotal">{{ productNeeds }} /分</span>
         </div>
-        <div class="tables">
+        <div class="tables" ref="tableBox">
             <div class="prodcut-box">
                 <hr />
                 <h2>必要素材 集計</h2>
@@ -49,9 +49,29 @@
                                 :colspan="productColspanNum(row.isCategoryRow)">
                             <div class="material-name-box">
                                 <img :src="materialImg(row.id)" v-if="!row.isCategoryRow && materialImg(row.id)" />
-                                <span>
-                                    {{ (row.isCategoryRow) ? materialCategoryName(row.id) : materialName(row.id) }}
+                                <span v-if="row.isCategoryRow" class="category-name">
+                                    {{ materialCategoryName(row.id) }}
                                 </span>
+                                <span v-if="!row.isCategoryRow" class="material-name" :title="materialName(row.id)">
+                                    {{ materialName(row.id) }}
+                                </span>
+                                <span v-if="isMaterialBatchedSetRecipe(row.id) && !row.isCategoryRow"
+                                        class="batch-recipe-icon" :title="tooltips.BatchRecipeIcon + recipeName(batchRecipeId(row.id))">
+                                    <fa :icon="['fas', 'clipboard']"></fa>
+                                </span>
+                                <CustomDropdown v-if="!row.isCategoryRow && recipeIdsForMaterial(row.id).length > 1" :limit-element="tableBox">
+                                    <template #toggle>
+                                        <span class="batch-recipe-button" :title="tooltips.BatchRecipeButton">
+                                            <fa :icon="['fas', 'clipboard']"></fa>
+                                        </span>
+                                    </template>
+                                    <div class="batch-recipe-dropdown-container">
+                                        <div v-for="recipeId in recipeIdsForMaterial(row.id)" :key="recipeId"
+                                                class="option" @click="onChangeBatchRecipe(row.id, recipeId)">
+                                            {{ recipeName(recipeId) }}
+                                        </div>
+                                    </div>
+                                </CustomDropdown>
                             </div>
                         </td>
                         <td class="material-needs-cell" :class="{'not-use': !isUseProductCell(row.id, index)}"
@@ -111,10 +131,12 @@ import { ref, computed } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
 import { MaterialTableShowMode, useFlowStore } from '@/stores/flow_store'
 import { useImageStore } from '@/stores/image_store'
+import { ConfigRecipe } from '@/defines/types/config'
 import { RoundDigit } from '@/logics/primitives'
 
 // 子コンポーネント ---------------------------------------------
 
+import CustomDropdown from '@/components/generic/CustomDropdown.vue'
 
 // 内部定義 -----------------------------------------------------
 
@@ -142,6 +164,20 @@ const ShowModeButtonText = {
     [MaterialTableShowMode.Single]: "一覧",
 } as {[key: string]: string};
 
+// ツールチップ文言一覧
+const tooltips = {
+    ShowModeToAll: '表示モードを「一覧表示」に切り替えます。',
+    ShowModeToSingle: '表示モードを「個別表示」に切り替えます。',
+    BatchRecipeIcon: 'レシピ一括設定が有効になっている素材です。現在のレシピ：',
+    BatchRecipeButton: 'この素材のレシピを一括で設定します。',
+} as const;
+
+/** 表示モード切り替えボタンのツールチップ */
+const ShowModeButtonTooltip = {
+    [MaterialTableShowMode.All]: tooltips.ShowModeToSingle,
+    [MaterialTableShowMode.Single]: tooltips.ShowModeToAll,
+} as {[key: string]: string};
+
 /** 不使用セルの代替テキスト */
 const NotUseCellText = "-";
 
@@ -162,18 +198,10 @@ const imageStore = useImageStore();
 /** 個別表示モード時に表示する製品インデックス（0 は総数）*/
 const productIndexOnSingle = ref(0);
 
+const tableBox = ref<HTMLElement|undefined>(undefined);
+
 // 内部関数 -----------------------------------------------------
 
-/**
- * 値を小数点以下6桁までの文字列に丸める
- * @param value [in] 元の値
- * @return 丸めた値の文字列
- */
-const CielDigitToString = (value: number): string => {
-    const ceiledValue = RoundDigit(value, 6);
-    const isMinimalError = ceiledValue - Math.floor(ceiledValue) <= 0.000001; // 0.000001 以下はさらに丸める
-    return (isMinimalError) ? Math.floor(ceiledValue).toString() : ceiledValue.toString();
-};
 
 // Getters -----------------------------------------------------
 
@@ -192,6 +220,10 @@ const showModeText = computed((): string => {
 /** 表示モード切り替えボタンのテキスト */
 const showModeButtonText = computed((): string => {
     return ShowModeButtonText[flowStore.materialTableShowMode];
+});
+/** 表示モード切り替えボタンのツールチップ */
+const showModeButtonTooltip = computed((): string => {
+    return ShowModeButtonTooltip[flowStore.materialTableShowMode];
 });
 /** 製品（素材）名リスト */
 const showProductOptions = computed(() => {
@@ -357,7 +389,7 @@ const productTableNumber = computed(() => (materialId: string, index: number): s
     // 小数点以下 6 桁までに丸める
     return RoundDigit(value, UnderDigitNumber).toString();
 });
-/** 
+/**
  * 副産物テーブルセルの値取得
  * @param materialId [in] 素材ID
  * @param index [in] 製品インデックス
@@ -399,6 +431,45 @@ const productNeedsAt = computed(() => (index: number): string => {
     return RoundDigit(needs, UnderDigitNumber).toString();
 });
 
+/**
+ * レシピ一括設定されている素材か
+ */
+const isMaterialBatchedSetRecipe = computed(() => (materialId: string): boolean => {
+    return flowStore.hasBatchRecipe(materialId);
+});
+
+/**
+ * レシピ一括設定されている素材のレシピIDを取得
+ * @param materialId [in] 素材名
+ * @return レシピID
+ */
+const batchRecipeId = computed(() => (materialId: string): string => {
+    return flowStore.batchRecipeId(materialId);
+});
+
+/**
+ * 出力に指定素材を持つレシピIDリストを取得
+ * @param materialId [in] 素材ID
+ * @return 素材IDリスト
+ * @note 基本レシピは先頭に配置される
+ */
+const recipeIdsForMaterial = computed(() => (materialId: string): Array<string> => {
+    // 対象のレシピIDリスト取得
+    const list = configStore.recipesHasOutputMaterialId(materialId).map((recipe: ConfigRecipe) => recipe.id);
+    // 基本レシピだけは先頭に配置
+    const defaultRecipeId = configStore.defaultRecipeId(materialId);
+    return [defaultRecipeId].concat(list.filter((id: string) => id != defaultRecipeId));
+});
+
+/**
+ * レシピ名取得
+ * @param recipeId [in] レシピID
+ * @return レシピ名
+ */
+const recipeName = computed(() => (recipeId: string): string => {
+    return configStore.recipeName(recipeId);
+});
+
 // Actions -----------------------------------------------------
 
 /** 表示モード切り替え */
@@ -417,6 +488,17 @@ const onChangeShowProduct = (event: Event) => {
     const target = event.target as HTMLSelectElement;
     productIndexOnSingle.value = target.selectedIndex;
 }
+
+/**
+ * レシピ一括設定のレシピ変更時
+ * @param materialId [in] 素材ID
+ * @param recipeId [in] レシピID
+ */
+const onChangeBatchRecipe = (materialId: string, recipeId: string) => {
+    console.log(materialId + '(' + recipeId + ')')
+    flowStore.addBatchRecipe(materialId, recipeId);
+    console.log(flowStore.batchRecipeMap);
+};
 
 // サイクル -----------------------------------------------------
 
@@ -531,9 +613,8 @@ th.material-name-column {
     font-size: 0.9em;
 }
 td {
-    padding: 4px 8px;
+    padding: 4px;
     border-radius: 4px;
-    overflow: hidden;
     line-height: 1.1em;
 }
 td div {
@@ -547,9 +628,6 @@ td.material-name-cell {
 td.material-name-cell:not(.category) {
     color: black;
     background: burlywood;
-}
-td.material-name-cell:not(.category) div {
-    justify-content: left;
 }
 
 td.material-needs-cell {
@@ -571,13 +649,59 @@ td div.material-name-box img {
     width: 1em;
     height: 1em;
 }
-td div.material-name-box span {
+td div.material-name-box span.material-name {
+    flex: 1;
+}
+td div.material-name-box span.material-name {
+    flex: 1;
     text-overflow: ellipsis;
     overflow: hidden;
+    text-align: left;
 }
+td div.material-name-box .batch-recipe-icon {
+    color: var(--dark-main-color);
+    mix-blend-mode: screen;
+}
+td div.material-name-box .batch-recipe-button {
+    font-size: 0.8em;
+    color: var(--dark-text-color);
+    mix-blend-mode: overlay;
+    border: 1px solid var(--dark-text-color);
+    border-radius: 4px;
+    padding: 2px 4px;
+    position: relative;
+}
+td div.material-name-box .batch-recipe-button:hover {
+    background: var(--dark-text-color);
+    color: var(--dark-main-color);
+}
+td div.material-name-box .batch-recipe-dropdown-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    background: var(--dark-bg-color);
+    padding: 8px;
+    border: 1px solid var(--dark-light-color);
+    border-radius: 8px;
+    opacity: 0.9;
+}
+td div.material-name-box .batch-recipe-dropdown-container .option {
+    justify-content: start;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 2px 4px;
+    color: var(--dark-text-color);
+    opacity: 1;
+}
+td div.material-name-box .batch-recipe-dropdown-container .option:hover {
+    background: orange;
+}
+
+
 hr {
-  border: 0; 
-  height: 1px; 
+  border: 0;
+  height: 1px;
   background-image: -webkit-linear-gradient(left, transparent, orange, transparent);
   background-image: -moz-linear-gradient(left, transparent, orange, transparent);
   background-image: -ms-linear-gradient(left, transparent, orange, transparent);

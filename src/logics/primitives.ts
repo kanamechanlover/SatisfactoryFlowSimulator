@@ -69,3 +69,44 @@ export const existDuplicate = (list: Array<any>): boolean => {
 export const getDuplicates = (list: Array<any>): Array<any> => {
     return list.filter((v,i,s) => s.indexOf(v) === i && s.lastIndexOf(v) !== i);
 };
+
+/**
+ * スクロールバーが表示されているか（水平）
+ * @param element [in] 対象のDOM要素
+ */
+export const visibledHorizontalScrollbar = (element: HTMLElement|undefined): boolean => {
+    if (!element) return false;
+    return element.clientWidth != element.offsetWidth;
+};
+
+/**
+ * スクロールバーが表示されているか（垂直）
+ * @param element [in] 対象のDOM要素
+ */
+export const visibledVerticalScrollbar = (element: HTMLElement|undefined): boolean => {
+    if (!element) return false;
+    return element.clientHeight != element.offsetHeight;
+};
+
+
+/** スクロールバーの幅（一度判定すれば変わることはないのでグローバル変数にしておく）
+ */
+export var scrollbarWidth = 0;
+/**
+ * スクロールバーの幅を計算
+ * @note グローバル変数 scrollbarWidth に結果を格納する為、一度だけ呼び出せば良い）
+ */
+export const calcScrollbarWidth = () => {
+    // スクロールバー付き要素を追加
+    const outer = document.createElement('div');
+    outer.style.visibility = 'hidden';
+    outer.style.overflow = 'scroll';
+    document.body.appendChild(outer);
+    // 中に要素追加
+    const inner = document.createElement('div');
+    outer.appendChild(inner);
+    // 差を計算
+    scrollbarWidth = (outer.offsetWidth - inner.offsetWidth);
+    // 後始末
+    document.body.removeChild(outer);
+};
