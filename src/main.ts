@@ -48,5 +48,14 @@ imageStore.initialize();
 import { calcScrollbarWidth } from './logics/primitives';
 calcScrollbarWidth();
 
+/*// デバッグ用：製品追加
+import { useFlowStore } from "@/stores/flow_store";
+const flowStore = useFlowStore();
+flowStore.addProduct('自律制御ユニット', 'AdaptiveControlUnit');
+flowStore.addProduct('組立指揮システム', 'AssemblyDirectorSystem');
+flowStore.addProduct('磁界発生装置', 'MagneticFieldGenerator');
+flowStore.addProduct('熱推進型ロケット', 'ThermalPropulsionRocket');
+*/
+
 // 最後にマウント
 app.mount('#app');

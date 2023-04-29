@@ -160,10 +160,15 @@ export const useFlowStore = defineStore('flow', {
         materialTableShowMode(state): string {
             return state.summary.materialTableShowMode;
         },
+        /** レシピ一括設定にある素材か */
         hasBatchRecipe(state) {
             return (materialId: string): boolean => {
                 return state.batchRecipeMap.has(materialId);
             };
+        },
+        /** レシピ一括設定にある素材IDリスト */
+        batchRecipeMaterialIds(state): Array<string> {
+            return [...state.batchRecipeMap.keys()];
         },
         /**
          * レシピ一括設定素材のレシピIDを取得
@@ -187,6 +192,10 @@ export const useFlowStore = defineStore('flow', {
             let productName = (name != '') ? name : "製品" + this.nextProductNumber;
             this.products.push(new Production(productName, id));
             this.nextProductNumber++;
+            if (id) {
+                // 製品（素材）ID が指定されている場合は中身の構築も合わせて行う
+                this.setMaterialId(this.products.length - 1, new FlowPath(), id);
+            }
         },
         /**
          * 製品削除

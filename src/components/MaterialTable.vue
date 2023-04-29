@@ -2,6 +2,29 @@
     <div class="frame-material-table">
         <div class="show-mode-box">
             <span class="show-mode-text">{{ showModeText }}</span>
+            <CustomDropdown>
+                <template #toggle>
+                    <span class="batch-recipe-list-button" :title="tooltips.BatchRecipeListButton">
+                        <fa :icon="['fas', 'clipboard']"></fa>
+                    </span>
+                </template>
+                <div class="batch-recipe-list-dropdown-container">
+                    <div class="header">レシピ一括設定リスト</div>
+                    <table class="batch-recipe-list-table">
+                        <tr>
+                            <th>素材名</th>
+                            <th>レシピ名</th>
+                        </tr>
+                        <tr v-for="materialId in batchRecipeMaterialIds" :key="materialId">
+                            <td>
+                                <img :src="materialImg(materialId)" />
+                                <span>{{ materialName(materialId) }}</span>
+                            </td>
+                            <td>{{ recipeName(batchRecipeId(materialId)) }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </CustomDropdown>
             <button @click="toggleShowMode" :title="showModeButtonTooltip">{{ showModeButtonText }}</button>
         </div>
         <div class="select-wrapper" v-if="isShowSingleMode">
@@ -22,7 +45,7 @@
                 <hr />
                 <h2>必要素材 集計</h2>
                 <hr />
-                <table>
+                <table class="product-table">
                     <tr class="header" v-if="isShowSingleMode">
                         <th class="material-name-column">素材名</th>
                         <th>必要数(/分)</th>
@@ -88,7 +111,7 @@
                 <hr />
                 <h2>副産物生産数 集計</h2>
                 <hr />
-                <table>
+                <table class="product-table">
                     <tr class="header" v-if="isShowSingleMode">
                         <th class="material-name-column">副産物名</th>
                         <th>必要数(/分)</th>
@@ -174,6 +197,7 @@ const tooltips = {
     ShowModeToSingle: '表示モードを「個別表示」に切り替えます。',
     BatchRecipeIcon: 'レシピ一括設定が有効になっている素材です。\nクリックすると無効になります。\n現在のレシピ：',
     BatchRecipeButton: 'この素材のレシピを一括で設定します。',
+    BatchRecipeListButton: '現在有効になっているレシピ一括設定リストを表示します。'
 } as const;
 
 /** 表示モード切り替えボタンのツールチップ */
@@ -447,6 +471,13 @@ const isMaterialBatchedSetRecipe = computed(() => (materialId: string): boolean 
 });
 
 /**
+ * レシピ一括設定の素材IDリスト
+ */
+const batchRecipeMaterialIds = computed((): Array<string> => {
+    return flowStore.batchRecipeMaterialIds;
+});
+
+/**
  * レシピ一括設定されている素材のレシピIDを取得
  * @param materialId [in] 素材名
  * @return レシピID
@@ -612,7 +643,7 @@ const onClickBatchRecipeIcon = (materialId: string) => {
 h2 {
     margin: 0px;
 }
-table {
+table.product-table {
     width: 100%;
     border-spacing: 4px;
     margin-bottom: 8px;
@@ -620,17 +651,17 @@ table {
     line-height: 1em;
     table-layout: fixed;
 }
-th {
+table.product-table th {
     background: var(--symbolic-color);
     border-radius: 4px;
     padding: 4px 8px;
     text-align: center;
 }
-th.material-name-column {
+table.product-table th.material-name-column {
     text-align: left;
     min-width: 50px;
 }
-.product-name-header {
+table.product-table .product-name-header {
     width: 100%;
     height: 100%;
     display: flex;
@@ -638,76 +669,76 @@ th.material-name-column {
     justify-content: center;
     gap: 4px;
 }
-.product-name-header img {
+table.product-table .product-name-header img {
     width: 1.8em;
     height: 1.8em;
 }
-.product-name-header .text-container {
+table.product-table .product-name-header .text-container {
     overflow: hidden;
     display: flex;
     flex-direction: column;
     text-align: left;
 }
-.product-name-header .text-container .name {
+table.product-table .product-name-header .text-container .name {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.product-name-header .text-container .needs {
+table.product-table .product-name-header .text-container .needs {
     overflow: hidden;
     color: var(--dark-bg-color);
     font-size: 0.9em;
 }
-td {
+table.product-table td {
     padding: 4px;
     border-radius: 4px;
     line-height: 1.1em;
 }
-td div {
+table.product-table td div {
     display: flex;
     align-items: center;
     justify-content: center;
 }
-td.material-name-cell {
+table.product-table td.material-name-cell {
     font-weight: bold;
 }
-td.material-name-cell:not(.category) {
+table.product-table td.material-name-cell:not(.category) {
     color: black;
     background: var(--symbolic-pale-color);
 }
 
-td.material-needs-cell {
+table.product-table td.material-needs-cell {
     color: black;
     background: var(--dark-light-color);
 }
-td.material-needs-cell.not-use {
+table.product-table td.material-needs-cell.not-use {
     background: var(--dark-main-color);
     color: white;
 }
-td div.material-name-box {
+table.product-table td div.material-name-box {
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     gap: 8px;
 }
-td div.material-name-box img {
+table.product-table td div.material-name-box img {
     width: 1em;
     height: 1em;
 }
-td div.material-name-box span.material-name {
+table.product-table td div.material-name-box span.material-name {
     flex: 1;
 }
-td div.material-name-box span.material-name {
+table.product-table td div.material-name-box span.material-name {
     flex: 1;
     text-overflow: ellipsis;
     overflow: hidden;
     text-align: left;
 }
-td div.material-name-box .batch-recipe-icon {
+table.product-table td div.material-name-box .batch-recipe-icon {
     color: var(--dark-text-color);
     position: relative;
 }
-td div.material-name-box .batch-recipe-icon:hover::before {
+table.product-table td div.material-name-box .batch-recipe-icon:hover::before {
     content: "x";
     font-size: 1.2em;
     color: red;
@@ -717,7 +748,7 @@ td div.material-name-box .batch-recipe-icon:hover::before {
     font-weight: bold;
     transform: translateX(-50%) translateY(-50%);
 }
-td div.material-name-box .batch-recipe-button {
+table.product-table td div.material-name-box .batch-recipe-button {
     font-size: 0.8em;
     color: var(--dark-text-color);
     mix-blend-mode: overlay;
@@ -726,11 +757,43 @@ td div.material-name-box .batch-recipe-button {
     padding: 2px 4px;
     position: relative;
 }
-td div.material-name-box .batch-recipe-button:hover {
+table.product-table td div.material-name-box .batch-recipe-button:hover {
     background: var(--dark-text-color);
     color: var(--dark-main-color);
 }
-td div.material-name-box .batch-recipe-dropdown-container {
+table.product-table td div.material-name-box .batch-recipe-dropdown-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    background: var(--dark-bg-color);
+    padding: 8px;
+    border: 1px solid var(--dark-light-color);
+    border-radius: 8px;
+    opacity: 0.9;
+    position: relative;
+}
+table.product-table td div.material-name-box .batch-recipe-dropdown-container .option {
+    justify-content: start;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 2px 4px;
+    color: var(--dark-text-color);
+    opacity: 1;
+}
+table.product-table td div.material-name-box .batch-recipe-dropdown-container .option:hover {
+    background: var(--symbolic-color);
+}
+table.product-table td div.material-name-box .batch-recipe-dropdown-container .option .default-recipe-icon {
+    font-size: 0.9em;
+    border: 1px solid var(--dark-text-color);
+    border-radius: 4px;
+    padding: 4px 2px 2px 2px;
+    margin-right: 4px;
+    line-height: 0.8em;
+}
+
+.batch-recipe-list-dropdown-container {
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -741,24 +804,38 @@ td div.material-name-box .batch-recipe-dropdown-container {
     border-radius: 8px;
     opacity: 0.9;
 }
-td div.material-name-box .batch-recipe-dropdown-container .option {
-    justify-content: start;
-    cursor: pointer;
-    border-radius: 4px;
-    padding: 2px 4px;
-    color: var(--dark-text-color);
-    opacity: 1;
+
+.batch-recipe-list-dropdown-container .header {
+    font-size: 0.8em;
 }
-td div.material-name-box .batch-recipe-dropdown-container .option:hover {
-    background: var(--symbolic-color);
+.batch-recipe-list-dropdown-container table.batch-recipe-list-table {
+    font-size: 0.8em;
 }
-td div.material-name-box .batch-recipe-dropdown-container .option .default-recipe-icon {
-    font-size: 0.9em;
-    border: 1px solid var(--dark-text-color);
+.batch-recipe-list-dropdown-container table.batch-recipe-list-table th,
+.batch-recipe-list-dropdown-container table.batch-recipe-list-table td {
     border-radius: 4px;
-    padding: 4px 2px 2px 2px;
-    margin-right: 4px;
+    padding: 4px;
     line-height: 0.8em;
+    text-align: left;
+}
+.batch-recipe-list-dropdown-container table.batch-recipe-list-table th {
+    background: var(--symbolic-color);
+    color: var(--dark-text-color);
+}
+.batch-recipe-list-dropdown-container table.batch-recipe-list-table td:nth-child(1) {
+    background: var(--symbolic-pale-color);
+    color: black;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.batch-recipe-list-dropdown-container table.batch-recipe-list-table td:nth-child(2) {
+    background: var(--dark-light-color);
+    color: black;
+}
+.batch-recipe-list-dropdown-container table.batch-recipe-list-table img {
+    width: 1em;
+    height: 1em;
 }
 
 hr {
