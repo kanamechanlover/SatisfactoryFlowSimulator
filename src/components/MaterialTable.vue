@@ -90,13 +90,9 @@
                                             <fa :icon="['fas', 'clipboard']"></fa>
                                         </span>
                                     </template>
-                                    <div class="batch-recipe-dropdown-container">
-                                        <div v-for="recipeId in recipeIdsForMaterial(row.id)" :key="recipeId"
-                                                class="option" @click="onChangeBatchRecipe(row.id, recipeId); ">
-                                            <span class="default-recipe-icon" v-if="isDefaultRecipe(row.id, recipeId)">基</span>
-                                            <span>{{ recipeName(recipeId) }}</span>
-                                        </div>
-                                    </div>
+                                    <RecipeSelectContent :material-id="row.id"
+                                        @select="(recipeId: string) => onChangeBatchRecipe(row.id, recipeId) ">
+                                    </RecipeSelectContent>
                                 </CustomDropdown>
                             </div>
                         </td>
@@ -163,7 +159,7 @@ import { RoundDigit } from '@/logics/primitives'
 // 子コンポーネント ---------------------------------------------
 
 import CustomDropdown from '@/components/generic/CustomDropdown.vue'
-import { config } from 'process'
+import RecipeSelectContent from '@/components/RecipeSelectContent.vue'
 
 // 内部定義 -----------------------------------------------------
 
@@ -760,37 +756,6 @@ table.product-table td div.material-name-box .batch-recipe-button {
 table.product-table td div.material-name-box .batch-recipe-button:hover {
     background: var(--dark-text-color);
     color: var(--dark-main-color);
-}
-table.product-table td div.material-name-box .batch-recipe-dropdown-container {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 4px;
-    background: var(--dark-bg-color);
-    padding: 8px;
-    border: 1px solid var(--dark-light-color);
-    border-radius: 8px;
-    opacity: 0.9;
-    position: relative;
-}
-table.product-table td div.material-name-box .batch-recipe-dropdown-container .option {
-    justify-content: start;
-    cursor: pointer;
-    border-radius: 4px;
-    padding: 2px 4px;
-    color: var(--dark-text-color);
-    opacity: 1;
-}
-table.product-table td div.material-name-box .batch-recipe-dropdown-container .option:hover {
-    background: var(--symbolic-color);
-}
-table.product-table td div.material-name-box .batch-recipe-dropdown-container .option .default-recipe-icon {
-    font-size: 0.9em;
-    border: 1px solid var(--dark-text-color);
-    border-radius: 4px;
-    padding: 4px 2px 2px 2px;
-    margin-right: 4px;
-    line-height: 0.8em;
 }
 
 .batch-recipe-list-dropdown-container {

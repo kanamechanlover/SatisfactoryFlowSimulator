@@ -39,7 +39,7 @@ const props = defineProps({
 
 const emits = defineEmits<{
     (e: 'opened'): void, // ドロップダウンが開いた
-    (e: 'closed'): void, // ドロップダウンが開いた
+    (e: 'closed'): void, // ドロップダウンが閉じた
 }>();
 
 // 内部定義 -----------------------------------------------------
