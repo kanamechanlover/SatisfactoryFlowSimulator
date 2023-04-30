@@ -1,5 +1,5 @@
 <template>
-    <div class="frame-flow-view">
+    <div class="flow-view-frame">
         <div class="main-box">
             <div class="machine-box">
                 <img :src="machineSvg" :title="`${machineName} ${needsRate}%`" />
@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="recipe-box">
-                    <span v-if="existsRecipe">レシピ：</span>
+                    <span class="title" v-if="existsRecipe">レシピ：</span>
                     <span class="single-recipe-text" v-if="isSingleRecipe" :title="tooltips.SingleRecipe">
                         {{ recipeName }}
                     </span>
@@ -29,7 +29,7 @@
                                 <span>{{ recipeName }}</span>
                             </div>
                         </template>
-                        <RecipeSelectContent :material-id="materialId"
+                        <RecipeSelectContent :material-id="materialId" class="recipe-dropdown-content"
                             @select="onChangeRecipe">
                         </RecipeSelectContent>
                     </CustomDropdown>
@@ -250,10 +250,10 @@ const onChangedMaterialNeeds = (event: Event) => {
 </script>
 
 <style scoped>
-input, select {
+input {
     min-width: 5em;
 }
-.frame-flow-view {
+.flow-view-frame {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -344,37 +344,29 @@ input, select {
 .main-box .info-box .material-box .material-needs input {
     display: table-cell;
     border: none;
-    border-bottom: 1px solid gray;
+    border: 1px solid var(--dark-light-color);
     background: transparent;
     max-width: 5em;
     min-width: 1em;
     height: 1em;
     text-align: right;
     white-space: nowrap;
-    padding: 0px 4px;
+    padding: 2px 4px;
+    line-height: 1em;
+    font-size: 1.2em;
 }
 .main-box .info-box .material-box .material-needs input[readonly] {
-    border-bottom: none;
+    border: 1px solid transparent;
     pointer-events: none;
 }
 .main-box .info-box .recipe-box {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.7em;
     line-height: 0.8em;
 }
-.main-box .info-box .recipe-box select {
-    border: none;
-    border-bottom: 1px solid gray;
-    background: transparent;
-    font-size: 1em;
-}
-.main-box .info-box .recipe-box select option {
-    background: var(--symbolic-color);
-}
-.main-box .info-box .recipe-box select option:hover {
-    background-color: linear-gradient(bisque, bisque);
+.main-box .info-box .recipe-box .title {
+    font-size: 0.7em;
 }
 .main-box .info-box .recipe-box .single-recipe-text {
     border: 1px solid var(--dark-light-color);
@@ -382,14 +374,16 @@ input, select {
     line-height: 1em;
     padding: 2px 4px;
     cursor: pointer;
+    font-size: 0.8em;
 }
 .main-box .info-box .recipe-box .recipe-dropdown-toggle {
     border: 1px solid var(--dark-light-color);
     border-radius: 4px;
-    padding: 2px 24px 2px 4px;
+    padding: 4px 24px 2px 4px;
     line-height: 1em;
     cursor: pointer;
     position: relative;
+    font-size: 0.8em;
 }
 .main-box .info-box .recipe-box .recipe-dropdown-toggle::after {
     display: block;
@@ -401,6 +395,9 @@ input, select {
     top: 50%;
     right: 0px;
     transform: rotate(90deg) translateX(-50%) translateY(4px);
+}
+.main-box .info-box .recipe-box .recipe-dropdown-content {
+    font-size: 0.8em;
 }
 .main-box .info-box .byproduct-box {
     display: flex;

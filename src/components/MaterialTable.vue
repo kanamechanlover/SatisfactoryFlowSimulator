@@ -1,5 +1,5 @@
 <template>
-    <div class="frame-material-table">
+    <div class="material-table-frame">
         <div class="show-mode-box">
             <span class="show-mode-text">{{ showModeText }}</span>
             <CustomDropdown>
@@ -41,7 +41,7 @@
             <span v-if="!isShowingTotal">{{ productNeeds }} /分</span>
         </div>
         <div class="tables" ref="tableBox">
-            <div class="prodcut-box">
+            <div class="product-box">
                 <hr />
                 <h2>必要素材 集計</h2>
                 <hr />
@@ -278,7 +278,7 @@ const isShowingTotal = computed((): boolean => {
 
 /** 製品（素材）ID */
 const productId = computed(() => (index: number): string => {
-    return flowStore.productId(index);
+    return flowStore.productMaterialId(index);
 });
 /** 製品（素材）画像 */
 const productImage = computed(() => (index: number): string => {
@@ -373,7 +373,7 @@ const materialImg = computed(() => (materialId: string) => {
 /** 製品画像 */
 const productImg = computed(() => (index: number): string => {
     if (index < 0 && index < productNumber.value) return '';
-    const productId = flowStore.productId(index);
+    const productId = flowStore.productMaterialId(index);
     return imageStore.getData(productId);
 });
 
@@ -577,7 +577,7 @@ const onClickBatchRecipeIcon = (materialId: string) => {
 </script>
 
 <style scoped>
-.frame-material-table {
+.material-table-frame {
     width: 100%;
     height: 100%;
     color: white;
@@ -807,8 +807,10 @@ hr {
   border: 0;
   height: 1px;
   background-image: -webkit-linear-gradient(left, transparent, var(--symbolic-color), transparent);
+  /* Chrome にて何故か最後のものが有効になっていたので、一旦消す
   background-image: -moz-linear-gradient(left, transparent, var(--symbolic-color), transparent);
   background-image: -ms-linear-gradient(left, transparent, var(--symbolic-color), transparent);
   background-image: -o-linear-gradient(left, transparent, var(--symbolic-color), transparent);
+  */
 }
 </style>

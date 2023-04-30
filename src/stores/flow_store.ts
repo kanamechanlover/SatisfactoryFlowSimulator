@@ -76,12 +76,12 @@ export const useFlowStore = defineStore('flow', {
             };
         },
         /**
-         * 指定位置の製品（表示）名取得
+         * 指定位置の製品（素材）ID取得
          * @param productIndex [in] 製品インデックス
-         * @return 製品（表示）名
+         * @return 製品（素材）ID
          * @note インデックスが範囲外なら空文字列を返す
          */
-        productId(state) {
+        productMaterialId(state) {
             return (productIndex: number): string => {
                 const product = state.products[productIndex];
                 return (product) ? product.flow.materialId : '';

@@ -1,5 +1,5 @@
 <template>
-    <div class="frame-flow-tree">
+    <div class="flow-tree-frame">
         <div class="product-select-box" v-if="productNumber">
             <span>表示名：</span>
             <input type="text" :value="productName(currentProductIndex)"
@@ -9,16 +9,17 @@
                 <fa :icon="['fas', 'arrow-left']" />
             </button>
             <span>製品名：</span>
-            <img :src="productImage" v-if="productImage" />
-            <select ref="productSelect" @change="onChangedProductId" :title="tooltips.ProductNameSelect">
-                <option value :selected="!productId">-- 製品選択 --</option>
-                <option v-for="option in options" :key="option"
-                    :class="{category: isCategoryOption(option)}"
-                    :disabled="isCategoryOption(option)"
-                    :value="option" :selected="productId == option">
-                    {{ (isCategoryOption(option)) ? option : materialName(option) }}
-                </option>
-            </select>
+            <CustomDropdown ref="productSelector" class="product-material-dropdown">
+                <template #toggle>
+                    <div class="product-dropdown-toggle" :title="tooltips.ProductNameSelect">
+                        <img :src="productImage" v-if="productImage" />
+                        <span>{{ productMaterialName }}</span>
+                    </div>
+                </template>
+                <MaterialSelectContent :material-id="productMaterialId"
+                    noselecting-text="-- 製品選択 --" @select="onChangeProductId">
+                </MaterialSelectContent>
+            </CustomDropdown>
         </div>
         <div class="flow-view-box" v-if="productNumber">
             <FlowView v-if="isSpecifiedProductId" :product-index="currentProductIndex"></FlowView>
@@ -38,6 +39,8 @@ import { useImageStore } from '@/stores/image_store';
 // 子コンポーネント ---------------------------------------------
 
 import FlowView from '@/components/FlowView.vue'
+import CustomDropdown from './generic/CustomDropdown.vue';
+import MaterialSelectContent from '@/components/MaterialSelectContent.vue'
 
 // 外部連携 -----------------------------------------------------
 
@@ -49,6 +52,9 @@ const tooltips = {
     ProductNameSetButton: '現在選択中の製品名を表示名に指定します。',
     ProductNameSelect: 'シミュレートする製品を選択します。',
 } as const;
+
+// 製品（素材）未選択時のテキスト
+const noselectingText = '-- 製品選択 --';
 
 // 内部変数 -----------------------------------------------------
 
@@ -63,6 +69,9 @@ const imageStore = useImageStore();
 
 /** 構築中フラグ */
 const constructingFlow = ref(false);
+
+/** 製品選択ドロップダウン */
+const productSelector = ref<typeof CustomDropdown|undefined>(undefined);
 
 // 内部関数 -----------------------------------------------------
 
@@ -85,13 +94,18 @@ const currentProductIndex = computed((): number => {
 });
 
 /** 現在選択中の製品インデックスの製品（素材）ID */
-const productId = computed((): string => {
-    return flowStore.productId(currentProductIndex.value);
+const productMaterialId = computed((): string => {
+    return flowStore.productMaterialId(currentProductIndex.value);
+});
+/** 現在選択中の製品インデックスの製品（素材）名 */
+const productMaterialName = computed((): string => {
+    if (!productMaterialId.value) return noselectingText;
+    return configStore.materialName(productMaterialId.value);
 });
 
 /** 製品（素材）画像 */
 const productImage = computed((): string => {
-    return imageStore.getData(productId.value);
+    return imageStore.getData(productMaterialId.value);
 });
 
 /** 製品選択プルダウンの選択肢 */
@@ -138,24 +152,24 @@ const onChangedProductName = (event: Event) => {
 };
 /** 製品（表示）名に製品（素材）名を設定する */
 const setMaterialName = () => {
-    if (productId.value == '') return; // 製品が選択されていない場合は何もしない
-    const newName = configStore.materialName(productId.value);
+    if (productMaterialId.value == '') return; // 製品が選択されていない場合は何もしない
+    const newName = configStore.materialName(productMaterialId.value);
     flowStore.setProductName(currentProductIndex.value, newName);
 };
 
 /** 製品（素材）ID変更時　※重い処理になる為、非同期で実行する */
-const onChangedProductId = (event: Event) => {
-    if (!(event.target instanceof HTMLSelectElement)) return;
+const onChangeProductId = (productId: string) => {
     // 構築中フラグを立てる
     constructingFlow.value = true;
     // 画面更新の為に次の Tick にて実施
-    const target = event.target as HTMLSelectElement;
     setTimeout(() => {
         // 製品（素材）ID更新
-        flowStore.setMaterialId(currentProductIndex.value, [], target.value);
+        flowStore.setMaterialId(currentProductIndex.value, [], productId);
         // 構築が終了したらフラグを落とす
         constructingFlow.value = false;
     }, 0);
+    // 製品選択ドロップダウンを閉じる
+    productSelector.value?.close();
 };
 
 // サイクル -----------------------------------------------------
@@ -168,7 +182,7 @@ const onChangedProductId = (event: Event) => {
 input, select {
     min-width: 5em;
 }
-.frame-flow-tree {
+.flow-tree-frame {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -191,21 +205,50 @@ input, select {
     white-space: nowrap;
 }
 .product-select-box button {
-    padding: 0px 4px;
+    padding: 2px 4px;
+    line-height: 1em;
 }
 .product-select-box img {
     width: 1em;
     height: 1em;
 }
-.product-select-box input,
-.product-select-box select {
+.product-select-box input {
     flex:1;
+    padding: 1px 4px;
+    line-height: 1em;
+    font-size: 0.9em;
 }
-.product-select-box select option.category {
-    background: var(--symbolic-color);
-    color: black;
+.product-select-box input:hover {
+    border-color: var(--dark-light-color);
+}
+.product-select-box .product-material-dropdown {
+    flex: 1;
+    font-size: 0.9em;
+    line-height: 0.9em;
+}
+.product-select-box .product-dropdown-toggle {
+    display:flex;
+    align-items: center;
+    border: 1px solid var(--dark-main-color);
+    border-radius: 4px;
+    padding: 2px 4px;
+    line-height: 1em;
+    user-select: none;
+    gap: 4px;
+}
+.product-select-box .product-dropdown-toggle:hover {
+    border: 1px solid var(--dark-light-color);
+}
+.product-select-box .product-dropdown-toggle::after {
+    display: block;
+    width: 1em;
+    height: 1em;
+    content: ">";
     font-weight: bold;
-    font-size: 1.2em;
+    position: absolute;
+    top: 50%;
+    right: 0px;
+    transform: rotate(90deg) translateX(-50%) translateY(4px);
 }
 .flow-view-box {
     flex: 1;

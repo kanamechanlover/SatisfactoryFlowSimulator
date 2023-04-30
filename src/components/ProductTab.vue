@@ -1,5 +1,5 @@
 <template>
-    <div class="frame-product-tab" :class="{compact: compactShowMode}">
+    <div class="product-tab-frame" :class="{compact: compactShowMode}">
         <div class="product-tab-add-box">
             <button v-show="!compactShowMode" class="add-button"
                     @click="addProduct" :title="tooltips.AddProduct">
@@ -87,13 +87,13 @@ const currentProductIndex = computed((): number => {
 
 /** 製品の素材画像URL */
 const productMaterialImage = computed(() => (index: number) => {
-    const materialId = flowStore.productId(index);
+    const materialId = flowStore.productMaterialId(index);
     return (materialId) ? imageStore.getData(materialId) : "";
 });
 
 /** 指定位置の製品（素材）名 */
 const productMaterialName = computed(() => (index: number) => {
-    const materialId = flowStore.productId(index);
+    const materialId = flowStore.productMaterialId(index);
     return configStore.materialName(materialId);
 });
 
@@ -127,7 +127,7 @@ const toggleShowMode = () => {
 </script>
 
 <style scoped>
-.frame-product-tab {
+.product-tab-frame {
     width: 300px;
     min-width: 200px;
     display: flex;
@@ -136,7 +136,7 @@ const toggleShowMode = () => {
     overflow: hidden;
     background: var(--dark-deep-color);
 }
-.frame-product-tab.compact {
+.product-tab-frame.compact {
     width: auto;
     min-width: initial;
 }

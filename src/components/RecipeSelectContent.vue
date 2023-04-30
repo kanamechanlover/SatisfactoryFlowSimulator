@@ -4,7 +4,7 @@
             <div v-for="(recipeId, index) in recipeIds" :key="recipeId"
                     class="option" @click="onClick(index)">
                 <div class="option-header">
-                    <span class="default-recipe-icon" v-if="isDefaultRecipe(recipeId)">基</span>
+                    <span class="default-recipe-icon" v-if="isDefaultRecipe(recipeId)">基本</span>
                     <span>{{ recipeName(recipeId) }}</span>
                 </div>
                 <div class="option-content">
@@ -137,11 +137,10 @@ const onClick = (index: number) => {
     align-items: center;
 }
 .dropdown-container .option .default-recipe-icon {
-    font-size: 0.9em;
     border: 1px solid var(--dark-text-color);
     border-radius: 4px;
-    padding: 4px 2px 2px 2px;
+    padding: 4px;
     margin-right: 4px;
-    line-height: 0.8em;
+    line-height: 1em;
 }
 </style>

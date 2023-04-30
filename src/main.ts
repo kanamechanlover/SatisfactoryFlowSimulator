@@ -48,6 +48,12 @@ imageStore.initialize();
 import { calcScrollbarWidth } from './logics/primitives';
 calcScrollbarWidth();
 
+// 製作フローストアに製品を１つ追加しておく
+import { useFlowStore } from '@/stores/flow_store'
+const flowStore = useFlowStore();
+flowStore.addProduct();
+
+
 /*// デバッグ用：製品追加
 import { useFlowStore } from "@/stores/flow_store";
 const flowStore = useFlowStore();
