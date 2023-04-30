@@ -7,6 +7,7 @@ import {
     ConfigMachine,
     ConfigMaterial,
     ConfigRecipe,
+    ConfigRecipeMaterial,
 } from '@/defines/types/config';
 import Logger from '@/logics/logger'
 
@@ -135,6 +136,20 @@ export const useConfigStore = defineStore('config', {
         },
 
         /**
+         * 設備の指定位置の入力ポートのタイプ取得
+         * @param machineId [in] 設備ID
+         * @param index [in] 位置
+         * @return 入出力ポートタイプ（設備が無ければ空文字列）
+         */
+        machineInputPortType(state) {
+            return (machineId: string, index: number): string =>  {
+                const machine = state.config.machines.find((machine) => machine.id == machineId)
+                if (machine === undefined) return '';
+                return machine.inputNumber.getPortType(index);
+            };
+        },
+
+        /**
          * 設備の出力ポート数取得
          * @param machineId [in] 設備ID
          * @returns 設備の出力ポート数
@@ -158,6 +173,20 @@ export const useConfigStore = defineStore('config', {
                 const machine = state.config.machines.find((machine) => machine.id == machineId)
                 if (machine === undefined) return 0;
                 return machine.outputNumber.getNumberWithType(type);
+            };
+        },
+
+        /**
+         * 設備の指定位置の出力ポートのタイプ取得
+         * @param machineId [in] 設備ID
+         * @param index [in] 位置
+         * @return 入出力ポートタイプ（設備が無ければ空文字列）
+         */
+        machineOutputPortType(state) {
+            return (machineId: string, index: number): string =>  {
+                const machine = state.config.machines.find((machine) => machine.id == machineId)
+                if (machine === undefined) return '';
+                return machine.outputNumber.getPortType(index);
             };
         },
 
@@ -239,6 +268,21 @@ export const useConfigStore = defineStore('config', {
         },
 
         /**
+         * 指定素材を製作する（出力に持つ）レシピリストを取得
+         * @param materialId [in] 素材ID
+         * @return レシピIDリスト
+         */
+        recipeIdForMaterial(state) {
+            return (materialId: string): Array<string> => {
+                return state.config.recipes.filter((recipe: ConfigRecipe) => {
+                    return recipe.output.some((material: ConfigRecipeMaterial): boolean => {
+                        return material.id == materialId;
+                    });
+                }).map((recipe: ConfigRecipe) => recipe.id);
+            };
+        },
+
+        /**
          * 指定設備で使用できるレシピIDリストを取得
          * @param machineId [in] 設備ID
          * @returns レシピIDリスト
@@ -248,6 +292,18 @@ export const useConfigStore = defineStore('config', {
                 return state.config.recipes.filter((recipe: ConfigRecipe) => {
                     return machineId == recipe.machineId;
                 }).map((recipe: ConfigRecipe) => recipe.id);
+            };
+        },
+
+        /**
+         * レシピ名取得
+         * @param recipeId [in] レシピID
+         * @returns レシピ名（IDが無ければ空文字列）
+         */
+        recipeName(state) {
+            return (recipeId: string): string => {
+                const recipe = state.config.recipes.find((recipe) => recipe.id == recipeId);
+                return (recipe) ? recipe.name : '';
             };
         },
 

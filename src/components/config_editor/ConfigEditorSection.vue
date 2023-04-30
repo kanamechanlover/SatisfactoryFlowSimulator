@@ -106,7 +106,7 @@ section h1 span.toggle.collapse {
 }
 section h1:hover {
     cursor: pointer;
-    background: orange;
+    background: var(--symbolic-color);
 }
 .section-body {
     display: flex;
