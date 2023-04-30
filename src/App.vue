@@ -64,7 +64,7 @@ import ConfigEditor from '@/components/config_editor/ConfigEditor.vue'
 
 /** 集計結果の表示先セレクタ */
 const MaterialTableSelector = {
-    All:'#material-table-box', // 一覧表示時
+    All: '#material-table-box', // 一覧表示時
     Single: '#total-data-box', // 個別表示時
 }
 
@@ -178,10 +178,10 @@ onMounted(async () => {
 header {
     display: flex;
     align-items: center;
-    background-color: orange;
+    background-color: var(--symbolic-color);
     padding: 4px 8px;
     font-weight: bold;
-    color: maroon;
+    color: var(--accent-color);
     overflow-y: hidden;
     border-bottom: 1px solid var(--dark-bg-color);
     gap: 4px;
@@ -201,7 +201,7 @@ header .version {
     overflow: hidden;
 }
 #product-tab-box {
-    /* コンパクト表示時は小さくしたいのでここでは設定しない 
+    /* コンパクト表示時は小さくしたいのでここでは設定しない
     width: 300px;
     min-width: 200px;
     */

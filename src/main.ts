@@ -18,11 +18,11 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 // - Solid スタイルのアイコン登録
 import {
     faCube, faDroplet, faPenToSquare, faArrowUpRightFromSquare, faWrench,
-    faTrashCan, faArrowLeft, faArrowRight,
+    faTrashCan, faArrowLeft, faArrowRight, faClipboard,
 } from '@fortawesome/free-solid-svg-icons'
 library.add(
     faCube, faDroplet, faPenToSquare, faArrowUpRightFromSquare, faWrench,
-    faTrashCan, faArrowLeft, faArrowRight,
+    faTrashCan, faArrowLeft, faArrowRight, faClipboard,
 );
 // - Bland スタイルのアイコン
 import {
@@ -43,6 +43,25 @@ import { useImageStore } from '@/stores/image_store'
 const imageStore = useImageStore();
 // 初期化、初回読み込み
 imageStore.initialize();
+
+// スクロールバーの幅を計算しておく
+import { calcScrollbarWidth } from './logics/primitives';
+calcScrollbarWidth();
+
+// 製作フローストアに製品を１つ追加しておく
+import { useFlowStore } from '@/stores/flow_store'
+const flowStore = useFlowStore();
+flowStore.addProduct();
+
+
+/*// デバッグ用：製品追加
+import { useFlowStore } from "@/stores/flow_store";
+const flowStore = useFlowStore();
+flowStore.addProduct('自律制御ユニット', 'AdaptiveControlUnit');
+flowStore.addProduct('組立指揮システム', 'AssemblyDirectorSystem');
+flowStore.addProduct('磁界発生装置', 'MagneticFieldGenerator');
+flowStore.addProduct('熱推進型ロケット', 'ThermalPropulsionRocket');
+*/
 
 // 最後にマウント
 app.mount('#app');

@@ -1,5 +1,5 @@
 <template>
-    <div class="frame-flow-view">
+    <div class="flow-view-frame">
         <div class="main-box">
             <div class="machine-box">
                 <img :src="machineSvg" :title="`${machineName} ${needsRate}%`" />
@@ -19,13 +19,20 @@
                     </div>
                 </div>
                 <div class="recipe-box">
-                    <span v-if="existsRecipe">レシピ：</span>
-                    <select @change="onChangedRecipe" v-if="existsRecipe">
-                        <option v-for="recipe in recipeList" :key="recipe.id"
-                            :selected="recipe.id === recipeId" :value="recipe.id">
-                            {{ recipe.name }}
-                        </option>
-                    </select>
+                    <span class="title" v-if="existsRecipe">レシピ：</span>
+                    <span class="single-recipe-text" v-if="isSingleRecipe" :title="tooltips.SingleRecipe">
+                        {{ recipeName }}
+                    </span>
+                    <CustomDropdown ref="recipeSelector" v-if="!isSingleRecipe">
+                        <template #toggle>
+                            <div class="recipe-dropdown-toggle" :title="tooltips.RecipeSelect">
+                                <span>{{ recipeName }}</span>
+                            </div>
+                        </template>
+                        <RecipeSelectContent :material-id="materialId" class="recipe-dropdown-content"
+                            @select="onChangeRecipe">
+                        </RecipeSelectContent>
+                    </CustomDropdown>
                 </div>
                 <div class="byproduct-box" v-if="byproductName">
                     <span>副産物：{{ byproductName }} {{ byproductNeeds }} /分</span>
@@ -53,6 +60,8 @@ import { RoundDigit } from '@/logics/primitives'
 
 // 子コンポーネント ---------------------------------------------
 
+import CustomDropdown from '@/components/generic/CustomDropdown.vue'
+import RecipeSelectContent from '@/components/RecipeSelectContent.vue'
 
 // 外部連携 -----------------------------------------------------
 
@@ -72,6 +81,12 @@ const props = defineProps({
 
 // 内部定義 -----------------------------------------------------
 
+// ツールチップ文言一覧
+const tooltips = {
+    RecipeSelect: 'この素材の製作レシピを選択します',
+    SingleRecipe: 'この素材を製作する代替レシピはありません。',
+} as const;
+
 // 内部変数 -----------------------------------------------------
 
 /** 設定ストア */
@@ -85,6 +100,9 @@ const imageStore = useImageStore();
 
 /** 製作フローパス */
 const flowPath = ref(new FlowPath(props.flowPath));
+
+/** レシピ選択ドロップダウン */
+const recipeSelector = ref<typeof CustomDropdown|undefined>(undefined);
 
 // 内部関数 -----------------------------------------------------
 
@@ -107,37 +125,48 @@ const getFlow = computed(() => {
 
 const existsRecipe = computed((): boolean => {
     if (!getFlow.value?.materialId) return false;
-    return configStore.recipesHasOutputMaterialId(getFlow.value?.materialId).length > 0;
+    return configStore.recipesHasOutputMaterialId(getFlow.value.materialId).length > 0;
+});
+/** 素材ID */
+const materialId = computed((): string => {
+    if (!getFlow.value?.materialId) return '';
+    return getFlow.value.materialId;
 });
 /** 素材名 */
 const materialName = computed((): string => {
     if (!getFlow.value?.materialId) return '';
-    return configStore.materialName(getFlow.value?.materialId);
+    return configStore.materialName(getFlow.value.materialId);
 });
 /** 素材画像 */
 const materialImg = computed((): string => {
     if (!getFlow.value?.materialId) return '';
-    return imageStore.getData(getFlow.value?.materialId);
+    return imageStore.getData(getFlow.value.materialId);
 });
-/** レシピ名 */
+/** レシピID */
 const recipeId = computed((): string => {
     if (!getFlow.value?.recipeId) return '';
     return getFlow.value?.recipeId;
 });
-/** レシピ名リスト */
-const recipeList = computed((): Array<ConfigRecipe> => {
-    if (!getFlow.value?.materialId) return [];
-    return configStore.recipesHasOutputMaterialId(getFlow.value?.materialId);
+/** レシピ名 */
+const recipeName = computed((): string => {
+    if (!getFlow.value?.recipeId) return '';
+    return configStore.recipeName(getFlow.value.recipeId);
+});
+/** レシピが一つしかない素材か */
+const isSingleRecipe = computed((): boolean => {
+    if (!getFlow.value?.materialId) return false;
+    const recipes = configStore.recipesHasOutputMaterialId(getFlow.value.materialId);
+    return recipes.length == 1;
 });
 /** 生産レート(%) */
 const needsRate = computed((): number => {
     if (!getFlow.value?.needsRate) return 100;
-    return getFlow.value?.needsRate * 100;
+    return getFlow.value.needsRate * 100;
 });
 /** 設備ID */
 const machineId = computed((): string => {
     if (!getFlow.value?.machineId) return '';
-    return getFlow.value?.machineId;
+    return getFlow.value.machineId;
 });
 /** 設備画像 */
 const machineSvg = computed((): string => {
@@ -145,7 +174,7 @@ const machineSvg = computed((): string => {
         // 設備が無い場合は手採取用のアイコンにする
         return imageStore.getData('Hand');
     }
-    return imageStore.getData(getFlow.value?.machineId);
+    return imageStore.getData(getFlow.value.machineId);
 });
 /** 設備名 */
 const machineName = computed((): string => {
@@ -153,17 +182,17 @@ const machineName = computed((): string => {
         // 設備が無い場合は手採取用のアイコンにする
         return '手採取';
     }
-    return configStore.machineName(getFlow.value?.machineId);
+    return configStore.machineName(getFlow.value.machineId);
 });
 /** ルートフローか */
 const isRootFlow = computed((): boolean => {
     if (!getFlow.value?.isRootFlow) return false;
-    return getFlow.value?.isRootFlow;
+    return getFlow.value.isRootFlow;
 });
 /** 必要数 */
 const needs = computed((): string => {
     if (!getFlow.value?.needs) return "0";
-    return CielDigitToString(getFlow.value?.needs);
+    return CielDigitToString(getFlow.value.needs);
 });
 /** 必要数の入力タイプ（ルートフローだけ数値として入力可能） */
 const needsInputType = computed((): string => {
@@ -172,7 +201,7 @@ const needsInputType = computed((): string => {
 /** 入力素材の製作フロー */
 const materialFlows = computed((): Array<Flow> => {
     if (!getFlow.value?.materialFlows) return [];
-    return getFlow.value?.materialFlows;
+    return getFlow.value.materialFlows;
 });
 /** 副産物名 */
 const byproductName = computed((): string => {
@@ -184,12 +213,12 @@ const byproductName = computed((): string => {
 /** 副産物の生産数 */
 const byproductNeeds = computed((): string => {
     if (!getFlow.value?.byproductNeeds) return '';
-    return CielDigitToString(getFlow.value?.byproductNeeds);
+    return CielDigitToString(getFlow.value.byproductNeeds);
 });
 /** 副産物の画像 */
 const byproductImg = computed((): string => {
     if (!getFlow.value?.byproductId) return '';
-    return imageStore.getData(getFlow.value?.byproductId);
+    return imageStore.getData(getFlow.value.byproductId);
 });
 
 // Actions -----------------------------------------------------
@@ -200,10 +229,13 @@ const materialFlowPath = (flow: Flow) => {
     return [props.flowPath, flow.materialId].join(',');
 };
 /** 素材の必要数が変更された時のコールバック */
-const onChangedRecipe = (event: Event) => {
-    if (!(event.target instanceof HTMLSelectElement)) return;
+const onChangeRecipe = (recipeId: string) => {
     // 製作フローストア更新
-    flowStore.setRecipeId(props.productIndex, new FlowPath(props.flowPath), event.target.value);
+    flowStore.setRecipeId(props.productIndex, new FlowPath(props.flowPath), recipeId);
+    // レシピ選択ドロップダウンを閉じる
+    if (recipeSelector.value) {
+        recipeSelector.value.close();
+    }
 };
 /** 素材の必要数が変更された時のコールバック */
 const onChangedMaterialNeeds = (event: Event) => {
@@ -218,10 +250,10 @@ const onChangedMaterialNeeds = (event: Event) => {
 </script>
 
 <style scoped>
-input, select {
+input {
     min-width: 5em;
 }
-.frame-flow-view {
+.flow-view-frame {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -230,7 +262,7 @@ input, select {
 }
 .main-box {
     display: flex;
-    background: orange;
+    background: var(--symbolic-color);
     border: 1px solid wheat;
     border-radius: 8px;
     padding: 4px;
@@ -262,7 +294,7 @@ input, select {
     font-weight: bold;
     color: white;
     line-height: 1em;
-    background: orange;
+    background: var(--symbolic-color);
     border-radius: 4px;
     padding: 0px 1px;
 }
@@ -299,7 +331,7 @@ input, select {
 .main-box .info-box .material-box .material-name {
     font-weight: bold;
     background: white;
-    color: orange;
+    color: var(--symbolic-color);
     border-radius: 4px;
     padding: 4px;
 }
@@ -312,37 +344,60 @@ input, select {
 .main-box .info-box .material-box .material-needs input {
     display: table-cell;
     border: none;
-    border-bottom: 1px solid gray;
+    border: 1px solid var(--dark-light-color);
     background: transparent;
     max-width: 5em;
     min-width: 1em;
     height: 1em;
     text-align: right;
     white-space: nowrap;
-    padding: 0px 4px;
+    padding: 2px 4px;
+    line-height: 1em;
+    font-size: 1.2em;
 }
 .main-box .info-box .material-box .material-needs input[readonly] {
-    border-bottom: none;
+    border: 1px solid transparent;
     pointer-events: none;
 }
 .main-box .info-box .recipe-box {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.7em;
     line-height: 0.8em;
 }
-.main-box .info-box .recipe-box select {
-    border: none;
-    border-bottom: 1px solid gray;
-    background: transparent;
-    font-size: 1em;
+.main-box .info-box .recipe-box .title {
+    font-size: 0.7em;
 }
-.main-box .info-box .recipe-box select option {
-    background: orange;
+.main-box .info-box .recipe-box .single-recipe-text {
+    border: 1px solid var(--dark-light-color);
+    border-radius: 4px;
+    line-height: 1em;
+    padding: 2px 4px;
+    cursor: pointer;
+    font-size: 0.8em;
 }
-.main-box .info-box .recipe-box select option:hover {
-    background-color: linear-gradient(bisque, bisque);
+.main-box .info-box .recipe-box .recipe-dropdown-toggle {
+    border: 1px solid var(--dark-light-color);
+    border-radius: 4px;
+    padding: 4px 24px 2px 4px;
+    line-height: 1em;
+    cursor: pointer;
+    position: relative;
+    font-size: 0.8em;
+}
+.main-box .info-box .recipe-box .recipe-dropdown-toggle::after {
+    display: block;
+    width: 1em;
+    height: 1em;
+    content: ">";
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    right: 0px;
+    transform: rotate(90deg) translateX(-50%) translateY(4px);
+}
+.main-box .info-box .recipe-box .recipe-dropdown-content {
+    font-size: 0.8em;
 }
 .main-box .info-box .byproduct-box {
     display: flex;
@@ -355,11 +410,10 @@ input, select {
 }
 .main-box .info-box .byproduct-box img {
     position: absolute;
-    left: calc(-1em - 6px);
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1em;
-    height: 1em;
+    left: calc(-1.2em - 6px);
+    bottom: -1px;
+    width: 1.2em;
+    height: 1.2em;
     border: 1px solid white;
     border-radius: 4px;
 }

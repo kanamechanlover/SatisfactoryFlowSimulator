@@ -16,6 +16,12 @@
   box-sizing: border-box;
 }
 
+* {
+  --symbolic-color: orange; /* Satisfactory 的な色 */
+  --symbolic-pale-color: burlywood; /* 少し淡い色 */
+  --accent-color: maroon; /* 強調色 */
+}
+
 a {
   font-weight: 500;
   color: #646cff;

@@ -54,6 +54,8 @@ export const useFlowStore = defineStore('flow', {
             config: useConfigStore(),
             /** 次作成する製品のサフィックス */
             nextProductNumber: 1,
+            /** レシピ一括設定素材マップ */
+            batchRecipeMap: new Map<string, string>(),
         };
     },
     getters: {
@@ -61,7 +63,7 @@ export const useFlowStore = defineStore('flow', {
         productNumber(state): number {
             return state.products.length;
         },
-        /** 
+        /**
          * 指定位置の製品（表示）名取得
          * @param productIndex [in] 製品インデックス
          * @return 製品（表示）名
@@ -73,13 +75,13 @@ export const useFlowStore = defineStore('flow', {
                 return (product) ? product.name : '';
             };
         },
-        /** 
-         * 指定位置の製品（表示）名取得
+        /**
+         * 指定位置の製品（素材）ID取得
          * @param productIndex [in] 製品インデックス
-         * @return 製品（表示）名
+         * @return 製品（素材）ID
          * @note インデックスが範囲外なら空文字列を返す
          */
-        productId(state) {
+        productMaterialId(state) {
             return (productIndex: number): string => {
                 const product = state.products[productIndex];
                 return (product) ? product.flow.materialId : '';
@@ -158,6 +160,27 @@ export const useFlowStore = defineStore('flow', {
         materialTableShowMode(state): string {
             return state.summary.materialTableShowMode;
         },
+        /** レシピ一括設定にある素材か */
+        hasBatchRecipe(state) {
+            return (materialId: string): boolean => {
+                return state.batchRecipeMap.has(materialId);
+            };
+        },
+        /** レシピ一括設定にある素材IDリスト */
+        batchRecipeMaterialIds(state): Array<string> {
+            return [...state.batchRecipeMap.keys()];
+        },
+        /**
+         * レシピ一括設定素材のレシピIDを取得
+         * @param materialId [in] 素材ID
+         * @return レシピID（レシピ一括設定素材マップに無ければ空文字列）
+         */
+        batchRecipeId(state) {
+            return (materialId: string): string => {
+                const recipeId = state.batchRecipeMap.get(materialId);
+                return (recipeId) ? recipeId : "";
+            };
+        },
     },
     actions: {
         /**
@@ -169,6 +192,10 @@ export const useFlowStore = defineStore('flow', {
             let productName = (name != '') ? name : "製品" + this.nextProductNumber;
             this.products.push(new Production(productName, id));
             this.nextProductNumber++;
+            if (id) {
+                // 製品（素材）ID が指定されている場合は中身の構築も合わせて行う
+                this.setMaterialId(this.products.length - 1, new FlowPath(), id);
+            }
         },
         /**
          * 製品削除
@@ -315,7 +342,19 @@ export const useFlowStore = defineStore('flow', {
                 return (needs) ? toMinute(needs) * flow.needsRate : 0;
             };
             flow.byproductNeeds = (flow.byproductId) ? byproductNeeds() : 0;
-    
+
+            // レシピ一括設定のレシピIDの取得処理
+            const getRecipe = (materialId: string): string => {
+                // レシピ一括設定に指定されていればそのレシピIDを使用する
+                if (this.batchRecipeMap.has(materialId)) {
+                    const batchedRecipeId = this.batchRecipeMap.get(materialId);
+                    if (!batchedRecipeId) return ''; // イレギュラー（undefined を除外する為）
+                    return batchedRecipeId;
+                }
+                // 指定が無ければデフォルトのレシピIDを返す
+                return this.config.defaultRecipeId(materialId);
+            };
+
             // レシピの素材リスト
             if (changedRecipe) {
                 // レシピの変更が有れば素材リストの製作フローを作り直す
@@ -325,7 +364,7 @@ export const useFlowStore = defineStore('flow', {
                     if (needs === undefined) return; // イレギュラー
                     const materialFlow = new Flow(flow);
                     materialFlow.materialId = input.id;
-                    materialFlow.recipeId = this.config.defaultRecipeId(input.id);
+                    materialFlow.recipeId = getRecipe(input.id);
                     materialFlow.needs = toMinute(needs * flow.needsRate);
                     materialFlow.path = flow.path.concat([input.id]);
                     flow.materialFlows.push(materialFlow);
@@ -391,6 +430,54 @@ export const useFlowStore = defineStore('flow', {
         /** 集計結果の表示モードを「個別表示」に切り替え */
         toSingleShowMode() {
             this.summary.materialTableShowMode = MaterialTableShowMode.Single;
+        },
+        /**
+         * レシピ一括設定追加
+         * @param materialId [in] 素材ID
+         * @param recipeId [in] レシピID
+         * @note 既に設定されていればレシピID更新
+         */
+        addBatchRecipe(materialId: string, recipeId: string) {
+            this.batchRecipeMap.set(materialId, recipeId);
+        },
+        /**
+         * レシピ一括設定削除
+         * @param materialId [in] 素材ID
+         * @note 無ければ何もしない
+         */
+        removeBatchRecipe(materialId: string) {
+            this.batchRecipeMap.delete(materialId);
+        },
+        /**
+         * レシピ一括変更
+         * @param materialId [in] 素材ID
+         */
+        batchRecipeChange(materialId: string) {
+            // 変更後のレシピ取得（レシピが無い場合はデフォルトレシピへの変更とする）
+            const tempRecipeId = this.batchRecipeMap.get(materialId);
+            const recipeId = (tempRecipeId) ? tempRecipeId : this.config.defaultRecipeId(materialId);
+            // 製品毎に再帰的に変更
+            this.products.forEach((product: Production) => {
+                const batch = (flow: Flow) => {
+                    // 入力素材を順次チェック
+                    flow.materialFlows.forEach((materialFlow: Flow) => {
+                        // 対象の素材のレシピが変更後のレシピと異なる場合だけ変更
+                        if (materialFlow.materialId == materialId && materialFlow.recipeId != recipeId) {
+                            // 対象の製作フローのレシピを変更
+                            materialFlow.recipeId = recipeId;
+                            // 変更による影響を反映
+                            this.updateFlow(materialFlow, true);
+                            // 再帰的に次の子は見ない
+                            return;
+                        }
+                        // 再帰的に次の子へ
+                        batch(materialFlow);
+                    });
+                };
+                batch(product.flow);
+            });
+            // 集計結果にも反映
+            this.updateTable();
         },
     }
 });

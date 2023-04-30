@@ -688,7 +688,7 @@ defineExpose({toEditMode, toViewMode});
 .view-mode-box .recipe-detail-box {
     flex: 1;
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
     gap: 8px;
 }
@@ -865,7 +865,7 @@ defineExpose({toEditMode, toViewMode});
 .edit-mode-box .grid .product-time-box {
     grid-area: product-time;
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     gap: 4px;
 }
 .edit-mode-box .grid .product-time-box input {
