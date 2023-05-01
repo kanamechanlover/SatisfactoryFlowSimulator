@@ -26,11 +26,6 @@ import { useImageStore } from '@/stores/image_store'
 // 外部連携 -----------------------------------------------------
 
 const props = defineProps({
-    /** 対象の素材ID */
-    materialId: {
-        type: String,
-        default: '',
-    },
     /** 未選択時のテキスト */
     noselectingText: {
         type: String,
