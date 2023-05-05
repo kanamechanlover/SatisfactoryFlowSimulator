@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { useConfigStore } from '@/stores/config_store'
 import { Flow, FlowPath } from '@/defines/types/flow'
-import { MaterialTable } from '@/defines/types/material_table'
 import Logger from '@/logics/logger'
 
 /** 製品情報クラス */
@@ -18,29 +17,6 @@ class Production {
     };
 };
 
-/** 集計結果の表示モード */
-export const MaterialTableShowMode = {
-    /** 一覧表示 */
-    All: 'All',
-    /** 個別表示 */
-    Single: 'Single',
-} as const;
-
-/** 集計情報クラス */
-class Summary {
-    /** 素材集計結果 */
-    productTable: MaterialTable;
-    /** 副産物集計結果 */
-    byproductTable: MaterialTable;
-    /** 集計結果の表示モード */
-    materialTableShowMode: string;
-    constructor() {
-        this.productTable = new MaterialTable();
-        this.byproductTable = new MaterialTable();
-        this.materialTableShowMode = MaterialTableShowMode.Single;
-    }
-};
-
 export const useFlowStore = defineStore('flow', {
     state: () => {
         return {
@@ -48,8 +24,6 @@ export const useFlowStore = defineStore('flow', {
             products: new Array<Production>(),
             /** 選択中の製品のインデックス */
             selectingProductIndex: 0,
-            /** 集計結果 */
-            summary: new Summary(),
             /** 設定ストア */
             config: useConfigStore(),
             /** 次作成する製品のサフィックス */
@@ -140,26 +114,6 @@ export const useFlowStore = defineStore('flow', {
                 return state.products[index].flow.materialId != '';
             };
         },
-        /** 素材集計テーブルを取得 */
-        productTable(state) {
-            return state.summary.productTable;
-        },
-        /** 副産物集計テーブルを取得 */
-        byproductTable(state) {
-            return state.summary.byproductTable;
-        },
-        /** 集計結果の表示モードが「一覧表示」か */
-        isAllShowMode(state): boolean {
-            return state.summary.materialTableShowMode == MaterialTableShowMode.All;
-        },
-        /** 集計結果の表示モードが「個別表示」か */
-        isSingleShowMode(state): boolean {
-            return state.summary.materialTableShowMode == MaterialTableShowMode.Single;
-        },
-        /** 集計結果の表示モード */
-        materialTableShowMode(state): string {
-            return state.summary.materialTableShowMode;
-        },
         /** レシピ一括設定にある素材か */
         hasBatchRecipe(state) {
             return (materialId: string): boolean => {
@@ -183,6 +137,19 @@ export const useFlowStore = defineStore('flow', {
         },
     },
     actions: {
+        /** イベント管理用メソッド */
+
+        /**
+         * 更新が完了時に呼び出し
+         * @note 更新された時にこの関数を呼び出すようにする。
+         * @note store.$onAction で更新が完了したことを検知する為に定義
+         */
+        updated() {
+            Logger.log('[flowStore] updated.');
+        },
+
+        /** 製品リスト操作用メソッド */
+
         /**
          * 製品追加
          * @param name [in] 製品名
@@ -196,6 +163,8 @@ export const useFlowStore = defineStore('flow', {
                 // 製品（素材）ID が指定されている場合は中身の構築も合わせて行う
                 this.setMaterialId(this.products.length - 1, new FlowPath(), id);
             }
+            // 更新完了
+            this.updated();
         },
         /**
          * 製品削除
@@ -203,6 +172,8 @@ export const useFlowStore = defineStore('flow', {
          */
         removeProduct(index: number) {
             this.products.splice(index, 1);
+            // 更新完了
+            this.updated();
         },
         /**
          * 選択中の製品のインデックス変更
@@ -210,6 +181,8 @@ export const useFlowStore = defineStore('flow', {
          */
         setProductIndex(index: number) {
             this.selectingProductIndex = index;
+            // 更新完了
+            this.updated();
         },
         /**
          * 製品（表示）名変更
@@ -219,7 +192,12 @@ export const useFlowStore = defineStore('flow', {
         setProductName(index: number, name: string) {
             if (!this.products[index]) return;
             this.products[index].name = name;
+            // 更新完了
+            this.updated();
         },
+
+        /** 製作フロー操作用メソッド */
+
         /**
          * 素材を変更（レシピ、必要数も併せてデフォルトに更新）
          * @param index [in] 製品インデックス
@@ -247,8 +225,8 @@ export const useFlowStore = defineStore('flow', {
             flow.needs = 0;
             // 変更による影響を反映
             this.updateFlow(flow, true);
-            // 集計結果にも反映
-            this.updateTable();
+            // 更新完了
+            this.updated();
         },
         /**
          * レシピを変更
@@ -273,8 +251,8 @@ export const useFlowStore = defineStore('flow', {
             flow.recipeId = recipeId;
             // 変更による影響を反映
             this.updateFlow(flow, true);
-            // 集計結果にも反映
-            this.updateTable();
+            // 更新完了
+            this.updated();
         },
         /**
          * 必要数（/分）を変更
@@ -299,8 +277,8 @@ export const useFlowStore = defineStore('flow', {
             flow.needs = needs;
             // 変更による影響を反映
             this.updateFlow(flow, false);
-            // 集計結果にも反映
-            this.updateTable();
+            // 更新完了
+            this.updated();
         },
         /**
          * 現在の設定でフロー更新
@@ -382,55 +360,9 @@ export const useFlowStore = defineStore('flow', {
                 });
             }
         },
-        /**
-         * 現在の製作フローを元に集計テーブルを更新
-         */
-        updateTable() {
-            // テーブル更新
-            this.summary.productTable.clear();
-            this.summary.byproductTable.clear();
-            this.products.forEach((product, index: number) => {
-                // テーブルに列追加
-                this.summary.productTable.addHeader(product.name);
-                this.summary.byproductTable.addHeader(product.name);
-                // 製作フローから再帰的にテーブル情報取得する関数定義
-                const collectMaterialNeeds = (flow: Flow) => {
-                    // 製品IDとその必要数を追加
-                    this.summary.productTable.addNumber(flow.materialId, index, flow.needs);
-                    // 生産の際に生成される副産物を追加
-                    if (flow.byproductId) {
-                        this.summary.byproductTable.addNumber(flow.byproductId, index, flow.byproductNeeds);
-                    }
-                    flow.materialIds.forEach((materialId: string) => {
-                        const materialFlow = flow.getMaterialFlow(materialId);
-                        if (materialFlow) collectMaterialNeeds(materialFlow);
-                    });
-                };
-                // ルートに素材の指定が無い（ツリーが空）なら集計不要
-                if (!product.flow) return;
 
-                // 副産物はルートフローからも取得する
-                const rootFlow = product.flow;
-                const byproductId = rootFlow.byproductId;
-                if (byproductId) {
-                    const byproductNeeds = rootFlow.byproductNeeds;
-                    this.summary.byproductTable.addNumber(byproductId, index, byproductNeeds);
-                }
-                // ルートフローの入力素材から再帰的に走査
-                rootFlow.materialIds.forEach((materialId: string) => {
-                    const flow = rootFlow.getMaterialFlow(materialId);
-                    if (flow) collectMaterialNeeds(flow);
-                });
-            });
-        },
-        /** 集計結果の表示モードを「一覧表示」に切り替え */
-        toAllShowMode() {
-            this.summary.materialTableShowMode = MaterialTableShowMode.All;
-        },
-        /** 集計結果の表示モードを「個別表示」に切り替え */
-        toSingleShowMode() {
-            this.summary.materialTableShowMode = MaterialTableShowMode.Single;
-        },
+        /** レシピ一括設定操作用メソッド */
+
         /**
          * レシピ一括設定追加
          * @param materialId [in] 素材ID
@@ -476,8 +408,8 @@ export const useFlowStore = defineStore('flow', {
                 };
                 batch(product.flow);
             });
-            // 集計結果にも反映
-            this.updateTable();
+            // 更新完了
+            this.updated();
         },
     }
 });

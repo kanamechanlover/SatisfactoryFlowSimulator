@@ -5,11 +5,6 @@ import { createApp } from 'vue'
 import App from './App.vue'
 const app = createApp(App);
 
-// Pinia 作成
-import { createPinia } from 'pinia'
-const pinia = createPinia();
-app.use(pinia);
-
 // Awesome Font を使用する準備
 // - コア
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -32,27 +27,13 @@ library.add(faTwitter, faGithub, faSteam);
 // - コンポーネント登録
 app.component('fa', FontAwesomeIcon);
 
-// 全体から参照する設定ストアはここで宣言して実体を作っておく
-import { useConfigStore } from '@/stores/config_store'
-const configStore = useConfigStore();
-import ConfigData from '@/defines/config/config.json'
-configStore.setup(ConfigData);
-
-// 画像ストア実体生成
-import { useImageStore } from '@/stores/image_store'
-const imageStore = useImageStore();
-// 初期化、初回読み込み
-imageStore.initialize();
-
 // スクロールバーの幅を計算しておく
-import { calcScrollbarWidth } from './logics/primitives';
+import { calcScrollbarWidth } from '@/logics/primitives';
 calcScrollbarWidth();
 
-// 製作フローストアに製品を１つ追加しておく
-import { useFlowStore } from '@/stores/flow_store'
-const flowStore = useFlowStore();
-flowStore.addProduct();
-
+// ストア初期化
+import pinia from '@/stores/initialize';
+app.use(pinia);
 
 /*// デバッグ用：製品追加
 import { useFlowStore } from "@/stores/flow_store";
