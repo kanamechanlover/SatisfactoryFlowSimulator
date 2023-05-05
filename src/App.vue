@@ -48,9 +48,9 @@
 
 <script setup lang="ts">
 import { ref, computed, onBeforeUnmount, onMounted } from 'vue'
-import { useConfigStore } from './stores/config_store'
-import { useImageStore } from './stores/image_store'
-import { useFlowStore } from './stores/flow_store'
+import { useConfigStore } from '@/stores/config_store'
+import { useImageStore } from '@/stores/image_store'
+import { useCollectStore } from '@/stores/collect_store'
 import Logger from '@/logics/logger'
 
 // 子コンポーネント ---------------------------------------------
@@ -78,8 +78,8 @@ const configStore = useConfigStore();
 /** 画像ストア */
 const imageStore = useImageStore();
 
-/** 製作フローストア */
-const flowStore = useFlowStore();
+/** 集計結果ストア */
+const collectStore = useCollectStore();
 
 /** デバッグ用：設定エディタ表示状況 */
 const showingConfigEditor = ref(false);
@@ -103,16 +103,16 @@ const version = computed((): string => {
 
 /** 集計結果の表示モードが「一覧表示」か */
 const showingMaterialTableAll = computed((): boolean => {
-    return flowStore.isAllShowMode;
+    return collectStore.isAllShowMode;
 });
 
 /** 集計結果の表示先セレクタ */
 const materialTableToSelector = computed((): HTMLElement|string => {
     // 一覧表示モード
-    if (flowStore.isAllShowMode && materialTableAllBox.value)
+    if (collectStore.isAllShowMode && materialTableAllBox.value)
         return materialTableAllBox.value;
     // 個別表示モード
-    if (flowStore.isSingleShowMode && materialTableSingleBox.value)
+    if (collectStore.isSingleShowMode && materialTableSingleBox.value)
         return materialTableSingleBox.value;
     // 未初期化 or イレギュラー
     return '';
