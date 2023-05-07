@@ -5,6 +5,16 @@
                     @click="addProduct" :title="tooltips.AddProduct">
                 ＋製品追加
             </button>
+            <CustomDropdown ref="presetSelect" v-show="!compactShowMode">
+                <template #toggle>
+                    <button class="preset-button" :title="tooltips.PresetButton">
+                        <fa :icon="['fas', 'list-ul']" />
+                    </button>
+                </template>
+                <div class="preset-content">
+                    <PresetSelectContent @select="onSelectPreset"></PresetSelectContent>
+                </div>
+            </CustomDropdown>
             <button class="show-mode-button" :class="{compact: compactShowMode}"
                     @click="toggleShowMode" :title="tooltips.ToggleShowMode">
                 <fa v-show="!compactShowMode" :icon="['fas', 'arrow-left']" />
@@ -37,8 +47,12 @@ import { ref, computed } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
 import { useFlowStore } from '@/stores/flow_store'
 import { useImageStore } from '@/stores/image_store';
+import Logger from '@/logics/logger';
 
 // 子コンポーネント ---------------------------------------------
+
+import CustomDropdown from '@/components/generic/CustomDropdown.vue';
+import PresetSelectContent from '@/components/PresetSelectContent.vue';
 
 // 外部連携 -----------------------------------------------------
 
@@ -49,6 +63,7 @@ const tooltips = {
     ToggleShowMode: '通常表示とコンパクト表示を切り替えます。',
     AddProduct: 'シミュレートする製品の製作フローを増やします。',
     RemoveProduct: 'シミュレートする製品を削除します。',
+    PresetButton: '製品リストのプリセットを読み込みます。'
 } as const;
 
 // 内部変数 -----------------------------------------------------
@@ -64,6 +79,9 @@ const imageStore = useImageStore();
 
 /** 表示モード（true: コンパクト表示, false: 通常表示） */
 const compactShowMode = ref(false);
+
+/** プリセット選択ドロップダウン */
+const presetSelect  = ref<typeof CustomDropdown|undefined>(undefined);
 
 // 内部関数 -----------------------------------------------------
 
@@ -120,6 +138,22 @@ const toggleShowMode = () => {
     compactShowMode.value = !compactShowMode.value;
 };
 
+/**
+ * プリセット選択時
+ * @param tierName [in] ティア名
+ * @param presetName [in] プリセット名
+ */
+const onSelectPreset = (tierName: string, presetName: string) => {
+    Logger.log('Selected preset.');
+    console.log(tierName);
+    console.log(presetName);
+
+    // プリセット反映
+    flowStore.applyProductPreset(tierName, presetName);
+
+    // プリセット選択ドロップダウンを閉じる
+    presetSelect.value?.close();
+};
 
 // サイクル -----------------------------------------------------
 
@@ -157,6 +191,9 @@ const toggleShowMode = () => {
     padding: 0px 4px;
     height: 1.5em;
 }
+.product-tab-add-box button.preset-button {
+    padding: 0px 1em;
+}
 .product-tab-add-box button.add-button {
     flex: 1;
 }
@@ -166,6 +203,10 @@ const toggleShowMode = () => {
 .product-tab-add-box button:hover {
     background: var(--dark-accent-color);
 }
+.preset-content {
+    max-height: 100%;
+}
+
 .product-tab-item-box {
     flex: 1;
     display: flex;

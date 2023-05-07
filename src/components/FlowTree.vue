@@ -16,7 +16,7 @@
                         <span>{{ productMaterialName }}</span>
                     </div>
                 </template>
-                <MaterialSelectContent :material-id="productMaterialId"
+                <MaterialSelectContent
                     noselecting-text="-- 製品選択 --" @select="onChangeProductId">
                 </MaterialSelectContent>
             </CustomDropdown>

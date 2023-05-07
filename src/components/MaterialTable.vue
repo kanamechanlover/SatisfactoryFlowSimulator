@@ -151,10 +151,12 @@
 
 import { ref, computed } from 'vue'
 import { useConfigStore } from '@/stores/config_store'
-import { MaterialTableShowMode, useFlowStore } from '@/stores/flow_store'
+import { useFlowStore } from '@/stores/flow_store'
+import { useCollectStore, MaterialTableShowMode } from '@/stores/collect_store'
 import { useImageStore } from '@/stores/image_store'
 import { ConfigRecipe } from '@/defines/types/config'
 import { RoundDigit } from '@/logics/primitives'
+import Logger from '@/logics/logger'
 
 // 子コンポーネント ---------------------------------------------
 
@@ -219,6 +221,9 @@ const flowStore = useFlowStore();
 /** 画像ストア */
 const imageStore = useImageStore();
 
+/** 集計結果ストア */
+const collectStore = useCollectStore();
+
 /** 個別表示モード時に表示する製品インデックス（0 は総数）*/
 const productIndexOnSingle = ref(0);
 
@@ -235,23 +240,23 @@ const batchRecipeDropdowns = ref<Array<HTMLElement>|undefined>(undefined);
 
 /** 個別表示モードか */
 const isShowSingleMode = computed((): boolean => {
-    return flowStore.isSingleShowMode;
+    return collectStore.isSingleShowMode;
 });
 /** 一覧表示モードか */
 const isShowAllMode = computed((): boolean => {
-    return flowStore.isAllShowMode;
+    return collectStore.isAllShowMode;
 });
 /** 表示モードのテキスト */
 const showModeText = computed((): string => {
-    return ShowModeText[flowStore.materialTableShowMode];
+    return ShowModeText[collectStore.materialTableShowMode];
 });
 /** 表示モード切り替えボタンのテキスト */
 const showModeButtonText = computed((): string => {
-    return ShowModeButtonText[flowStore.materialTableShowMode];
+    return ShowModeButtonText[collectStore.materialTableShowMode];
 });
 /** 表示モード切り替えボタンのツールチップ */
 const showModeButtonTooltip = computed((): string => {
-    return ShowModeButtonTooltip[flowStore.materialTableShowMode];
+    return ShowModeButtonTooltip[collectStore.materialTableShowMode];
 });
 /** 製品（素材）名リスト */
 const showProductOptions = computed(() => {
@@ -325,16 +330,16 @@ const productHeaderTipText = computed(() => (index: number): string => {
 
 /** 素材IDリスト */
 const productMaterialIds = computed((): Array<string> => {
-    return flowStore.productTable.getAllMaterials();
+    return collectStore.productTable.getAllMaterials();
 });
 
 /** 副産物IDリスト */
 const byproductMaterialIds = computed((): Array<string> => {
-    const materialIds = flowStore.byproductTable.getAllMaterials();
+    const materialIds = collectStore.byproductTable.getAllMaterials();
     // 表示数が 0 のものは除外
     const existMaterialIds = materialIds.filter((materialId: string) => {
         return showingProductIndexes.value.some((index: number) => {
-            return flowStore.byproductTable.getNumber(materialId, index) > 0;
+            return collectStore.byproductTable.getNumber(materialId, index) > 0;
         });
     });
     return existMaterialIds;
@@ -352,7 +357,7 @@ const categorisedTable = computed((): Array<CategorisedRow> => {
         // 表示数が 0 のものは除外
         const existMaterialIds = materialIds.filter((materialId: string) => {
             return showingProductIndexes.value.some((index: number) => {
-                return flowStore.productTable.getNumber(materialId, index) > 0;
+                return collectStore.productTable.getNumber(materialId, index) > 0;
             });
         });
         // カテゴリに素材が１つでもあればテーブルに追加
@@ -411,7 +416,7 @@ const productTableNumber = computed(() => (materialId: string, index: number): s
     // インデックスが総数以外で、製品名の指定が無い場合は代替テキストを表示
     if (index > 0 && !flowStore.isSpecifiedProductId(index - 1)) return NotUseCellText;
     // セルの値を取得
-    const value = flowStore.productTable.getNumber(materialId, index);
+    const value = collectStore.productTable.getNumber(materialId, index);
     // 値が 0 の場合は関係のない値の為代替テキストを表示
     if (!value) return NotUseCellText;
     // 小数点以下 6 桁までに丸める
@@ -427,7 +432,7 @@ const byproductTableNumber = computed(() => (materialId: string, index: number):
     // インデックスが総数以外で、製品名の指定が無い場合は代替テキストを表示
     if (index > 0 && !flowStore.isSpecifiedProductId(index - 1)) return NotUseCellText;
     // セルの値を取得
-    const value = flowStore.byproductTable.getNumber(materialId, index);
+    const value = collectStore.byproductTable.getNumber(materialId, index);
     // 値が 0 の場合は関係のない値の為代替テキストを表示
     if (!value) return NotUseCellText;
     // 小数点以下 6 桁までに丸める
@@ -519,11 +524,11 @@ const isDefaultRecipe = computed(() => (materialId: string, recipeId: string) =>
 
 /** 表示モード切り替え */
 const toggleShowMode = () => {
-    if (flowStore.isAllShowMode) {
-        flowStore.toSingleShowMode();
+    if (collectStore.isAllShowMode) {
+        collectStore.toSingleShowMode();
     }
     else {
-        flowStore.toAllShowMode();
+        collectStore.toAllShowMode();
     }
 };
 
@@ -542,17 +547,17 @@ const onChangeShowProduct = (event: Event) => {
 const onChangeBatchRecipe = (materialId: string, recipeId: string) => {
     if (isDefaultRecipe.value(materialId, recipeId)) {
         // デフォルトレシピに変更された場合は追加では無く削除する
-        console.log('Remove ' + materialId + ' because it\'s the default recipe.')
+        Logger.log('Remove ' + materialId + ' because it\'s the default recipe.')
         flowStore.removeBatchRecipe(materialId);
     }
     else {
         // 一括設定リストに追加
-        console.log('Add ' + materialId + '(' + recipeId + ')')
+        Logger.log('Add ' + materialId + '(' + recipeId + ')')
         flowStore.addBatchRecipe(materialId, recipeId);
     }
     console.log(flowStore.batchRecipeMap);
     // 一括設定
-    console.log('Batch');
+    Logger.log('Batch');
     flowStore.batchRecipeChange(materialId);
 
     // ドロップダウンを閉じる
@@ -567,9 +572,9 @@ const onChangeBatchRecipe = (materialId: string, recipeId: string) => {
  * @param materialId [in] 素材ID
  */
 const onClickBatchRecipeIcon = (materialId: string) => {
-    console.log('Remove ' + materialId);
+    Logger.log('Remove ' + materialId);
     flowStore.removeBatchRecipe(materialId);
-    console.log(flowStore.batchRecipeMap);
+    Logger.log(flowStore.batchRecipeMap);
 };
 
 // サイクル -----------------------------------------------------

@@ -473,7 +473,7 @@ export const useConfigStore = defineStore('config', {
         },
 
         // 以降設定エディタ用関数 ----------------------------------
-        
+
         /**
          * 設定値更新を非同期で処理
          * @param func [in] 非同期で処理する関数（引数：reject）
@@ -520,7 +520,7 @@ export const useConfigStore = defineStore('config', {
         - 設備カテゴリリスト
         ------------------------------------------------ */
 
-        /** 設備カテゴリ追加 */ 
+        /** 設備カテゴリ追加 */
         addMachineCategory() {
             this.process(() => {
                 let item = new ConfigCategory()
@@ -530,7 +530,7 @@ export const useConfigStore = defineStore('config', {
             });
         },
 
-        /** 
+        /**
          * 設備カテゴリ更新
          * @param index [in] インデックス
          * @param value [in] 変更後の値
@@ -663,7 +663,7 @@ export const useConfigStore = defineStore('config', {
             return true;
         },
 
-        /** 
+        /**
          * 素材カテゴリ変更による影響（内部用）
          * @param oldValue [in] 変更前の値
          * @param newValue [in] 変更後の値
@@ -691,7 +691,7 @@ export const useConfigStore = defineStore('config', {
         /* ------------------------------------------------
         - 設備リスト
         ------------------------------------------------ */
-        
+
         /**
          * 設備更新
          * @param index [in] インデックス
@@ -899,7 +899,7 @@ export const useConfigStore = defineStore('config', {
             return true;
         },
 
-        /** 
+        /**
          * 素材削除
          * @param index [in] インデックス
          * @return 処理開始の成否（true: 成功）
