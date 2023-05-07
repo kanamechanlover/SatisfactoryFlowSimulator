@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { useConfigStore } from '@/stores/config_store'
+import { usePresetStore } from './preset_store';
 import { Flow, FlowPath } from '@/defines/types/flow'
 import Logger from '@/logics/logger'
 
@@ -25,7 +26,9 @@ export const useFlowStore = defineStore('flow', {
             /** 選択中の製品のインデックス */
             selectingProductIndex: 0,
             /** 設定ストア */
-            config: useConfigStore(),
+            configStore: useConfigStore(),
+            /** プリセットストア */
+            presetStore: usePresetStore(),
             /** 次作成する製品のサフィックス */
             nextProductNumber: 1,
             /** レシピ一括設定素材マップ */
@@ -181,8 +184,6 @@ export const useFlowStore = defineStore('flow', {
          */
         setProductIndex(index: number) {
             this.selectingProductIndex = index;
-            // 更新完了
-            this.updated();
         },
         /**
          * 製品（表示）名変更
@@ -192,6 +193,34 @@ export const useFlowStore = defineStore('flow', {
         setProductName(index: number, name: string) {
             if (!this.products[index]) return;
             this.products[index].name = name;
+            // 更新完了
+            this.updated();
+        },
+
+        /**
+         * 製品プリセット反映
+         * @param tierName [in] ティア名
+         * @param presetName [in] プリセット名
+         */
+        applyProductPreset(tierName: string, presetName: string) {
+            const productNames = this.presetStore.productNames(tierName, presetName);
+            const productIds = this.presetStore.productIds(tierName, presetName);
+            // 製品リストをクリア
+            this.products = [];
+            // プリセットの製品リストを構築
+            productIds.forEach((id, index) => {
+                // 製品と製作フロー構築
+                const name = productNames[index];
+                const production = new Production(name, id);
+                // 対象の製作フローのレシピをデフォルトに変更
+                production.flow.recipeId = this.configStore.defaultRecipeId(id);
+                // 必要数をレシピのデフォルトに変更（this.updateFlow にて実施）
+                production.flow.needs = 0;
+                // 変更による影響を反映
+                this.updateFlow(production.flow, true);
+                // 構築した製品データを追加
+                this.products.push(production);
+            });
             // 更新完了
             this.updated();
         },
@@ -220,7 +249,7 @@ export const useFlowStore = defineStore('flow', {
             // 対象の製作フローの素材を変更
             flow.materialId = materialId;
             // 対象の製作フローのレシピをデフォルトに変更
-            flow.recipeId = this.config.defaultRecipeId(materialId);
+            flow.recipeId = this.configStore.defaultRecipeId(materialId);
             // 必要数をレシピのデフォルトに変更（this.updateFlow にて実施）
             flow.needs = 0;
             // 変更による影響を反映
@@ -288,8 +317,8 @@ export const useFlowStore = defineStore('flow', {
          */
         updateFlow(flow: Flow, changedRecipe: boolean) {
             // 入出力素材を取得
-            const inputs = this.config.recipeInput(flow.recipeId);
-            const outputs = this.config.recipeOutput(flow.recipeId);
+            const inputs = this.configStore.recipeInput(flow.recipeId);
+            const outputs = this.configStore.recipeOutput(flow.recipeId);
             if (!inputs || !outputs) {
                 Logger.warn('対象のレシピ無し: ' + flow.recipeId, 'FlowStore.updateFlow');
                 return;
@@ -297,7 +326,7 @@ export const useFlowStore = defineStore('flow', {
             // 必要数が未設定の場合はデフォルトの分間レートを設定
             const needsOfRecipe = outputs.find((v) => v !== undefined && v.id == flow.materialId)?.number;
             if (needsOfRecipe === undefined) return; // イレギュラー
-            const productTime = this.config.recipeProductTime(flow.recipeId);
+            const productTime = this.configStore.recipeProductTime(flow.recipeId);
             const toMinute = (v: number) => v * (60 / productTime);
             const makePerMinute = toMinute(needsOfRecipe);
             if (!flow.needs) {
@@ -307,7 +336,7 @@ export const useFlowStore = defineStore('flow', {
             flow.needsRate = flow.needs / makePerMinute;
             // レシピを使用するマシンID
             if (changedRecipe) {
-                flow.machineId = this.config.machineIdForRecipe(flow.recipeId);
+                flow.machineId = this.configStore.machineIdForRecipe(flow.recipeId);
             }
 
             // 副産物があれば素材IDと生産数
@@ -330,7 +359,7 @@ export const useFlowStore = defineStore('flow', {
                     return batchedRecipeId;
                 }
                 // 指定が無ければデフォルトのレシピIDを返す
-                return this.config.defaultRecipeId(materialId);
+                return this.configStore.defaultRecipeId(materialId);
             };
 
             // レシピの素材リスト
@@ -387,7 +416,7 @@ export const useFlowStore = defineStore('flow', {
         batchRecipeChange(materialId: string) {
             // 変更後のレシピ取得（レシピが無い場合はデフォルトレシピへの変更とする）
             const tempRecipeId = this.batchRecipeMap.get(materialId);
-            const recipeId = (tempRecipeId) ? tempRecipeId : this.config.defaultRecipeId(materialId);
+            const recipeId = (tempRecipeId) ? tempRecipeId : this.configStore.defaultRecipeId(materialId);
             // 製品毎に再帰的に変更
             this.products.forEach((product: Production) => {
                 const batch = (flow: Flow) => {

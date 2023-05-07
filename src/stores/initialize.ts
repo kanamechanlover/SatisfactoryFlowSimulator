@@ -33,3 +33,9 @@ flowStore.$onAction(({ name, after }) => {
         });
     }
 });
+
+// プリセットストアの初期化
+import { usePresetStore } from '@/stores/preset_store'
+const presetStore = usePresetStore(pinia);
+import PresetData from '@/defines/config/presets.json'
+presetStore.setup(PresetData);
