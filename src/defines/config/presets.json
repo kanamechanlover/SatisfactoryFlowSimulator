@@ -1,0 +1,1103 @@
+{
+    "Tiers": [
+        {
+            "Name": "ティア 1",
+            "Presets": [
+                {
+                    "Name": "基礎建設",
+                    "Products": [
+                        {
+                            "Name": "コンクリート",
+                            "ProductId": "Concrete"
+                        },
+                        {
+                            "Name": "鉄板",
+                            "ProductId": "IronPlate"
+                        },
+                        {
+                            "Name": "鉄のロッド",
+                            "ProductId": "IronRod"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ロジスティックス",
+                    "Products": [
+                        {
+                            "Name": "鉄板",
+                            "ProductId": "IronPlate"
+                        },
+                        {
+                            "Name": "鉄のロッド",
+                            "ProductId": "IronRod"
+                        },
+                        {
+                            "Name": "ワイヤー",
+                            "ProductId": "Wire"
+                        }
+                    ]
+                },
+                {
+                    "Name": "実地調査",
+                    "Products": [
+                        {
+                            "Name": "ワイヤー",
+                            "ProductId": "Wire"
+                        },
+                        {
+                            "Name": "ねじ",
+                            "ProductId": "Screw"
+                        },
+                        {
+                            "Name": "鉄板",
+                            "ProductId": "IronPlate"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ティア 1 全て",
+                    "Products": [
+                        {
+                            "Name": "コンクリート",
+                            "ProductId": "Concrete"
+                        },
+                        {
+                            "Name": "鉄板",
+                            "ProductId": "IronPlate"
+                        },
+                        {
+                            "Name": "鉄のロッド",
+                            "ProductId": "IronRod"
+                        },
+                        {
+                            "Name": "ねじ",
+                            "ProductId": "Screw"
+                        },
+                        {
+                            "Name": "ワイヤー",
+                            "ProductId": "Wire"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "ティア 2",
+            "Presets": [
+                {
+                    "Name": "部品組立",
+                    "Products": [
+                        {
+                            "Name": "ケーブル",
+                            "ProductId": "Cable"
+                        },
+                        {
+                            "Name": "鉄のロッド",
+                            "ProductId": "IronRod"
+                        },
+                        {
+                            "Name": "ネジ",
+                            "ProductId": "Screw"
+                        },
+                        {
+                            "Name": "鉄板",
+                            "ProductId": "IronPlate"
+                        }
+                    ]
+                },
+                {
+                    "Name": "障害物の除去",
+                    "Products": [
+                        {
+                            "Name": "ネジ",
+                            "ProductId": "Screw"
+                        },
+                        {
+                            "Name": "ケーブル",
+                            "ProductId": "Cable"
+                        },
+                        {
+                            "Name": "コンクリート",
+                            "ProductId": "Concrete"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ジャンプパッド",
+                    "Products": [
+                        {
+                            "Name": "ローター",
+                            "ProductId": "Rotor"
+                        },
+                        {
+                            "Name": "鉄板",
+                            "ProductId": "IronPlate"
+                        },
+                        {
+                            "Name": "ケーブル",
+                            "ProductId": "Cable"
+                        }
+                    ]
+                },
+                {
+                    "Name": "リソースシンク ボーナスプログラム",
+                    "Products": [
+                        {
+                            "Name": "コンクリート",
+                            "ProductId": "Concrete"
+                        },
+                        {
+                            "Name": "ワイヤー",
+                            "ProductId": "Wire"
+                        },
+                        {
+                            "Name": "鉄のロッド",
+                            "ProductId": "IronRod"
+                        },
+                        {
+                            "Name": "鉄板",
+                            "ProductId": "IronPlate"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ロジスティクスMk.2",
+                    "Products": [
+                        {
+                            "Name": "強化鉄板",
+                            "ProductId": "ReinforcedIronPlate"
+                        },
+                        {
+                            "Name": "コンクリート",
+                            "ProductId": "Concrete"
+                        },
+                        {
+                            "Name": "鉄のロッド",
+                            "ProductId": "IronRod"
+                        },
+                        {
+                            "Name": "鉄板",
+                            "ProductId": "IronPlate"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ティア 2 全て",
+                    "Products": [
+                        {
+                            "Name": "コンクリート",
+                            "ProductId": "Concrete"
+                        },
+                        {
+                            "Name": "鉄板",
+                            "ProductId": "IronPlate"
+                        },
+                        {
+                            "Name": "鉄のロッド",
+                            "ProductId": "IronRod"
+                        },
+                        {
+                            "Name": "ネジ",
+                            "ProductId": "Screw"
+                        },
+                        {
+                            "Name": "ワイヤー",
+                            "ProductId": "Wire"
+                        },
+                        {
+                            "Name": "ケーブル",
+                            "ProductId": "Cable"
+                        },
+                        {
+                            "Name": "強化鉄板",
+                            "ProductId": "ReinforcedIronPlate"
+                        },
+                        {
+                            "Name": "ローター",
+                            "ProductId": "Rotor"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "ティア 3",
+            "Presets": [
+                {
+                    "Name": "改良式近接戦闘",
+                    "Products": [
+                        {
+                            "Name": "強化鉄板",
+                            "ProductId": "ReinforcedIronPlate"
+                        },
+                        {
+                            "Name": "ケーブル",
+                            "ProductId": "Cable"
+                        },
+                        {
+                            "Name": "ワイヤー",
+                            "ProductId": "Wire"
+                        }
+                    ]
+                },
+                {
+                    "Name": "石炭発電",
+                    "Products": [
+                        {
+                            "Name": "強化鉄板",
+                            "ProductId": "ReinforcedIronPlate"
+                        },
+                        {
+                            "Name": "ローター",
+                            "ProductId": "Rotor"
+                        },
+                        {
+                            "Name": "ケーブル",
+                            "ProductId": "Cable"
+                        }
+                    ]
+                },
+                {
+                    "Name": "車両輸送",
+                    "Products": [
+                        {
+                            "Name": "モジュラー・フレーム",
+                            "ProductId": "ModularFrame"
+                        },
+                        {
+                            "Name": "ローター",
+                            "ProductId": "Rotor"
+                        },
+                        {
+                            "Name": "ケーブル",
+                            "ProductId": "Cable"
+                        },
+                        {
+                            "Name": "鉄のロッド",
+                            "ProductId": "IronRod"
+                        }
+                    ]
+                },
+                {
+                    "Name": "基本的な鋼鉄生産",
+                    "Products": [
+                        {
+                            "Name": "モジュラー・フレーム",
+                            "ProductId": "ModularFrame"
+                        },
+                        {
+                            "Name": "ローター",
+                            "ProductId": "Rotor"
+                        },
+                        {
+                            "Name": "コンクリート",
+                            "ProductId": "Concrete"
+                        },
+                        {
+                            "Name": "ワイヤー",
+                            "ProductId": "Wire"
+                        }
+                    ]
+                },
+                {
+                    "Name": "改良式近接戦闘",
+                    "Products": [
+                        {
+                            "Name": "強化鉄板",
+                            "ProductId": "ReinforcedIronPlate"
+                        },
+                        {
+                            "Name": "ケーブル",
+                            "ProductId": "Cable"
+                        },
+                        {
+                            "Name": "ワイヤー",
+                            "ProductId": "Wire"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ティア 3 全て",
+                    "Products": [
+                        {
+                            "Name": "コンクリート",
+                            "ProductId": "Concrete"
+                        },
+                        {
+                            "Name": "鉄のロッド",
+                            "ProductId": "IronRod"
+                        },
+                        {
+                            "Name": "ワイヤー",
+                            "ProductId": "Wire"
+                        },
+                        {
+                            "Name": "ケーブル",
+                            "ProductId": "Cable"
+                        },
+                        {
+                            "Name": "強化鉄板",
+                            "ProductId": "ReinforcedIronPlate"
+                        },
+                        {
+                            "Name": "ローター",
+                            "ProductId": "Rotor"
+                        },
+                        {
+                            "Name": "モジュラー・フレーム",
+                            "ProductId": "ModularFrame"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "ティア 4",
+            "Presets": [
+                {
+                    "Name": "先進的な鋼鉄生産",
+                    "Products": [
+                        {
+                            "Name": "鋼管",
+                            "ProductId": "SteelPipe"
+                        },
+                        {
+                            "Name": "ローター",
+                            "ProductId": "Rotor"
+                        },
+                        {
+                            "Name": "ワイヤー",
+                            "ProductId": "Wire"
+                        },
+                        {
+                            "Name": "コンクリート",
+                            "ProductId": "Concrete"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ハイパーチューブ",
+                    "Products": [
+                        {
+                            "Name": "銅板",
+                            "ProductId": "CopperSheet"
+                        },
+                        {
+                            "Name": "鋼管",
+                            "ProductId": "SteelPipe"
+                        },
+                        {
+                            "Name": "コンクリート被覆型鋼梁",
+                            "ProductId": "EncasedIndustrialBeam"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ロジスティクスMk.3",
+                    "Products": [
+                        {
+                            "Name": "鋼梁",
+                            "ProductId": "SteelBeam"
+                        },
+                        {
+                            "Name": "鋼管",
+                            "ProductId": "SteelPipe"
+                        },
+                        {
+                            "Name": "コンクリート",
+                            "ProductId": "Concrete"
+                        }
+                    ]
+                },
+                {
+                    "Name": "FICSITブループリント",
+                    "Products": [
+                        {
+                            "Name": "モジュラー・フレーム",
+                            "ProductId": "ModularFrame"
+                        },
+                        {
+                            "Name": "鋼梁",
+                            "ProductId": "SteelBeam"
+                        },
+                        {
+                            "Name": "ケーブル",
+                            "ProductId": "Cable"
+                        },
+                        {
+                            "Name": "コンクリート",
+                            "ProductId": "Concrete"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ティア 4 全て",
+                    "Products": [
+                        {
+                            "Name": "コンクリート",
+                            "ProductId": "Concrete"
+                        },
+                        {
+                            "Name": "ワイヤー",
+                            "ProductId": "Wire"
+                        },
+                        {
+                            "Name": "ケーブル",
+                            "ProductId": "Cable"
+                        },
+                        {
+                            "Name": "銅板",
+                            "ProductId": "CopperSheet"
+                        },
+                        {
+                            "Name": "ローター",
+                            "ProductId": "Rotor"
+                        },
+                        {
+                            "Name": "モジュラー・フレーム",
+                            "ProductId": "ModularFrame"
+                        },
+                        {
+                            "Name": "鋼管",
+                            "ProductId": "SteelPipe"
+                        },
+                        {
+                            "Name": "コンクリート被覆型鋼梁",
+                            "ProductId": "EncasedIndustrialBeam"
+                        },
+                        {
+                            "Name": "鋼梁",
+                            "ProductId": "SteelBeam"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "ティア 5",
+            "Presets": [
+                {
+                    "Name": "石油の精製",
+                    "Products": [
+                        {
+                            "Name": "モーター",
+                            "ProductId": "Motor"
+                        },
+                        {
+                            "Name": "コンクリート被覆型鋼梁",
+                            "ProductId": "EncasedIndustrialBeam"
+                        },
+                        {
+                            "Name": "鋼管",
+                            "ProductId": "SteelPipe"
+                        },
+                        {
+                            "Name": "銅板",
+                            "ProductId": "CopperSheet"
+                        }
+                    ]
+                },
+                {
+                    "Name": "産業用製造工程",
+                    "Products": [
+                        {
+                            "Name": "モーター",
+                            "ProductId": "Motor"
+                        },
+                        {
+                            "Name": "プラスチック",
+                            "ProductId": "Plastic"
+                        },
+                        {
+                            "Name": "ゴム",
+                            "ProductId": "Rubber"
+                        },
+                        {
+                            "Name": "ケーブル",
+                            "ProductId": "Cable"
+                        }
+                    ]
+                },
+                {
+                    "Name": "代替の液体輸送",
+                    "Products": [
+                        {
+                            "Name": "ヘビー・モジュラー・フレーム",
+                            "ProductId": "HeavyModularFrame"
+                        },
+                        {
+                            "Name": "モーター",
+                            "ProductId": "Motor"
+                        },
+                        {
+                            "Name": "プラスチック",
+                            "ProductId": "Plastic"
+                        },
+                        {
+                            "Name": "ワイヤー",
+                            "ProductId": "Wire"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ガスマスク",
+                    "Products": [
+                        {
+                            "Name": "ゴム",
+                            "ProductId": "Rubber"
+                        },
+                        {
+                            "Name": "プラスチック",
+                            "ProductId": "Plastic"
+                        },
+                        {
+                            "Name": "布地",
+                            "ProductId": "Fabric"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ティア 5 全て",
+                    "Products": [
+                        {
+                            "Name": "ワイヤー",
+                            "ProductId": "Wire"
+                        },
+                        {
+                            "Name": "ケーブル",
+                            "ProductId": "Cable"
+                        },
+                        {
+                            "Name": "銅板",
+                            "ProductId": "CopperSheet"
+                        },
+                        {
+                            "Name": "コンクリート被覆型鋼梁",
+                            "ProductId": "EncasedIndustrialBeam"
+                        },
+                        {
+                            "Name": "鋼管",
+                            "ProductId": "SteelPipe"
+                        },
+                        {
+                            "Name": "モーター",
+                            "ProductId": "Motor"
+                        },
+                        {
+                            "Name": "プラスチック",
+                            "ProductId": "Plastic"
+                        },
+                        {
+                            "Name": "ゴム",
+                            "ProductId": "Rubber"
+                        },
+                        {
+                            "Name": "ヘビー・モジュラー・フレーム",
+                            "ProductId": "HeavyModularFrame"
+                        },
+                        {
+                            "Name": "布地",
+                            "ProductId": "Fabric"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "ティア 6",
+            "Presets": [
+                {
+                    "Name": "拡張電力インフラ",
+                    "Products": [
+                        {
+                            "Name": "ヘビー・モジュラー・フレーム",
+                            "ProductId": "HeavyModularFrame"
+                        },
+                        {
+                            "Name": "コンピューター",
+                            "ProductId": "Computer"
+                        },
+                        {
+                            "Name": "コンクリート被覆型鋼梁",
+                            "ProductId": "EncasedIndustrialBeam"
+                        },
+                        {
+                            "Name": "ゴム",
+                            "ProductId": "Rubber"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ジェットパック",
+                    "Products": [
+                        {
+                            "Name": "モーター",
+                            "ProductId": "Motor"
+                        },
+                        {
+                            "Name": "プラスチック",
+                            "ProductId": "Plastic"
+                        },
+                        {
+                            "Name": "ゴム",
+                            "ProductId": "Rubber"
+                        },
+                        {
+                            "Name": "容器入り燃料",
+                            "ProductId": "PackagedFuel"
+                        }
+                    ]
+                },
+                {
+                    "Name": "モノレール列車技術",
+                    "Products": [
+                        {
+                            "Name": "コンピューター",
+                            "ProductId": "Computer"
+                        },
+                        {
+                            "Name": "ヘビー・モジュラー・フレーム",
+                            "ProductId": "HeavyModularFrame"
+                        },
+                        {
+                            "Name": "鋼梁",
+                            "ProductId": "SteelBeam"
+                        },
+                        {
+                            "Name": "鋼管",
+                            "ProductId": "SteelPipe"
+                        }
+                    ]
+                },
+                {
+                    "Name": "パイプライン工学Mk.2",
+                    "Products": [
+                        {
+                            "Name": "銅板",
+                            "ProductId": "CopperSheet"
+                        },
+                        {
+                            "Name": "プラスチック",
+                            "ProductId": "Plastic"
+                        },
+                        {
+                            "Name": "ゴム",
+                            "ProductId": "Rubber"
+                        },
+                        {
+                            "Name": "ヘビー・モジュラー・フレーム",
+                            "ProductId": "HeavyModularFrame"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ティア 6 全て",
+                    "Products": [
+                        {
+                            "Name": "銅板",
+                            "ProductId": "CopperSheet"
+                        },
+                        {
+                            "Name": "コンクリート被覆型鋼梁",
+                            "ProductId": "EncasedIndustrialBeam"
+                        },
+                        {
+                            "Name": "鋼梁",
+                            "ProductId": "SteelBeam"
+                        },
+                        {
+                            "Name": "鋼管",
+                            "ProductId": "SteelPipe"
+                        },
+                        {
+                            "Name": "モーター",
+                            "ProductId": "Motor"
+                        },
+                        {
+                            "Name": "プラスチック",
+                            "ProductId": "Plastic"
+                        },
+                        {
+                            "Name": "ゴム",
+                            "ProductId": "Rubber"
+                        },
+                        {
+                            "Name": "コンピューター",
+                            "ProductId": "Computer"
+                        },
+                        {
+                            "Name": "ヘビー・モジュラー・フレーム",
+                            "ProductId": "HeavyModularFrame"
+                        },
+                        {
+                            "Name": "容器入り燃料",
+                            "ProductId": "PackagedFuel"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "ティア 7",
+            "Presets": [
+                {
+                    "Name": "ボーキサイト精製",
+                    "Products": [
+                        {
+                            "Name": "コンピューター",
+                            "ProductId": "Computer"
+                        },
+                        {
+                            "Name": "ヘビー・モジュラー・フレーム",
+                            "ProductId": "HeavyModularFrame"
+                        },
+                        {
+                            "Name": "モーター",
+                            "ProductId": "Motor"
+                        },
+                        {
+                            "Name": "ゴム",
+                            "ProductId": "Rubber"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ロジスティクスMk.5",
+                    "Products": [
+                        {
+                            "Name": "アルクラッド・アルミシート",
+                            "ProductId": "AlcladAluminumSheet"
+                        },
+                        {
+                            "Name": "コンクリート被覆型鋼梁",
+                            "ProductId": "EncasedIndustrialBeam"
+                        },
+                        {
+                            "Name": "強化鉄板",
+                            "ProductId": "ReinforcedIronPlate"
+                        }
+                    ]
+                },
+                {
+                    "Name": "科学防護服",
+                    "Products": [
+                        {
+                            "Name": "アルミ筐体",
+                            "ProductId": "AluminumCasing"
+                        },
+                        {
+                            "Name": "クイックワイヤー",
+                            "ProductId": "Quickwire"
+                        },
+                        {
+                            "Name": "ガスフィルター",
+                            "ProductId": "GasFilter"
+                        }
+                    ]
+                },
+                {
+                    "Name": "航空工学",
+                    "Products": [
+                        {
+                            "Name": "無線制御ユニット",
+                            "ProductId": "RadioControlUnit"
+                        },
+                        {
+                            "Name": "アルクラッド・アルミシート",
+                            "ProductId": "AlcladAluminumSheet"
+                        },
+                        {
+                            "Name": "アルミ筐体",
+                            "ProductId": "AluminumCasing"
+                        },
+                        {
+                            "Name": "モーター",
+                            "ProductId": "Motor"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ホバーパック",
+                    "Products": [
+                        {
+                            "Name": "モーター",
+                            "ProductId": "Motor"
+                        },
+                        {
+                            "Name": "ヘビー・モジュラー・フレーム",
+                            "ProductId": "HeavyModularFrame"
+                        },
+                        {
+                            "Name": "コンピューター",
+                            "ProductId": "Computer"
+                        },
+                        {
+                            "Name": "アルクラッド・アルミシート",
+                            "ProductId": "AlcladAluminumSheet"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ティア 7 全て",
+                    "Products": [
+                        {
+                            "Name": "強化鉄板",
+                            "ProductId": "ReinforcedIronPlate"
+                        },
+                        {
+                            "Name": "コンクリート被覆型鋼梁",
+                            "ProductId": "EncasedIndustrialBeam"
+                        },
+                        {
+                            "Name": "モーター",
+                            "ProductId": "Motor"
+                        },
+                        {
+                            "Name": "ゴム",
+                            "ProductId": "Rubber"
+                        },
+                        {
+                            "Name": "コンピューター",
+                            "ProductId": "Computer"
+                        },
+                        {
+                            "Name": "クイックワイヤー",
+                            "ProductId": "Quickwire"
+                        },
+                        {
+                            "Name": "アルクラッド・アルミシート",
+                            "ProductId": "AlcladAluminumSheet"
+                        },
+                        {
+                            "Name": "アルミ筐体",
+                            "ProductId": "AluminumCasing"
+                        },
+                        {
+                            "Name": "ヘビー・モジュラー・フレーム",
+                            "ProductId": "HeavyModularFrame"
+                        },
+                        {
+                            "Name": "無線制御ユニット",
+                            "ProductId": "RadioControlUnit"
+                        },
+                        {
+                            "Name": "ガスフィルター",
+                            "ProductId": "GasFilter"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "ティア 8",
+            "Presets": [
+                {
+                    "Name": "原子力",
+                    "Products": [
+                        {
+                            "Name": "スーパーコンピューター",
+                            "ProductId": "Supercomputer"
+                        },
+                        {
+                            "Name": "ヘビー・モジュラー・フレーム",
+                            "ProductId": "HeavyModularFrame"
+                        },
+                        {
+                            "Name": "ケーブル",
+                            "ProductId": "Cable"
+                        },
+                        {
+                            "Name": "コンクリート",
+                            "ProductId": "Concrete"
+                        }
+                    ]
+                },
+                {
+                    "Name": "先進的なアルミニウム生産",
+                    "Products": [
+                        {
+                            "Name": "無線制御ユニット",
+                            "ProductId": "RadioControlUnit"
+                        },
+                        {
+                            "Name": "アルミ筐体",
+                            "ProductId": "AluminumCasing"
+                        },
+                        {
+                            "Name": "アルクラッド・アルミシート",
+                            "ProductId": "AlcladAluminumSheet"
+                        },
+                        {
+                            "Name": "ワイヤー",
+                            "ProductId": "Wire"
+                        }
+                    ]
+                },
+                {
+                    "Name": "最先端生産技術",
+                    "Products": [
+                        {
+                            "Name": "溶融モジュラー・フレーム",
+                            "ProductId": "FusedModularFrame"
+                        },
+                        {
+                            "Name": "スーパーコンピューター",
+                            "ProductId": "Supercomputer"
+                        },
+                        {
+                            "Name": "鋼管",
+                            "ProductId": "SteelPipe"
+                        }
+                    ]
+                },
+                {
+                    "Name": "粒子濃縮",
+                    "Products": [
+                        {
+                            "Name": "電磁制御棒",
+                            "ProductId": "ElectromagneticControlRod"
+                        },
+                        {
+                            "Name": "冷却システム",
+                            "ProductId": "CoolingSystem"
+                        },
+                        {
+                            "Name": "溶融モジュラー・フレーム",
+                            "ProductId": "FusedModularFrame"
+                        },
+                        {
+                            "Name": "ターボ・モーター",
+                            "ProductId": "TurboMotor"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ティア 8 全て",
+                    "Products": [
+                        {
+                            "Name": "コンクリート",
+                            "ProductId": "Concrete"
+                        },
+                        {
+                            "Name": "ワイヤー",
+                            "ProductId": "Wire"
+                        },
+                        {
+                            "Name": "ケーブル",
+                            "ProductId": "Cable"
+                        },
+                        {
+                            "Name": "鋼管",
+                            "ProductId": "SteelPipe"
+                        },
+                        {
+                            "Name": "アルミ筐体",
+                            "ProductId": "AluminumCasing"
+                        },
+                        {
+                            "Name": "アルクラッド・アルミシート",
+                            "ProductId": "AlcladAluminumSheet"
+                        },
+                        {
+                            "Name": "ヘビー・モジュラー・フレーム",
+                            "ProductId": "HeavyModularFrame"
+                        },
+                        {
+                            "Name": "スーパーコンピューター",
+                            "ProductId": "Supercomputer"
+                        },
+                        {
+                            "Name": "無線制御ユニット",
+                            "ProductId": "RadioControlUnit"
+                        },
+                        {
+                            "Name": "電磁制御棒",
+                            "ProductId": "ElectromagneticControlRod"
+                        },
+                        {
+                            "Name": "冷却システム",
+                            "ProductId": "CoolingSystem"
+                        },
+                        {
+                            "Name": "溶融モジュラー・フレーム",
+                            "ProductId": "FusedModularFrame"
+                        },
+                        {
+                            "Name": "ターボ・モーター",
+                            "ProductId": "TurboMotor"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "軌道エレベーター",
+            "Presets": [
+                {
+                    "Name": "プラットフォーム（ティア3,4 解放）",
+                    "Products": [
+                        {
+                            "Name": "スマート･プレート",
+                            "ProductId": "SmartPlating"
+                        }
+                    ]
+                },
+                {
+                    "Name": "フレームワーク（ティア5,6 解放）",
+                    "Products": [
+                        {
+                            "Name": "スマート･プレート",
+                            "ProductId": "SmartPlating"
+                        },
+                        {
+                            "Name": "自動ワイヤー",
+                            "ProductId": "AutomatedWiring"
+                        },
+                        {
+                            "Name": "多目的フレームワーク",
+                            "ProductId": "VersatileFramework"
+                        }
+                    ]
+                },
+                {
+                    "Name": "システム（ティア7,8 解放）",
+                    "Products": [
+                        {
+                            "Name": "多目的フレームワーク",
+                            "ProductId": "VersatileFramework"
+                        },
+                        {
+                            "Name": "自律制御ユニット",
+                            "ProductId": "AdaptiveControlUnit"
+                        },
+                        {
+                            "Name": "モジュラーエンジン",
+                            "ProductId": "ModularEngine"
+                        }
+                    ]
+                },
+                {
+                    "Name": "惑星従業員（最終ミッション）",
+                    "Products": [
+                        {
+                            "Name": "組立指揮システム",
+                            "ProductId": "AssemblyDirectorSystem"
+                        },
+                        {
+                            "Name": "磁界発生装置",
+                            "ProductId": "MagneticFieldGenerator"
+                        },
+                        {
+                            "Name": "熱推進型ロケット",
+                            "ProductId": "ThermalPropulsionRocket"
+                        },
+                        {
+                            "Name": "原子核パスタ",
+                            "ProductId": "NuclearPasta"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
