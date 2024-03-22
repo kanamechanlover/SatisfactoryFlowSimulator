@@ -52,6 +52,7 @@ import { useConfigStore } from '@/stores/config_store'
 import { useImageStore } from '@/stores/image_store'
 import { useCollectStore } from '@/stores/collect_store'
 import Logger from '@/logics/logger'
+import { GAEvents, invokeGAEvent } from '@/logics/google_analytics'
 
 // 子コンポーネント ---------------------------------------------
 
@@ -158,6 +159,9 @@ onMounted(async () => {
     // 集計結果テーブルのテレポート先取得
     materialTableSingleBox.value = document.querySelector(MaterialTableSelector.Single);
     materialTableAllBox.value = document.querySelector(MaterialTableSelector.All);
+
+    // Google Analytics Visit イベント発火
+    invokeGAEvent(GAEvents.Visit);
 });
 
 </script>
