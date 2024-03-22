@@ -33,7 +33,7 @@ app.use(
     VueGTag,
     {
         config: {
-            id: '{ G-EJFZ9HF6BB }'
+            id: 'G-EJFZ9HF6BB'
         }
     }
 );
