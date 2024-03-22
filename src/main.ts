@@ -27,6 +27,17 @@ library.add(faTwitter, faGithub, faSteam);
 // - コンポーネント登録
 app.component('fa', FontAwesomeIcon);
 
+// Google Analytics
+import VueGTag from 'vue-gtag'
+app.use(
+    VueGTag,
+    {
+        config: {
+            id: 'G-EJFZ9HF6BB'
+        }
+    }
+);
+
 // スクロールバーの幅を計算しておく
 import { calcScrollbarWidth } from '@/logics/primitives';
 calcScrollbarWidth();
